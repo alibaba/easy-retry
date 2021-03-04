@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "spring.easyretry.mybatis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable AmoebaCompatible or not."
+    },
+    {
+      "name": "spring.easyretry.mybatis.maxRetryTimes",
+      "type": "java.lang.Integer",
+      "description": "definition the maxRetryTimes"
+    },
+    {
+      "name": "spring.easyretry.mybatis.namespace",
+      "type": "java.lang.String",
+      "description": "definition the namespace"
+    }
+  ]
+}

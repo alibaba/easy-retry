@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO">
+
+    <resultMap id="RetryTaskMAP" type="com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO">
+        <result column="id" property="id"/>
+        <result column="sharding" property="sharding"/>
+        <result column="biz_id" property="bizId"/>
+        <result column="executor_name" property="executorName"/>
+        <result column="executor_method_name" property="executorMethodName"/>
+        <result column="retry_status" property="retryStatus"/>
+        <result column="args_str" property="argsStr"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="ext_attrs" property="extAttrs"/>
+    </resultMap>
+
+    <sql id="all_column">
+            `id`,
+            `sharding`,
+            `biz_id`,
+            `executor_name`,
+            `executor_method_name`,
+            `retry_status`,
+            `args_str`,
+            `gmt_create`,
+            `gmt_modified`,
+            `ext_attrs`
+    </sql>
+
+    <insert id="saveRetryTask">
+        INSERT INTO easy_retry_task (
+            `id`,
+            `sharding`,
+            `biz_id`,
+            `executor_name`,
+            `executor_method_name`,
+            `retry_status`,
+            `args_str`,
+            `gmt_create`,
+            `gmt_modified`,
+            `ext_attrs`
+        ) VALUES (
+            #{id},
+            #{sharding},
+            #{bizId},
+            #{executorName},
+            #{executorMethodName},
+            #{retryStatus},
+            #{argsStr},
+            #{gmtCreate},
+            #{gmtModified},
+            #{extAttrs}
+        )
+    </insert>
+
+    <select id="listRetryTask" resultMap="RetryTaskMAP" parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery">
+        SELECT * FROM easy_retry_task
+        <where>
+            <if test="sharding != null">
+                sharding = #{sharding}
+            </if>
+
+            <if test="retryStatus != null">
+                AND retry_status IN
+                <foreach item="item" collection="retryStatus" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="lastId != null">
+                AND id > #{lastId}
+            </if>
+        </where>
+        order by id Asc limit 500
+    </select>
+
+    <update id="updateRetryTask" parameterType="com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO">
+        UPDATE easy_retry_task
+        SET
+        gmt_modified = now()
+        <if test="retryStatus != null">
+            ,retry_status = #{retryStatus}
+        </if>
+        WHERE
+        id=#{id}
+    </update>
+
+    <delete id="deleteRetryTask" parameterType="com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO">
+        DELETE FROM easy_retry_task
+        WHERE id=#{id}
+    </delete>
+</mapper>
