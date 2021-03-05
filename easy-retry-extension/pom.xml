@@ -1,0 +1,20 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alibaba</groupId>
+        <artifactId>easy-retry</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>easy-retry-extension</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>easy-retry-spring-extension</module>
+        <module>easy-retry-mybatis-extension</module>
+    </modules>
+
+    <dependencies>
+    </dependencies>
+</project>
