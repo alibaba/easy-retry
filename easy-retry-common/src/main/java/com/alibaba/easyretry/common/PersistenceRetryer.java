@@ -28,7 +28,6 @@ public class PersistenceRetryer implements Retryer {
      */
     private String executorMethodName;
 
-
     private String onFailureMethod;
 
     /**
@@ -48,7 +47,8 @@ public class PersistenceRetryer implements Retryer {
         try {
             return callable.call();
         } catch (Throwable e) {
-            log.error("call method error executorMethodName is {} executorName name is {} args is {}", executorMethodName, executorName, args, e);
+            log.error("call method error executorMethodName is {} executorName name is {} args is {}",
+                executorMethodName, executorName, args, e);
             handleException(e);
             return null;
         }
@@ -62,7 +62,8 @@ public class PersistenceRetryer implements Retryer {
         argSerializerInfo.setArgs(args);
         argSerializerInfo.setExecutorMethodName(executorMethodName);
         argSerializerInfo.setExecutorName(executorName);
-        String argsStr = retryConfiguration.getRetrySerializerAccess().getCurrentGlobalRetrySerializer().serialize(argSerializerInfo);
+        String argsStr = retryConfiguration.getRetrySerializerAccess().getCurrentGlobalRetrySerializer().serialize(
+            argSerializerInfo);
 
         RetryTask retryTask = new RetryTask();
         retryTask.setBizId(bizId);

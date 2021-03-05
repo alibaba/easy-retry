@@ -115,7 +115,8 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
     @Bean(initMethod = "start")
     public RetryContainer retryContainer(RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
         log.warn("RetryConfiguration start");
-        return new SimpleRetryContainer(configuration, easyRetryMemoryCompatibleProperties.getNamespace(),defaultRetryExecutor);
+        return new SimpleRetryContainer(configuration, easyRetryMemoryCompatibleProperties.getNamespace(),
+            defaultRetryExecutor);
     }
 
     @Override

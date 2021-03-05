@@ -11,6 +11,7 @@ public interface RetryTaskAccess {
 
     /**
      * 保存重试任务
+     *
      * @param retryTask
      * @return
      */
@@ -18,6 +19,7 @@ public interface RetryTaskAccess {
 
     /**
      * 更改重试任务为处理中
+     *
      * @param retryTask
      * @return
      */
@@ -25,6 +27,7 @@ public interface RetryTaskAccess {
 
     /**
      * 完结重试任务
+     *
      * @param retryTask
      * @return
      */
@@ -32,6 +35,7 @@ public interface RetryTaskAccess {
 
     /**
      * 停止重试任务
+     *
      * @param retryTask
      * @return
      */
@@ -39,6 +43,7 @@ public interface RetryTaskAccess {
 
     /**
      * 批量查询重试任务
+     *
      * @param namespace
      * @param lastId
      * @return

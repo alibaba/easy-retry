@@ -18,11 +18,11 @@ public class FastJsonRetrySerializer implements RetryArgSerializer {
 
     public final static String INNER_SPLIT = "&&";
 
-
     @Override
     public String serialize(ArgSerializerInfo argSerializerInfo) {
         StringBuilder sb = new StringBuilder();
-        Stream.of(argSerializerInfo.getArgs()).forEach((arg)-> sb.append(JSON.toJSONString(arg)).append(INNER_SPLIT).append(arg.getClass().getName()).append(SPLIT));
+        Stream.of(argSerializerInfo.getArgs()).forEach((arg) -> sb.append(JSON.toJSONString(arg)).append(INNER_SPLIT)
+            .append(arg.getClass().getName()).append(SPLIT));
         if (sb.length() >= SPLIT.length()) {
             return sb.subSequence(0, sb.length() - SPLIT.length()).toString();
         } else {
@@ -33,7 +33,7 @@ public class FastJsonRetrySerializer implements RetryArgSerializer {
     @Override
     public Object[] deSerialize(ArgDeSerializerInfo argDeSerializerInfo) {
         String[] strs = StringUtils.split(argDeSerializerInfo.getArgsStr(), SPLIT);
-        return Stream.of(strs).map((str)->{
+        return Stream.of(strs).map((str) -> {
             String[] inner = str.split(INNER_SPLIT);
             try {
                 return JSON.parseObject(inner[0], ClassUtils.getClass(inner[1]));

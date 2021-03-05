@@ -56,7 +56,8 @@ public class MybatisAutoConfiguration implements ApplicationContextAware {
     private Resource easyRetryMybatisResouse;
 
     @Bean("easyRetrySqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("easyRetryMybatisDataSource") DataSource easyRetryMybatisDataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(
+        @Qualifier("easyRetryMybatisDataSource") DataSource easyRetryMybatisDataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(easyRetryMybatisDataSource);
         sqlSessionFactoryBean.setConfigLocation(easyRetryMybatisResouse);
@@ -142,9 +143,9 @@ public class MybatisAutoConfiguration implements ApplicationContextAware {
     }
 
     @Bean(initMethod = "start")
-    public RetryContainer retryContainer(RetryConfiguration configuration,RetryExecutor defaultRetryExecutor) {
+    public RetryContainer retryContainer(RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
         log.warn("RetryConfiguration start");
-        return new SimpleRetryContainer(configuration, mybatisProperties.getNamespace(),defaultRetryExecutor);
+        return new SimpleRetryContainer(configuration, mybatisProperties.getNamespace(), defaultRetryExecutor);
     }
 
     @Override

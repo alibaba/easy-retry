@@ -55,7 +55,8 @@
         )
     </insert>
 
-    <select id="listRetryTask" resultMap="RetryTaskMAP" parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery">
+    <select id="listRetryTask" resultMap="RetryTaskMAP"
+            parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery">
         SELECT * FROM easy_retry_task
         <where>
             <if test="sharding != null">

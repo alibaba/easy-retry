@@ -33,9 +33,10 @@ public enum RetryTaskStatusEnum {
      */
     FINISH(3, "完结");
 
+    private final static Map<Integer, RetryTaskStatusEnum> MAP = Stream.of(values()).collect(
+        Collectors.toMap(RetryTaskStatusEnum::getCode, (value) -> value));
     @Getter
     private int code;
-
     @Getter
     private String desc;
 
@@ -43,9 +44,6 @@ public enum RetryTaskStatusEnum {
         this.code = code;
         this.desc = desc;
     }
-
-    private final static Map<Integer, RetryTaskStatusEnum> MAP = Stream.of(values()).collect(
-        Collectors.toMap(RetryTaskStatusEnum::getCode, (value) -> value));
 
     public static RetryTaskStatusEnum fromCode(int code) {
         return MAP.get(code);

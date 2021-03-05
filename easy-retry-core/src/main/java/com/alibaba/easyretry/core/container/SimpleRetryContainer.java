@@ -60,13 +60,10 @@ public class SimpleRetryContainer implements RetryContainer {
 
     public class TaskConsumer implements Runnable {
 
-        private BlockingQueue<RetryContext> queue;
-
-        private long sleepTimes = 0L;
-
         private static final long MAX_SLEEP_TIME_MILLISECONDS = 10 * 1000L;
-
         private static final long SLEEP_BASE_TIME_MILLISECONDS = 1000L;
+        private BlockingQueue<RetryContext> queue;
+        private long sleepTimes = 0L;
 
         private TaskConsumer(BlockingQueue<RetryContext> queue) {
             this.queue = queue;

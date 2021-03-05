@@ -37,8 +37,8 @@ public class MemoryRetryTaskAccess implements RetryTaskAccess {
 
     @Override
     public boolean finishRetryTask(RetryTask retryTask) {
-         retryTaskMap.remove(retryTask.getId());
-         return true;
+        retryTaskMap.remove(retryTask.getId());
+        return true;
     }
 
     @Override

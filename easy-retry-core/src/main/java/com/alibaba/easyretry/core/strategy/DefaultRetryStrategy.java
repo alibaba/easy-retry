@@ -14,13 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 
-    private Map<Long, Long> internalTimeMap = Maps.newConcurrentMap();
-
-    private Map<Long, Integer> retryTimeMap = Maps.newConcurrentMap();
-
     private final static Long MAX_INTERNAL_TIME = 15 * 60 * 1000L;
-
     private final static Long BASE_INTERNAL_TIME = 5000L;
+    private Map<Long, Long> internalTimeMap = Maps.newConcurrentMap();
+    private Map<Long, Integer> retryTimeMap = Maps.newConcurrentMap();
 
     @Override
     public boolean shouldStop(RetryContext context) {
@@ -29,7 +26,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
         if (Objects.isNull(retryTimes)) {
             retryTimes = 1;
         }
-        log.warn("shouldStop retryTime is {} id is {} maxRetryTime is {}", retryTimes, retryTask.getId(),context.getMaxRetryTimes());
+        log.warn("shouldStop retryTime is {} id is {} maxRetryTime is {}", retryTimes, retryTask.getId(),
+            context.getMaxRetryTimes());
         return retryTimes >= context.getMaxRetryTimes();
     }
 
@@ -50,10 +48,10 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
         Long id = retryTask.getId();
         Integer retryTime = retryTimeMap.get(id);
         Long lastInternalTime = internalTimeMap.get(id);
-        if(Objects.isNull(retryTime)){
+        if (Objects.isNull(retryTime)) {
             retryTime = 1;
         }
-        if(Objects.isNull(lastInternalTime)){
+        if (Objects.isNull(lastInternalTime)) {
             lastInternalTime = 0L;
         }
         long nextInternalTime = retryTime * (lastInternalTime + BASE_INTERNAL_TIME);
@@ -64,7 +62,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
         retryTime++;
         retryTimeMap.put(id, retryTime);
         context.setPriority(System.currentTimeMillis() + nextInternalTime);
-        log.warn("backOff nextInternalTime is {} id is {} retryTime is {}", nextInternalTime, retryTask.getId(),retryTime);
+        log.warn("backOff nextInternalTime is {} id is {} retryTime is {}", nextInternalTime, retryTask.getId(),
+            retryTime);
 
     }
 

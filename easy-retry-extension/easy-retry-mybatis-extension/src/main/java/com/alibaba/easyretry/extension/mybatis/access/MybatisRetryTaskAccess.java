@@ -80,7 +80,8 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
     @Override
     public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
         RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
-        retryTaskQuery.setRetryStatus(Lists.newArrayList(RetryTaskStatusEnum.INIT.getCode(), RetryTaskStatusEnum.HANDLING.getCode()));
+        retryTaskQuery.setRetryStatus(
+            Lists.newArrayList(RetryTaskStatusEnum.INIT.getCode(), RetryTaskStatusEnum.HANDLING.getCode()));
         retryTaskQuery.setLastId(lastId);
         retryTaskQuery.setSharding(HostUtils.getHostIP());
         List<RetryTaskPO> retryTasks = retryTaskDAO.listRetryTask(retryTaskQuery);

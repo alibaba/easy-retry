@@ -76,7 +76,8 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
         }
 
         public RetryContextBuilder buildArgs() {
-            RetryArgSerializer retryArgSerializer = retryConfiguration.getRetrySerializerAccess().getRetrySerializer(retryTask);
+            RetryArgSerializer retryArgSerializer = retryConfiguration.getRetrySerializerAccess().getRetrySerializer(
+                retryTask);
             ArgDeSerializerInfo argDeSerializerInfo = new ArgDeSerializerInfo();
             argDeSerializerInfo.setArgsStr(retryTask.getArgsStr());
             argDeSerializerInfo.setExecutorMethodName(retryTask.getExecutorMethodName());
@@ -95,13 +96,15 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
         public RetryContextBuilder buildMethod() {
             Object[] objects = retryContext.getArgs();
             Class<?>[] classes = Stream.of(objects).map(Object::getClass).toArray(Class[]::new);
-            Method method = MethodUtils.getMatchingMethod(retryContext.getExecutor().getClass(), retryTask.getExecutorMethodName(), classes);
+            Method method = MethodUtils.getMatchingMethod(retryContext.getExecutor().getClass(),
+                retryTask.getExecutorMethodName(), classes);
             retryContext.setMethod(method);
             return this;
         }
 
         public RetryContextBuilder buildRetryArgSerializer() {
-            retryContext.setRetryArgSerializer(retryConfiguration.getRetrySerializerAccess().getRetrySerializer(retryTask));
+            retryContext.setRetryArgSerializer(
+                retryConfiguration.getRetrySerializerAccess().getRetrySerializer(retryTask));
             return this;
         }
 
