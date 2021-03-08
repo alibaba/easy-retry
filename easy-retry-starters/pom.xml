@@ -5,6 +5,7 @@
         <groupId>com.alibaba</groupId>
         <artifactId>easy-retry</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>easy-retry-starters</artifactId>
@@ -21,12 +22,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-autoconfigure</artifactId>
                 <version>2.4.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easy-retry-spring-extension</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

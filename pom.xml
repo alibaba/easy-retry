@@ -16,13 +16,14 @@
 
         <logback.version>1.1.7</logback.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <lombok.version>1.14.8</lombok.version>
+        <lombok.version>1.18.18</lombok.version>
         <guava.version>16.0</guava.version>
+        <fastjson.version>1.2.73</fastjson.version>
     </properties>
     <modules>
         <module>easy-retry-common</module>
         <module>easy-retry-core</module>
-        <module>easy-retry-extension</module>
+        <module>easy-retry-extensions</module>
         <module>easy-retry-starters</module>
     </modules>
 
@@ -50,6 +51,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+                <optional>true</optional>
             </dependency>
 
             <dependency>
@@ -71,9 +73,9 @@
             </dependency>
 
             <dependency>
-                <groupId>hessian</groupId>
+                <groupId>com.caucho</groupId>
                 <artifactId>hessian</artifactId>
-                <version>3.1.2</version>
+                <version>4.0.60</version>
             </dependency>
 
             <dependency>
@@ -85,7 +87,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.68.noneautotype</version>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <dependency>
@@ -93,16 +95,25 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>easy-retry-spring-extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>easy-retry-mybatis-extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
-
-
     </dependencyManagement>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -111,7 +122,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <encoding>UTF8</encoding>
                 </configuration>
@@ -119,6 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

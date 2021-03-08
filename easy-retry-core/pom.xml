@@ -24,7 +24,7 @@
         </dependency>
 
         <dependency>
-            <groupId>hessian</groupId>
+            <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
         </dependency>
 
