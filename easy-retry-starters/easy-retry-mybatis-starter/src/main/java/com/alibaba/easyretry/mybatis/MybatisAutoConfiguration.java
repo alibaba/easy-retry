@@ -1,7 +1,5 @@
 package com.alibaba.easyretry.mybatis;
 
-import javax.sql.DataSource;
-
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContainer;
 import com.alibaba.easyretry.common.RetryExecutor;
@@ -21,7 +19,7 @@ import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.mybatis.conifg.MybatisProperties;
-
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -47,118 +45,121 @@ import org.springframework.core.io.Resource;
 @ConditionalOnProperty(name = "spring.easyretry.mybatis.enabled", matchIfMissing = true)
 public class MybatisAutoConfiguration implements ApplicationContextAware {
 
-    private ApplicationContext applicationContext;
+  private ApplicationContext applicationContext;
 
-    @Autowired
-    private MybatisProperties mybatisProperties;
+  @Autowired
+  private MybatisProperties mybatisProperties;
 
-    @Value("classpath:/dal/easyretry/easy-mybatis-config.xml")
-    private Resource easyRetryMybatisResouse;
+  @Value("classpath:/dal/easyretry/easy-mybatis-config.xml")
+  private Resource easyRetryMybatisResouse;
 
-    @Bean("easyRetrySqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(
-        @Qualifier("easyRetryMybatisDataSource") DataSource easyRetryMybatisDataSource) throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(easyRetryMybatisDataSource);
-        sqlSessionFactoryBean.setConfigLocation(easyRetryMybatisResouse);
-        return sqlSessionFactoryBean.getObject();
-    }
+  @Bean("easyRetrySqlSessionFactory")
+  public SqlSessionFactory sqlSessionFactory(
+      @Qualifier("easyRetryMybatisDataSource") DataSource easyRetryMybatisDataSource)
+      throws Exception {
+    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    sqlSessionFactoryBean.setDataSource(easyRetryMybatisDataSource);
+    sqlSessionFactoryBean.setConfigLocation(easyRetryMybatisResouse);
+    return sqlSessionFactoryBean.getObject();
+  }
 
-    @Bean
-    public RetryTaskDAO retryTaskDAO(@Qualifier("easyRetrySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-        RetryTaskDAOImpl retryTaskDAO = new RetryTaskDAOImpl();
-        retryTaskDAO.setSqlSessionFactory(sqlSessionFactory);
-        retryTaskDAO.init();
-        return retryTaskDAO;
-    }
+  @Bean
+  public RetryTaskDAO retryTaskDAO(
+      @Qualifier("easyRetrySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    RetryTaskDAOImpl retryTaskDAO = new RetryTaskDAOImpl();
+    retryTaskDAO.setSqlSessionFactory(sqlSessionFactory);
+    retryTaskDAO.init();
+    return retryTaskDAO;
+  }
 
-    @Bean
-    public RetryTaskAccess mybatisRetryTaskAccess(RetryTaskDAO retryTaskDAO) {
-        MybatisRetryTaskAccess mybatisRetryTaskAccess = new MybatisRetryTaskAccess();
-        mybatisRetryTaskAccess.setRetryTaskDAO(retryTaskDAO);
+  @Bean
+  public RetryTaskAccess mybatisRetryTaskAccess(RetryTaskDAO retryTaskDAO) {
+    MybatisRetryTaskAccess mybatisRetryTaskAccess = new MybatisRetryTaskAccess();
+    mybatisRetryTaskAccess.setRetryTaskDAO(retryTaskDAO);
+    return mybatisRetryTaskAccess;
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(RetryConfiguration.class)
+  public RetryConfiguration configuration(RetryTaskAccess mybatisRetryTaskAccess) {
+    DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
+    return new RetryConfiguration() {
+      @Override
+      public RetryTaskAccess getRetryTaskAccess() {
         return mybatisRetryTaskAccess;
-    }
+      }
 
-    @Bean
-    @ConditionalOnMissingBean(RetryConfiguration.class)
-    public RetryConfiguration configuration(RetryTaskAccess mybatisRetryTaskAccess) {
-        DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
-        return new RetryConfiguration() {
-            @Override
-            public RetryTaskAccess getRetryTaskAccess() {
-                return mybatisRetryTaskAccess;
-            }
+      @Override
+      public RetrySerializerAccess getRetrySerializerAccess() {
+        return new DefaultRetrySerializerAccess();
+      }
 
-            @Override
-            public RetrySerializerAccess getRetrySerializerAccess() {
-                return new DefaultRetrySerializerAccess();
-            }
+      @Override
+      public RetryStrategyAccess getRetryStrategyAccess() {
+        return new RetryStrategyAccess() {
 
-            @Override
-            public RetryStrategyAccess getRetryStrategyAccess() {
-                return new RetryStrategyAccess() {
+          @Override
+          public StopStrategy getCurrentGlobalStopStrategy() {
+            return defaultRetryStrategy;
+          }
 
-                    @Override
-                    public StopStrategy getCurrentGlobalStopStrategy() {
-                        return defaultRetryStrategy;
-                    }
+          @Override
+          public StopStrategy getStopStrategy(RetryTask retryTaskDomain) {
+            return defaultRetryStrategy;
+          }
 
-                    @Override
-                    public StopStrategy getStopStrategy(RetryTask retryTaskDomain) {
-                        return defaultRetryStrategy;
-                    }
+          @Override
+          public WaitStrategy getCurrentGlobalWaitStrategy() {
+            return defaultRetryStrategy;
+          }
 
-                    @Override
-                    public WaitStrategy getCurrentGlobalWaitStrategy() {
-                        return defaultRetryStrategy;
-                    }
-
-                    @Override
-                    public WaitStrategy getWaitStrategy(RetryTask retryTaskDomain) {
-                        return defaultRetryStrategy;
-                    }
-                };
-            }
-
-            @Override
-            public ExecutorSolver getExecutorSolver() {
-                return executorName -> applicationContext.getBean(executorName);
-            }
-
-            @Override
-            public Integer getMaxRetryTimes() {
-                return mybatisProperties.getMaxRetryTimes();
-            }
+          @Override
+          public WaitStrategy getWaitStrategy(RetryTask retryTaskDomain) {
+            return defaultRetryStrategy;
+          }
         };
-    }
+      }
 
-    @Bean
-    @ConditionalOnMissingBean(RetryInterceptor.class)
-    public RetryInterceptor retryInterceptor(RetryConfiguration configuration) {
-        RetryInterceptor retryInterceptor = new RetryInterceptor();
-        retryInterceptor.setApplicationContext(applicationContext);
-        retryInterceptor.setRetryConfiguration(configuration);
-        retryInterceptor.setNamespace(mybatisProperties.getNamespace());
-        return retryInterceptor;
-    }
+      @Override
+      public ExecutorSolver getExecutorSolver() {
+        return executorName -> applicationContext.getBean(executorName);
+      }
 
-    @Bean(initMethod = "start")
-    public RetryContainer retryContainer(RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
-        log.warn("RetryConfiguration start");
-        return new SimpleRetryContainer(configuration, mybatisProperties.getNamespace(), defaultRetryExecutor);
-    }
+      @Override
+      public Integer getMaxRetryTimes() {
+        return mybatisProperties.getMaxRetryTimes();
+      }
+    };
+  }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+  @Bean
+  @ConditionalOnMissingBean(RetryInterceptor.class)
+  public RetryInterceptor retryInterceptor(RetryConfiguration configuration) {
+    RetryInterceptor retryInterceptor = new RetryInterceptor();
+    retryInterceptor.setApplicationContext(applicationContext);
+    retryInterceptor.setRetryConfiguration(configuration);
+    retryInterceptor.setNamespace(mybatisProperties.getNamespace());
+    return retryInterceptor;
+  }
 
-    @Bean
-    @ConditionalOnMissingBean(RetryExecutor.class)
-    public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration) {
-        DefaultRetryExecutor defaultRetryExecutor = new DefaultRetryExecutor();
-        defaultRetryExecutor.setRetryConfiguration(configuration);
-        return defaultRetryExecutor;
-    }
+  @Bean(initMethod = "start")
+  public RetryContainer retryContainer(
+      RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
+    log.warn("RetryConfiguration start");
+    return new SimpleRetryContainer(
+        configuration, mybatisProperties.getNamespace(), defaultRetryExecutor);
+  }
 
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(RetryExecutor.class)
+  public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration) {
+    DefaultRetryExecutor defaultRetryExecutor = new DefaultRetryExecutor();
+    defaultRetryExecutor.setRetryConfiguration(configuration);
+    return defaultRetryExecutor;
+  }
 }

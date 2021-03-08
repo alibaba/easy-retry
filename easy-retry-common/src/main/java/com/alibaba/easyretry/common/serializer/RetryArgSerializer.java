@@ -5,8 +5,7 @@ package com.alibaba.easyretry.common.serializer;
  */
 public interface RetryArgSerializer {
 
-    String serialize(ArgSerializerInfo argSerializerInfo);
+  String serialize(ArgSerializerInfo argSerializerInfo);
 
-    Object[] deSerialize(ArgDeSerializerInfo argDeSerializerInfo);
-
+  Object[] deSerialize(ArgDeSerializerInfo argDeSerializerInfo);
 }
