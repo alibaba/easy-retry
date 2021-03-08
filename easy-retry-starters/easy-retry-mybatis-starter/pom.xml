@@ -20,12 +20,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easy-retry-spring-extension</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>easy-retry-core</artifactId>
         </dependency>
 
