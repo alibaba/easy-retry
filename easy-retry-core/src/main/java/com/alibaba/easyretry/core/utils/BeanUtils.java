@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BeanUtils {
 
-	private static Map<Class<?>, Method[]> methodCache = new HashMap<>();
+	private static Map<Class<?>, Method[]> methodCache = new HashMap<>(40);
 
 	public static Method getMethod(String methodName, Class<?> cl) {
 		if (cl == null || StringUtils.isBlank(methodName)) {
