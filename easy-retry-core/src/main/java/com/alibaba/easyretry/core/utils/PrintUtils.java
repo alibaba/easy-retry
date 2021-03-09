@@ -9,12 +9,12 @@ import java.util.Arrays;
  */
 public class PrintUtils {
 
-  public static String printCommonMethodInfo(RetryContext context) {
-    RetryTask retryTask = context.getRetryTask();
-    return String.format(
-        "executeMethod failed executorName=%s  executorMethodName=%s args=%s",
-        retryTask.getExecutorName(),
-        retryTask.getExecutorMethodName(),
-        Arrays.toString(context.getArgs()));
-  }
+	public static String printCommonMethodInfo(RetryContext context) {
+		RetryTask retryTask = context.getRetryTask();
+		return String.format(
+			"executeMethod failed executorName=%s  executorMethodName=%s args=%s",
+			retryTask.getExecutorName(),
+			retryTask.getExecutorMethodName(),
+			Arrays.toString(context.getArgs()));
+	}
 }

@@ -7,5 +7,5 @@ import com.alibaba.easyretry.common.RetryContext;
  */
 public interface StopStrategy extends RetryStrategy {
 
-  boolean shouldStop(RetryContext context);
+	boolean shouldStop(RetryContext context);
 }

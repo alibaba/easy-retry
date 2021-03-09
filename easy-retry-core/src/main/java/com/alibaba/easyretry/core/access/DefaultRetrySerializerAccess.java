@@ -10,13 +10,13 @@ import com.alibaba.easyretry.core.serializer.HessianSerializer;
  */
 public class DefaultRetrySerializerAccess implements RetrySerializerAccess {
 
-  @Override
-  public RetryArgSerializer getCurrentGlobalRetrySerializer() {
-    return new HessianSerializer();
-  }
+	@Override
+	public RetryArgSerializer getCurrentGlobalRetrySerializer() {
+		return new HessianSerializer();
+	}
 
-  @Override
-  public RetryArgSerializer getRetrySerializer(RetryTask retryTask) {
-    return new HessianSerializer();
-  }
+	@Override
+	public RetryArgSerializer getRetrySerializer(RetryTask retryTask) {
+		return new HessianSerializer();
+	}
 }

@@ -14,42 +14,42 @@ import java.util.stream.Collectors;
  */
 public class MemoryRetryTaskAccess implements RetryTaskAccess {
 
-  private static Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
+	private static Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
 
-  private static AtomicLong atomicLong = new AtomicLong();
+	private static AtomicLong atomicLong = new AtomicLong();
 
-  @Override
-  public boolean saveRetryTask(RetryTask retryTask) {
-    long id = atomicLong.getAndIncrement();
-    retryTask.setId(id);
-    retryTaskMap.putIfAbsent(id, retryTask);
-    return true;
-  }
+	@Override
+	public boolean saveRetryTask(RetryTask retryTask) {
+		long id = atomicLong.getAndIncrement();
+		retryTask.setId(id);
+		retryTaskMap.putIfAbsent(id, retryTask);
+		return true;
+	}
 
-  @Override
-  public boolean handlingRetryTask(RetryTask retryTask) {
-    retryTask.setStatus(RetryTaskStatusEnum.HANDLING);
-    retryTaskMap.putIfAbsent(retryTask.getId(), retryTask);
-    return true;
-  }
+	@Override
+	public boolean handlingRetryTask(RetryTask retryTask) {
+		retryTask.setStatus(RetryTaskStatusEnum.HANDLING);
+		retryTaskMap.putIfAbsent(retryTask.getId(), retryTask);
+		return true;
+	}
 
-  @Override
-  public boolean finishRetryTask(RetryTask retryTask) {
-    retryTaskMap.remove(retryTask.getId());
-    return true;
-  }
+	@Override
+	public boolean finishRetryTask(RetryTask retryTask) {
+		retryTaskMap.remove(retryTask.getId());
+		return true;
+	}
 
-  @Override
-  public boolean stopRetryTask(RetryTask retryTask) {
-    retryTask.setStatus(RetryTaskStatusEnum.ERROR);
-    retryTaskMap.putIfAbsent(retryTask.getId(), retryTask);
-    return false;
-  }
+	@Override
+	public boolean stopRetryTask(RetryTask retryTask) {
+		retryTask.setStatus(RetryTaskStatusEnum.ERROR);
+		retryTaskMap.putIfAbsent(retryTask.getId(), retryTask);
+		return false;
+	}
 
-  @Override
-  public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
-    return retryTaskMap.values().stream()
-        .filter((retryTask) -> retryTask.getStatus() == RetryTaskStatusEnum.INIT)
-        .collect(Collectors.toList());
-  }
+	@Override
+	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+		return retryTaskMap.values().stream()
+			.filter((retryTask) -> retryTask.getStatus() == RetryTaskStatusEnum.INIT)
+			.collect(Collectors.toList());
+	}
 }
