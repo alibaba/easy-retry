@@ -8,17 +8,17 @@ import lombok.Data;
 @Data
 public class ArgSerializerInfo {
 
-    /**
-     * 执行者名称
-     */
-    private String executorName;
+  /**
+   * 执行者名称
+   */
+  private String executorName;
 
-    private String executorClassName;
+  private String executorClassName;
 
-    /**
-     * 执行者方法
-     */
-    private String executorMethodName;
+  /**
+   * 执行者方法
+   */
+  private String executorMethodName;
 
-    private Object[] args;
+  private Object[] args;
 }

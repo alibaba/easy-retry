@@ -7,6 +7,5 @@ import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
  */
 public interface RetryExecutor {
 
-    HandleResultEnum doExecute(RetryContext context);
-
+  HandleResultEnum doExecute(RetryContext context);
 }

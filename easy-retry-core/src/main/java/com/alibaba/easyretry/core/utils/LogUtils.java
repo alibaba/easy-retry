@@ -8,6 +8,5 @@ import org.slf4j.LoggerFactory;
  */
 public class LogUtils {
 
-    public final static Logger CONSISTENCY_LOGGER = LoggerFactory.getLogger("aRetryConsistency");
-
+  public static final Logger CONSISTENCY_LOGGER = LoggerFactory.getLogger("aRetryConsistency");
 }

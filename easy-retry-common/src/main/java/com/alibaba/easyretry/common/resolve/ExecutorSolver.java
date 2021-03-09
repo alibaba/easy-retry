@@ -5,6 +5,5 @@ package com.alibaba.easyretry.common.resolve;
  */
 public interface ExecutorSolver {
 
-    Object resolver(String executorName);
-
+  Object resolver(String executorName);
 }

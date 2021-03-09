@@ -8,6 +8,5 @@ import java.io.Serializable;
 @FunctionalInterface
 public interface SCallable<V> extends Serializable {
 
-    V call() throws Throwable;
-
+  V call() throws Throwable;
 }

@@ -10,14 +10,13 @@ import com.alibaba.easyretry.common.resolve.ExecutorSolver;
  */
 public interface RetryConfiguration {
 
-    RetryTaskAccess getRetryTaskAccess();
+  RetryTaskAccess getRetryTaskAccess();
 
-    RetrySerializerAccess getRetrySerializerAccess();
+  RetrySerializerAccess getRetrySerializerAccess();
 
-    RetryStrategyAccess getRetryStrategyAccess();
+  RetryStrategyAccess getRetryStrategyAccess();
 
-    ExecutorSolver getExecutorSolver();
+  ExecutorSolver getExecutorSolver();
 
-    Integer getMaxRetryTimes();
-
+  Integer getMaxRetryTimes();
 }
