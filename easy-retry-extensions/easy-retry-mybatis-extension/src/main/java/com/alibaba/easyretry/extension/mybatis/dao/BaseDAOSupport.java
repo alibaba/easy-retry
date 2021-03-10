@@ -9,10 +9,10 @@ import org.mybatis.spring.support.SqlSessionDaoSupport;
  */
 public class BaseDAOSupport extends SqlSessionDaoSupport {
 
-  @Setter
-  private SqlSessionFactory sqlSessionFactory;
+	@Setter
+	private SqlSessionFactory sqlSessionFactory;
 
-  public void init() {
-    super.setSqlSessionFactory(sqlSessionFactory);
-  }
+	public void init() {
+		super.setSqlSessionFactory(sqlSessionFactory);
+	}
 }

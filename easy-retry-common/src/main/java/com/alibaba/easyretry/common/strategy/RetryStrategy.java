@@ -7,5 +7,5 @@ import com.alibaba.easyretry.common.RetryContext;
  */
 public interface RetryStrategy {
 
-  void clear(RetryContext context);
+	void clear(RetryContext context);
 }

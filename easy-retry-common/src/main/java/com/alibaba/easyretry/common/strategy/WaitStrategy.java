@@ -7,7 +7,7 @@ import com.alibaba.easyretry.common.RetryContext;
  */
 public interface WaitStrategy extends RetryStrategy {
 
-  boolean shouldWait(RetryContext context);
+	boolean shouldWait(RetryContext context);
 
-  void backOff(RetryContext context);
+	void backOff(RetryContext context);
 }

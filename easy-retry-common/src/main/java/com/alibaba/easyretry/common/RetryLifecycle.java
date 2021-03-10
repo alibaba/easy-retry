@@ -5,7 +5,7 @@ package com.alibaba.easyretry.common;
  */
 public interface RetryLifecycle {
 
-  void start();
+	void start();
 
-  void stop();
+	void stop();
 }
