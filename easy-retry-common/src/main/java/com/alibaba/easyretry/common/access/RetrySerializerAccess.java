@@ -10,18 +10,18 @@ import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
  */
 public interface RetrySerializerAccess {
 
-  /**
-   * 获取全局序列化器
-   *
-   * @return
-   */
-  RetryArgSerializer getCurrentGlobalRetrySerializer();
+	/**
+	 * 获取全局序列化器
+	 *
+	 * @return
+	 */
+	RetryArgSerializer getCurrentGlobalRetrySerializer();
 
-  /**
-   * 根据重试任务获取序列化器
-   *
-   * @param retryTask
-   * @return
-   */
-  RetryArgSerializer getRetrySerializer(RetryTask retryTask);
+	/**
+	 * 根据重试任务获取序列化器
+	 *
+	 * @param retryTask
+	 * @return
+	 */
+	RetryArgSerializer getRetrySerializer(RetryTask retryTask);
 }

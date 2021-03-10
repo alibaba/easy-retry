@@ -12,39 +12,40 @@ import lombok.Getter;
  */
 public enum RetryTaskStatusEnum {
 
-  /**
-   * 初始化状态
-   */
-  INIT(0, "初始化"),
+	/**
+	 * 初始化状态
+	 */
+	INIT(0, "初始化"),
 
-  /**
-   * 任务处理中
-   */
-  HANDLING(1, "处理中"),
+	/**
+	 * 任务处理中
+	 */
+	HANDLING(1, "处理中"),
 
-  /**
-   * 任务处理异常
-   */
-  ERROR(2, "异常"),
+	/**
+	 * 任务处理异常
+	 */
+	ERROR(2, "异常"),
 
-  /**
-   * 任务完结
-   */
-  FINISH(3, "完结");
+	/**
+	 * 任务完结
+	 */
+	FINISH(3, "完结");
 
-  private static final Map<Integer, RetryTaskStatusEnum> MAP =
-      Stream.of(values()).collect(Collectors.toMap(RetryTaskStatusEnum::getCode, (value) -> value));
-  @Getter
-  private int code;
-  @Getter
-  private String desc;
+	private static final Map<Integer, RetryTaskStatusEnum> MAP =
+		Stream.of(values())
+			.collect(Collectors.toMap(RetryTaskStatusEnum::getCode, (value) -> value));
+	@Getter
+	private int code;
+	@Getter
+	private String desc;
 
-  RetryTaskStatusEnum(int code, String desc) {
-    this.code = code;
-    this.desc = desc;
-  }
+	RetryTaskStatusEnum(int code, String desc) {
+		this.code = code;
+		this.desc = desc;
+	}
 
-  public static RetryTaskStatusEnum fromCode(int code) {
-    return MAP.get(code);
-  }
+	public static RetryTaskStatusEnum fromCode(int code) {
+		return MAP.get(code);
+	}
 }

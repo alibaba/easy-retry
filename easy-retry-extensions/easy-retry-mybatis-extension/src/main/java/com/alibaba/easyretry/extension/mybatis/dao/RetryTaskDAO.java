@@ -9,11 +9,11 @@ import java.util.List;
  */
 public interface RetryTaskDAO {
 
-  boolean saveRetryTask(RetryTaskPO retryTaskPO);
+	boolean saveRetryTask(RetryTaskPO retryTaskPO);
 
-  List<RetryTaskPO> listRetryTask(RetryTaskQuery retryTaskQuery);
+	List<RetryTaskPO> listRetryTask(RetryTaskQuery retryTaskQuery);
 
-  boolean updateRetryTask(RetryTaskPO retryTaskPO);
+	boolean updateRetryTask(RetryTaskPO retryTaskPO);
 
-  boolean deleteRetryTask(RetryTaskPO retryTaskPO);
+	boolean deleteRetryTask(RetryTaskPO retryTaskPO);
 }

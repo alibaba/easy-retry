@@ -9,17 +9,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EasyRetryable {
 
-  /**
-   * 重试失败后最终调用的方法,方法格式应该为 public void onRetryFailed(RetryContext context)
-   *
-   * @return
-   */
-  String onFailureMethod() default "";
+	/**
+	 * 重试失败后最终调用的方法,方法格式应该为 public void onRetryFailed(RetryContext context)
+	 *
+	 * @return
+	 */
+	String onFailureMethod() default "";
 
-  /**
-   * 最大重试次数
-   *
-   * @return
-   */
-  int maxRetryTimes() default 10;
+	/**
+	 * 最大重试次数
+	 *
+	 * @return
+	 */
+	int maxRetryTimes() default 10;
 }
