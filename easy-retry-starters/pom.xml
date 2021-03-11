@@ -12,6 +12,9 @@
   <artifactId>easy-retry-starters</artifactId>
   <packaging>pom</packaging>
 
+  <name>easy-retry-starters</name>
+  <description>easy-retry-starters</description>
+
   <modules>
     <module>easy-retry-memory-starter</module>
     <module>easy-retry-mybatis-starter</module>

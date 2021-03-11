@@ -6,9 +6,12 @@
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-starters</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>easy-retry-memory-starter</artifactId>
+  <name>easy-retry-memory-starter</name>
+  <description>easy-retry-memory-starter</description>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

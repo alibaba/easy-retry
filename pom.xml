@@ -18,6 +18,9 @@
     <lombok.version>1.18.18</lombok.version>
     <guava.version>16.0</guava.version>
     <fastjson.version>1.2.73</fastjson.version>
+    <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+    <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
   </properties>
   <modules>
     <module>easy-retry-common</module>
@@ -25,6 +28,47 @@
     <module>easy-retry-extensions</module>
     <module>easy-retry-starters</module>
   </modules>
+
+  <name>easy-retry-starters</name>
+  <description>easy-retry</description>
+  <url>https://github.com/alibaba/easy-retry</url>
+
+
+  <scm>
+    <url>https://github.com/alibaba/easy-retry</url>
+    <connection>scm:git@github.com:alibaba/easy-retry.git</connection>
+  </scm>
+
+  <organization>
+    <name>Alibaba Group</name>
+    <url>https://github.com/alibaba</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>wuhao</name>
+      <email>wuhao7171@gmail.com</email>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
+
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>esnapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>erelease</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -175,6 +219,39 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.2</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${maven-gpg-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

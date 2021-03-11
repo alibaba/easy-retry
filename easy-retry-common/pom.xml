@@ -6,8 +6,12 @@
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>easy-retry-common</artifactId>
+  <name>easy-retry-common</name>
+  <description>easy-retry-common</description>
+
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -26,4 +30,5 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
+
 </project>

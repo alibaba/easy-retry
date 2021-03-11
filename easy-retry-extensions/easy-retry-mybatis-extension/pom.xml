@@ -10,6 +10,9 @@
   </parent>
 
   <artifactId>easy-retry-mybatis-extension</artifactId>
+  <name>easy-retry-mybatis-extension</name>
+  <description>easy-retry-mybatis-extension</description>
+
   <dependencies>
     <dependency>
       <groupId>com.alibaba</groupId>

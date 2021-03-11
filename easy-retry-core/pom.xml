@@ -6,8 +6,12 @@
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>easy-retry-core</artifactId>
+
+  <name>easy-retry-core</name>
+  <description>easy-retry-core</description>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

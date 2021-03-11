@@ -11,6 +11,9 @@
 
   <artifactId>easy-retry-spring-extension</artifactId>
 
+  <name>easy-retry-spring-extension</name>
+  <description>easy-retry-spring-extension</description>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

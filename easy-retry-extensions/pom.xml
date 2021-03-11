@@ -6,10 +6,14 @@
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>easy-retry-extensions</artifactId>
   <packaging>pom</packaging>
+
+  <name>easy-retry-extensions</name>
+  <description>easy-retry-extensions</description>
 
   <modules>
     <module>easy-retry-spring-extension</module>
