@@ -1,30 +1,33 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.alibaba</groupId>
-    <artifactId>easy-retry</artifactId>
-    <version>${revision}</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.alibaba</groupId>
+		<artifactId>easy-retry</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-  <artifactId>easy-retry-starters</artifactId>
-  <packaging>pom</packaging>
+	<artifactId>easy-retry-starters</artifactId>
+	<packaging>pom</packaging>
 
-  <modules>
-    <module>easy-retry-memory-starter</module>
-    <module>easy-retry-mybatis-starter</module>
-  </modules>
+	<name>easy-retry-starters</name>
+	<description>easy-retry-starters</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure</artifactId>
-        <version>2.4.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+	<modules>
+		<module>easy-retry-memory-starter</module>
+		<module>easy-retry-mybatis-starter</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-autoconfigure</artifactId>
+				<version>2.4.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>
