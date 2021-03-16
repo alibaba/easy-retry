@@ -13,7 +13,7 @@
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <revision>1.0.0.RC</revision>
+    <revision>1.0.0.RC1</revision>
     <slf4j.version>1.7.7</slf4j.version>
     <lombok.version>1.18.18</lombok.version>
     <guava.version>16.0</guava.version>
@@ -192,12 +192,14 @@
         <artifactId>versions-maven-plugin</artifactId>
         <version>2.4</version>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
         <version>1.1.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
+          <flattenMode>oss</flattenMode>
         </configuration>
         <executions>
           <execution>
@@ -215,10 +217,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
       </plugin>
 
       <plugin>
