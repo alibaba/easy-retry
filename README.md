@@ -10,7 +10,7 @@
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-memory-starter</artifactId>
-    <version>1.0.0.RC</version>
+    <version>1.0.0.RC1</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ public class MemoryUserService {
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-mybatis-starter</artifactId>
-    <version>1.0.0.RC</version>
+    <version>1.0.0.RC1</version>
 </dependency>
 ```
 
