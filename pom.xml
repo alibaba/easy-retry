@@ -29,7 +29,7 @@
 		<module>easy-retry-starters</module>
 	</modules>
 
-	<name>easy-retry-starters</name>
+	<name>easy-retry</name>
 	<description>easy-retry</description>
 	<url>https://github.com/alibaba/easy-retry</url>
 
