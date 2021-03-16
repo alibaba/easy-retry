@@ -17,6 +17,8 @@ public class PersistenceRetryerBuilder {
 
 	private String onFailureMethod;
 
+	private boolean reThrowException;
+
 	/**
 	 * 业务id，外部可以自定义存储一些信息
 	 */
@@ -64,6 +66,11 @@ public class PersistenceRetryerBuilder {
 		return this;
 	}
 
+	public PersistenceRetryerBuilder withReThrowException(boolean reThrowException) {
+		this.reThrowException = reThrowException;
+		return this;
+	}
+
 	public PersistenceRetryerBuilder withNamespace(String namespace) {
 		this.namespace = namespace;
 		return this;
@@ -84,6 +91,7 @@ public class PersistenceRetryerBuilder {
 		persistenceRetryer.setRetryConfiguration(retryConfiguration);
 		persistenceRetryer.setExecutorName(executorName);
 		persistenceRetryer.setNamespace(namespace);
+		persistenceRetryer.setReThrowException(reThrowException);
 		return persistenceRetryer;
 	}
 }

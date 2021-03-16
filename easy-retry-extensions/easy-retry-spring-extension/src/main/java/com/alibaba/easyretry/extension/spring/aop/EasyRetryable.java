@@ -22,4 +22,12 @@ public @interface EasyRetryable {
 	 * @return
 	 */
 	int maxRetryTimes() default 10;
+
+
+	/**
+	 * 处理完成以后是否需要把异常重新抛出
+	 *
+	 * @return 是否需要抛出异常
+	 */
+	boolean reThrowException() default false;
 }

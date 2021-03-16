@@ -29,6 +29,7 @@ public class DefaultRetryExecutor implements RetryExecutor {
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
 		try {
+			log.info("begin deal arg is {}", context.getArgs());
 			return handle(context);
 		} catch (Throwable e) {
 			log.error("Retry invoke failed", e);
@@ -40,13 +41,17 @@ public class DefaultRetryExecutor implements RetryExecutor {
 		if (context.getWaitStrategy().shouldWait(context)) {
 			return HandleResultEnum.WAITING;
 		}
+		log.info("handlingRetryTask task arg is {}", context.getArgs());
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
 		try {
 			RetryIdentify.start();
+			log.info("beigin executeMethod task arg is {}", context.getArgs());
 			executeMethod(context);
+			log.info("ecuteMethod success task arg is {}", context.getArgs());
 			finish(context);
 			return HandleResultEnum.SUCCESS;
 		} catch (Throwable t) {
+			log.info("ecuteMethod failed task arg is {}", context.getArgs());
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}

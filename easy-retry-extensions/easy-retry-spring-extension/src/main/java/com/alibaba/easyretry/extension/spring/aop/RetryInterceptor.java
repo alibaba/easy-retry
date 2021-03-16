@@ -37,6 +37,7 @@ public class RetryInterceptor {
 				.withConfiguration(retryConfiguration)
 				.withOnFailureMethod(retryable.onFailureMethod())
 				.withNamespace(namespace)
+				.withReThrowException(retryable.reThrowException())
 				.build();
 		persistenceRetryer.call(invocation::proceed);
 		return null;

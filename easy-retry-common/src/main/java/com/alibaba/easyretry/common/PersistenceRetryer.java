@@ -41,7 +41,9 @@ public class PersistenceRetryer implements Retryer {
 
 	private String namespace;
 
-	public <V> V call(SCallable<V> callable) {
+	private boolean reThrowException;
+
+	public <V> V call(SCallable<V> callable) throws Throwable{
 		try {
 			return callable.call();
 		} catch (Throwable e) {
@@ -52,6 +54,9 @@ public class PersistenceRetryer implements Retryer {
 				args,
 				e);
 			handleException(e);
+			if (reThrowException) {
+				throw e;
+			}
 			return null;
 		}
 	}
