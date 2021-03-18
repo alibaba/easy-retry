@@ -1,7 +1,7 @@
 package com.alibaba.easyretry.common;
 
 import com.alibaba.easyretry.common.entity.RetryTask;
-import com.alibaba.easyretry.common.serializer.ArgDeSerializerInfo;
+import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
@@ -24,6 +24,8 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
 	private Object[] args;
 
 	private RetryArgSerializer retryArgSerializer;
+
+	private ResultPredicateSerializer resultPredicateSerializer;
 
 	private Long priority;
 
@@ -74,12 +76,8 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
 
 		public RetryContextBuilder buildArgs() {
 			RetryArgSerializer retryArgSerializer =
-				retryConfiguration.getRetrySerializerAccess().getRetrySerializer(retryTask);
-			ArgDeSerializerInfo argDeSerializerInfo = new ArgDeSerializerInfo();
-			argDeSerializerInfo.setArgsStr(retryTask.getArgsStr());
-			argDeSerializerInfo.setExecutorMethodName(retryTask.getExecutorMethodName());
-			argDeSerializerInfo.setExecutorName(retryTask.getExecutorName());
-			Object[] args = retryArgSerializer.deSerialize(argDeSerializerInfo);
+				retryConfiguration.getRetrySerializerAccess().getCurrentGlobalRetrySerializer();
+			Object[] args = retryArgSerializer.deSerialize(retryTask.getArgsStr()).getArgs();
 			retryContext.setArgs(args);
 			return this;
 		}
@@ -104,19 +102,19 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
 
 		public RetryContextBuilder buildRetryArgSerializer() {
 			retryContext.setRetryArgSerializer(
-				retryConfiguration.getRetrySerializerAccess().getRetrySerializer(retryTask));
+				retryConfiguration.getRetrySerializerAccess().getCurrentGlobalRetrySerializer());
 			return this;
 		}
 
 		public RetryContextBuilder buildStopStrategy() {
 			retryContext.setStopStrategy(
-				retryConfiguration.getRetryStrategyAccess().getStopStrategy(retryTask));
+				retryConfiguration.getRetryStrategyAccess().getCurrentGlobalStopStrategy());
 			return this;
 		}
 
 		public RetryContextBuilder buildWaitStrategy() {
 			retryContext.setWaitStrategy(
-				retryConfiguration.getRetryStrategyAccess().getWaitStrategy(retryTask));
+				retryConfiguration.getRetryStrategyAccess().getCurrentGlobalWaitStrategy());
 			return this;
 		}
 
@@ -132,6 +130,12 @@ public class RetryContext implements Comparable<RetryContext>, RetryLifecycle {
 
 		public RetryContextBuilder buildOnFailureMethod() {
 			retryContext.setOnFailureMethod(retryTask.getOnFailureMethod());
+			return this;
+		}
+
+		public RetryContextBuilder buildResultPredicateSerializer() {
+			retryContext
+				.setResultPredicateSerializer(retryConfiguration.getResultPredicateSerializer());
 			return this;
 		}
 

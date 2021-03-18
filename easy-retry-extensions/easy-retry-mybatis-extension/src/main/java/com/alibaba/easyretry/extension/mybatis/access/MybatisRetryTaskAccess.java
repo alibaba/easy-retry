@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Setter;
 
@@ -37,12 +38,13 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTaskPO.setExecutorName(retryTask.getExecutorName());
 		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
 
-		Map<String, String> ext = Maps.newHashMap();
-		ext.put("onFailureMethod", retryTask.getOnFailureMethod());
-		retryTaskPO.setExtAttrs(JSON.toJSONString(ext));
-
+		Map<String, String> extAttrs = retryTask.getExtAttrs();
+		if (Objects.isNull(extAttrs)) {
+			extAttrs = Maps.newHashMap();
+		}
+		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
+		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
 		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
-		retryTaskPO.setExtAttrs(retryTask.getExtAttrs());
 		retryTaskPO.setArgsStr(retryTask.getArgsStr());
 		retryTaskPO.setNamespace(retryTask.getNamespace());
 		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());

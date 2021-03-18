@@ -1,5 +1,6 @@
 package com.alibaba.easyretry.core;
 
+import com.alibaba.easyretry.common.ResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
@@ -12,6 +13,7 @@ import com.alibaba.easyretry.core.utils.LogUtils;
 import com.alibaba.easyretry.core.utils.PrintUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Objects;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +75,20 @@ public class DefaultRetryExecutor implements RetryExecutor {
 	private void executeMethod(RetryContext context)
 		throws InvocationTargetException, IllegalAccessException {
 		Object executor = context.getExecutor();
-		context.getMethod().invoke(executor, context.getArgs());
+		Object result = context.getMethod().invoke(executor, context.getArgs());
+		Map<String, String> extAttrs = context.getRetryTask().getExtAttrs();
+		if (Objects.isNull(extAttrs)) {
+			return;
+		}
+		String resultPredicateSerializerStr = extAttrs.get("resultPredicateSerializer");
+		if (StringUtils.isBlank(resultPredicateSerializerStr)) {
+			return;
+		}
+		ResultPredicate resultPredicate = context.getResultPredicateSerializer()
+			.deSerialize(resultPredicateSerializerStr);
+		if (resultPredicate.apply(result)) {
+			throw new RuntimeException();
+		}
 	}
 
 	private void finish(RetryContext context) {

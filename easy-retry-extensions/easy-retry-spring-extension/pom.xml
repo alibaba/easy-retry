@@ -32,6 +32,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>5.1.12.RELEASE</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.9.5</version>

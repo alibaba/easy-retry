@@ -5,6 +5,7 @@ import com.alibaba.easyretry.common.PersistenceRetryerBuilder;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryIdentify;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,18 +30,19 @@ public class RetryInterceptor {
 			return invocation.proceed();
 		}
 		MethodSignature signature = (MethodSignature) invocation.getSignature();
-		PersistenceRetryer persistenceRetryer =
-			PersistenceRetryerBuilder.of()
-				.withExecutorName(getBeanId(signature.getDeclaringType()))
-				.withExecutorMethodName(signature.getMethod().getName())
-				.withArgs(invocation.getArgs())
-				.withConfiguration(retryConfiguration)
-				.withOnFailureMethod(retryable.onFailureMethod())
-				.withNamespace(namespace)
-				.withReThrowException(retryable.reThrowException())
-				.build();
-		persistenceRetryer.call(invocation::proceed);
-		return null;
+		PersistenceRetryerBuilder builder = PersistenceRetryerBuilder.of()
+			.withExecutorName(getBeanId(signature.getDeclaringType()))
+			.withExecutorMethodName(signature.getMethod().getName())
+			.withArgs(invocation.getArgs())
+			.withConfiguration(retryConfiguration)
+			.withOnFailureMethod(retryable.onFailureMethod())
+			.withNamespace(namespace)
+			.withReThrowException(retryable.reThrowException());
+		if (StringUtils.isNotBlank(retryable.resultCondition())) {
+			builder.withResultPredicate(new SPELResultPredicate(retryable.resultCondition()));
+		}
+		PersistenceRetryer persistenceRetryer = builder.build();
+		return persistenceRetryer.call(invocation::proceed);
 	}
 
 	private String getBeanId(Class<?> type) {

@@ -3,7 +3,9 @@ package com.alibaba.easyretry.common;
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
 import com.alibaba.easyretry.common.serializer.ArgSerializerInfo;
+import com.google.common.collect.Maps;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +45,17 @@ public class PersistenceRetryer implements Retryer {
 
 	private boolean reThrowException;
 
-	public <V> V call(SCallable<V> callable) throws Throwable{
+	private ResultPredicate resultPredicate;
+
+	public <V> V call(SCallable<V> callable) throws Throwable {
 		try {
-			return callable.call();
+			V result = callable.call();
+			if (Objects.nonNull(resultPredicate)) {
+				if (resultPredicate.apply(result)) {
+					saveRetryTask();
+				}
+			}
+			return result;
 		} catch (Throwable e) {
 			log.error(
 				"call method error executorMethodName is {} executorName name is {} args is {}",
@@ -65,6 +75,10 @@ public class PersistenceRetryer implements Retryer {
 		if (Objects.nonNull(onException) && !ClassUtils.isAssignable(onException, e.getClass())) {
 			return;
 		}
+		saveRetryTask();
+	}
+
+	private void saveRetryTask() {
 		ArgSerializerInfo argSerializerInfo = new ArgSerializerInfo();
 		argSerializerInfo.setArgs(args);
 		argSerializerInfo.setExecutorMethodName(executorMethodName);
@@ -85,6 +99,13 @@ public class PersistenceRetryer implements Retryer {
 		retryTask.setOnFailureMethod(onFailureMethod);
 		retryTask.setGmtCreate(new Date());
 		retryTask.setGmtModified(new Date());
+
+		Map<String, String> extAttrs = Maps.newHashMap();
+		if(Objects.nonNull(resultPredicate)){
+			extAttrs.put("resultPredicateSerializer",
+				retryConfiguration.getResultPredicateSerializer().serialize(resultPredicate));
+		}
+		retryTask.setExtAttrs(extAttrs);
 		retryConfiguration.getRetryTaskAccess().saveRetryTask(retryTask);
 	}
 }
