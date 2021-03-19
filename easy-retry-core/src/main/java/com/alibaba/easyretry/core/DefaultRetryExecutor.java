@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.core;
 
-import com.alibaba.easyretry.common.ResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
@@ -8,12 +7,14 @@ import com.alibaba.easyretry.common.RetryIdentify;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceOnRetryProcessor;
+import com.alibaba.easyretry.core.process.asyn.ExceptionPersistenceAsynOnRetryProcessor;
+import com.alibaba.easyretry.core.process.asyn.ResultAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.utils.BeanUtils;
 import com.alibaba.easyretry.core.utils.LogUtils;
 import com.alibaba.easyretry.core.utils.PrintUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.Objects;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -45,50 +46,41 @@ public class DefaultRetryExecutor implements RetryExecutor {
 		}
 		log.info("handlingRetryTask task arg is {}", context.getArgs());
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
+		AbstractAsynPersistenceOnRetryProcessor abstractAsynPersistenceOnRetryProcessor;
 		try {
 			RetryIdentify.start();
 			log.info("beigin executeMethod task arg is {}", context.getArgs());
-			executeMethod(context);
+			Object result = executeMethod(context);
+			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(result,context);
 			log.info("ecuteMethod success task arg is {}", context.getArgs());
-			finish(context);
-			return HandleResultEnum.SUCCESS;
 		} catch (Throwable t) {
-			log.info("ecuteMethod failed task arg is {}", context.getArgs());
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}
-			String errorMsg = PrintUtils.printCommonMethodInfo(context);
-			if (context.getStopStrategy().shouldStop(context)) {
-				stop(context);
-				log.error(errorMsg + "will stop", t);
-				return HandleResultEnum.STOP;
-			} else {
-				log.error(errorMsg + "will try later", t);
-				context.getWaitStrategy().backOff(context);
-				return HandleResultEnum.FAILURE;
-			}
+			log.error("ecuteMethod failed task arg is {}", context.getArgs(),t);
+			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor(
+				t, context);
 		} finally {
 			RetryIdentify.stop();
 		}
+		abstractAsynPersistenceOnRetryProcessor.process();
+		HandleResultEnum handleResult = abstractAsynPersistenceOnRetryProcessor.getRetryResult();
+		switch (handleResult) {
+			case SUCCESS:
+				finish(context);
+				break;
+			case STOP:
+				stop(context);
+				break;
+			case FAILURE:
+		}
+		return handleResult;
 	}
 
-	private void executeMethod(RetryContext context)
+	private Object executeMethod(RetryContext context)
 		throws InvocationTargetException, IllegalAccessException {
 		Object executor = context.getExecutor();
-		Object result = context.getMethod().invoke(executor, context.getArgs());
-		Map<String, String> extAttrs = context.getRetryTask().getExtAttrs();
-		if (Objects.isNull(extAttrs)) {
-			return;
-		}
-		String resultPredicateSerializerStr = extAttrs.get("resultPredicateSerializer");
-		if (StringUtils.isBlank(resultPredicateSerializerStr)) {
-			return;
-		}
-		ResultPredicate resultPredicate = context.getResultPredicateSerializer()
-			.deSerialize(resultPredicateSerializerStr);
-		if (resultPredicate.apply(result)) {
-			throw new RuntimeException();
-		}
+		return context.getMethod().invoke(executor, context.getArgs());
 	}
 
 	private void finish(RetryContext context) {

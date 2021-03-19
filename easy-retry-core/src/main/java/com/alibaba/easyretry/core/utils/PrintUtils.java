@@ -12,7 +12,8 @@ public class PrintUtils {
 	public static String printCommonMethodInfo(RetryContext context) {
 		RetryTask retryTask = context.getRetryTask();
 		return String.format(
-			"executeMethod failed executorName=%s  executorMethodName=%s args=%s",
+			"executeMethod failed id = %s executorName= %s executorMethodName = %s args = %s",
+			retryTask.getId(),
 			retryTask.getExecutorName(),
 			retryTask.getExecutorMethodName(),
 			Arrays.toString(context.getArgs()));

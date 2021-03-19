@@ -1,9 +1,9 @@
 package com.alibaba.easyretry.extension.spring.aop;
 
-import com.alibaba.easyretry.common.PersistenceRetryer;
-import com.alibaba.easyretry.common.PersistenceRetryerBuilder;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryIdentify;
+import com.alibaba.easyretry.core.PersistenceRetryer;
+import com.alibaba.easyretry.core.PersistenceRetryerBuilder;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
