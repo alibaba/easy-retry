@@ -11,6 +11,8 @@ import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
 import com.alibaba.easyretry.core.DefaultRetryExecutor;
+import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
@@ -153,10 +155,20 @@ public class MybatisAutoConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(RetryInvocationHandler.class)
+	public RetryInvocationHandler retryInvocationHandler() {
+		DefaultRetryInvocationHandler retryInvocationHandler = new DefaultRetryInvocationHandler();
+		retryInvocationHandler.init();
+		return retryInvocationHandler;
+	}
+
+
+	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
-	public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration) {
+	public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,RetryInvocationHandler retryInvocationHandler) {
 		DefaultRetryExecutor defaultRetryExecutor = new DefaultRetryExecutor();
 		defaultRetryExecutor.setRetryConfiguration(configuration);
+		defaultRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
 		return defaultRetryExecutor;
 	}
 }

@@ -3,10 +3,11 @@ package com.alibaba.easyretry.core;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
-import com.alibaba.easyretry.common.RetryIdentify;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryResponse;
 import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.process.asyn.ExceptionPersistenceAsynOnRetryProcessor;
 import com.alibaba.easyretry.core.process.asyn.ResultAsynPersistenceOnRetryProcessor;
@@ -29,6 +30,9 @@ public class DefaultRetryExecutor implements RetryExecutor {
 	@Setter
 	private RetryConfiguration retryConfiguration;
 
+	@Setter
+	private RetryInvocationHandler retryInvocationHandler;
+
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
 		try {
@@ -48,10 +52,9 @@ public class DefaultRetryExecutor implements RetryExecutor {
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
 		AbstractAsynPersistenceOnRetryProcessor abstractAsynPersistenceOnRetryProcessor;
 		try {
-			RetryIdentify.start();
 			log.info("beigin executeMethod task arg is {}", context.getArgs());
-			Object result = executeMethod(context);
-			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(result,context);
+			RetryResponse retryResponse = retryInvocationHandler.invoke(context);
+			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(retryResponse.getResponse(),context);
 			log.info("ecuteMethod success task arg is {}", context.getArgs());
 		} catch (Throwable t) {
 			if (t instanceof InvocationTargetException) {
@@ -60,8 +63,6 @@ public class DefaultRetryExecutor implements RetryExecutor {
 			log.error("ecuteMethod failed task arg is {}", context.getArgs(),t);
 			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor(
 				t, context);
-		} finally {
-			RetryIdentify.stop();
 		}
 		abstractAsynPersistenceOnRetryProcessor.process();
 		HandleResultEnum handleResult = abstractAsynPersistenceOnRetryProcessor.getRetryResult();
