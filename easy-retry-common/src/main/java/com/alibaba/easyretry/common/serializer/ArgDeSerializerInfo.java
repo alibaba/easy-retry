@@ -8,15 +8,5 @@ import lombok.Data;
 @Data
 public class ArgDeSerializerInfo {
 
-	/**
-	 * 执行者名称
-	 */
-	private String executorName;
-
-	/**
-	 * 执行者方法
-	 */
-	private String executorMethodName;
-
 	private String argsStr;
 }

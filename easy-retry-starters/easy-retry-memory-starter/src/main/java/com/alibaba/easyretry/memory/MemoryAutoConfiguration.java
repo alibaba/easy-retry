@@ -6,14 +6,17 @@ import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
-import com.alibaba.easyretry.common.entity.RetryTask;
 import com.alibaba.easyretry.common.resolve.ExecutorSolver;
+import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
 import com.alibaba.easyretry.core.DefaultRetryExecutor;
+import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.access.MemoryRetryTaskAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
+import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.memory.config.EasyRetryMemoryCompatibleProperties;
@@ -52,6 +55,7 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 	@ConditionalOnMissingBean(RetryConfiguration.class)
 	public RetryConfiguration configuration(RetryTaskAccess amobaARetryTaskAccess) {
 		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
+		ResultPredicateSerializer resultPredicateSerializer = new HessianResultPredicateSerializer();
 		return new RetryConfiguration() {
 			@Override
 			public RetryTaskAccess getRetryTaskAccess() {
@@ -73,25 +77,21 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 					}
 
 					@Override
-					public StopStrategy getStopStrategy(RetryTask retryTaskDomain) {
-						return defaultRetryStrategy;
-					}
-
-					@Override
 					public WaitStrategy getCurrentGlobalWaitStrategy() {
 						return defaultRetryStrategy;
 					}
 
-					@Override
-					public WaitStrategy getWaitStrategy(RetryTask retryTaskDomain) {
-						return defaultRetryStrategy;
-					}
 				};
 			}
 
 			@Override
 			public ExecutorSolver getExecutorSolver() {
 				return executorName -> applicationContext.getBean(executorName);
+			}
+
+			@Override
+			public ResultPredicateSerializer getResultPredicateSerializer() {
+				return resultPredicateSerializer;
 			}
 
 			@Override
@@ -126,10 +126,19 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(RetryInvocationHandler.class)
+	public RetryInvocationHandler retryInvocationHandler() {
+		DefaultRetryInvocationHandler retryInvocationHandler = new DefaultRetryInvocationHandler();
+		retryInvocationHandler.init();
+		return retryInvocationHandler;
+	}
+
+	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
-	public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration) {
+	public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,RetryInvocationHandler retryInvocationHandler) {
 		DefaultRetryExecutor defaultRetryExecutor = new DefaultRetryExecutor();
 		defaultRetryExecutor.setRetryConfiguration(configuration);
+		defaultRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
 		return defaultRetryExecutor;
 	}
 }
