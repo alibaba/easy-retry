@@ -50,6 +50,8 @@ public class MemoryRetryTaskAccess implements RetryTaskAccess {
 	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
 		return retryTaskMap.values().stream()
 			.filter((retryTask) -> retryTask.getStatus() == RetryTaskStatusEnum.INIT)
+			.filter((retryTask)-> retryTask.getId() > lastId)
+			.sorted((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1)
 			.collect(Collectors.toList());
 	}
 }

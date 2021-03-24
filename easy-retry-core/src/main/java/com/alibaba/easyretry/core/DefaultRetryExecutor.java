@@ -36,7 +36,7 @@ public class DefaultRetryExecutor implements RetryExecutor {
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
 		try {
-			log.info("begin deal arg is {}", context.getArgs());
+			PrintUtils.monitorInfo("begin deal", context);
 			return handle(context);
 		} catch (Throwable e) {
 			log.error("Retry invoke failed", e);
@@ -46,26 +46,28 @@ public class DefaultRetryExecutor implements RetryExecutor {
 
 	private HandleResultEnum handle(RetryContext context) {
 		if (context.getWaitStrategy().shouldWait(context)) {
+			PrintUtils.monitorInfo("shouldWait", context);
 			return HandleResultEnum.WAITING;
 		}
-		log.info("handlingRetryTask task arg is {}", context.getArgs());
+		PrintUtils.monitorInfo("handlingRetryTask", context);
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
 		AbstractAsynPersistenceOnRetryProcessor abstractAsynPersistenceOnRetryProcessor;
 		try {
-			log.info("beigin executeMethod task arg is {}", context.getArgs());
+			PrintUtils.monitorInfo("beigin executeMethod", context);
 			RetryResponse retryResponse = retryInvocationHandler.invoke(context);
 			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(retryResponse.getResponse(),context);
-			log.info("ecuteMethod success task arg is {}", context.getArgs());
+			PrintUtils.monitorInfo("ecuteMethod success ", context);
 		} catch (Throwable t) {
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}
-			log.error("ecuteMethod failed task arg is {}", context.getArgs(),t);
+			log.error("ecuteMethod failed task arg is {} task id is {}", context.getArgs(),context.getRetryTask().getId(),t);
 			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor(
 				t, context);
 		}
 		abstractAsynPersistenceOnRetryProcessor.process();
 		HandleResultEnum handleResult = abstractAsynPersistenceOnRetryProcessor.getRetryResult();
+		PrintUtils.monitorInfo("handleResult ", context, "handleResult is " + handleResult);
 		switch (handleResult) {
 			case SUCCESS:
 				finish(context);
