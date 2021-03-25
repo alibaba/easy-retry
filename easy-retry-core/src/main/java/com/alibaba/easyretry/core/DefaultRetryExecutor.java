@@ -44,25 +44,26 @@ public class DefaultRetryExecutor implements RetryExecutor {
 		}
 	}
 
-	private HandleResultEnum handle(RetryContext context) {
+	private  HandleResultEnum handle(RetryContext context) {
 		if (context.getWaitStrategy().shouldWait(context)) {
 			PrintUtils.monitorInfo("shouldWait", context);
 			return HandleResultEnum.WAITING;
 		}
 		PrintUtils.monitorInfo("handlingRetryTask", context);
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
-		AbstractAsynPersistenceOnRetryProcessor abstractAsynPersistenceOnRetryProcessor;
+		AbstractAsynPersistenceOnRetryProcessor<Object> abstractAsynPersistenceOnRetryProcessor;
 		try {
 			PrintUtils.monitorInfo("beigin executeMethod", context);
 			RetryResponse retryResponse = retryInvocationHandler.invoke(context);
-			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(retryResponse.getResponse(),context);
+			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor<>(
+				retryResponse.getResponse(), context);
 			PrintUtils.monitorInfo("ecuteMethod success ", context);
 		} catch (Throwable t) {
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}
 			log.error("ecuteMethod failed task arg is {} task id is {}", context.getArgs(),context.getRetryTask().getId(),t);
-			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor(
+			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor<>(
 				t, context);
 		}
 		abstractAsynPersistenceOnRetryProcessor.process();

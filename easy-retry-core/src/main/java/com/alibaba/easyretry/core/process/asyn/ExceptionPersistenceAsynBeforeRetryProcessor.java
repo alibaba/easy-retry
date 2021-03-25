@@ -8,7 +8,7 @@ import org.apache.commons.lang3.ClassUtils;
  * @author Created by wuhao on 2021/3/19.
  */
 public class ExceptionPersistenceAsynBeforeRetryProcessor<R> extends
-	AbstractAsynPersistenceBeforeRetryProcessor {
+	AbstractAsynPersistenceBeforeRetryProcessor<R> {
 
 	private Throwable throwable;
 

@@ -26,7 +26,7 @@ public class PersistenceRetryer implements Retryer {
 		AsynPersistenceProcessor<V> asynPersistenceProcessor;
 		try {
 			V result = callable.call();
-			asynPersistenceProcessor = new ResultAsynPersistenceBeforeRetryProcessor<V>(result,retryerInfo);
+			asynPersistenceProcessor = new ResultAsynPersistenceBeforeRetryProcessor<>(result,retryerInfo);
 		} catch (Throwable e) {
 			log.error(
 				"call method error executorMethodName is {} executorName name is {} args is {}",
@@ -34,7 +34,7 @@ public class PersistenceRetryer implements Retryer {
 				retryerInfo.getExecutorName(),
 				retryerInfo.getArgs(),
 				e);
-			asynPersistenceProcessor = new ExceptionPersistenceAsynBeforeRetryProcessor(e,retryerInfo);
+			asynPersistenceProcessor = new ExceptionPersistenceAsynBeforeRetryProcessor<>(e,retryerInfo);
 		}
 		asynPersistenceProcessor.process();
 		return asynPersistenceProcessor.getResult();

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Created by wuhao on 2021/3/19.
  */
 public class ResultAsynPersistenceOnRetryProcessor<R> extends
-	AbstractAsynPersistenceOnRetryProcessor {
+	AbstractAsynPersistenceOnRetryProcessor<R> {
 
 	private R result;
 
@@ -35,7 +35,7 @@ public class ResultAsynPersistenceOnRetryProcessor<R> extends
 	}
 
 	@Override
-	public Object getResult() {
+	public R getResult() {
 		return result;
 	}
 }

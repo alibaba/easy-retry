@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author Created by wuhao on 2021/3/19.
  */
 public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
-	AbstractAsynPersistenceBeforeRetryProcessor {
+	AbstractAsynPersistenceBeforeRetryProcessor<R> {
 
 	private R result;
 
@@ -29,7 +29,7 @@ public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
 	}
 
 	@Override
-	public Object getResult() {
+	public R getResult() {
 		return result;
 	}
 }
