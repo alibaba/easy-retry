@@ -3,10 +3,14 @@ package com.alibaba.easyretry.core;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
-import com.alibaba.easyretry.common.RetryIdentify;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryResponse;
+import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceOnRetryProcessor;
+import com.alibaba.easyretry.core.process.asyn.ExceptionPersistenceAsynOnRetryProcessor;
+import com.alibaba.easyretry.core.process.asyn.ResultAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.utils.BeanUtils;
 import com.alibaba.easyretry.core.utils.LogUtils;
 import com.alibaba.easyretry.core.utils.PrintUtils;
@@ -26,9 +30,13 @@ public class DefaultRetryExecutor implements RetryExecutor {
 	@Setter
 	private RetryConfiguration retryConfiguration;
 
+	@Setter
+	private RetryInvocationHandler retryInvocationHandler;
+
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
 		try {
+			PrintUtils.monitorInfo("begin deal", context);
 			return handle(context);
 		} catch (Throwable e) {
 			log.error("Retry invoke failed", e);
@@ -38,37 +46,44 @@ public class DefaultRetryExecutor implements RetryExecutor {
 
 	private HandleResultEnum handle(RetryContext context) {
 		if (context.getWaitStrategy().shouldWait(context)) {
+			PrintUtils.monitorInfo("shouldWait", context);
 			return HandleResultEnum.WAITING;
 		}
+		PrintUtils.monitorInfo("handlingRetryTask", context);
 		retryConfiguration.getRetryTaskAccess().handlingRetryTask(context.getRetryTask());
+		AbstractAsynPersistenceOnRetryProcessor abstractAsynPersistenceOnRetryProcessor;
 		try {
-			RetryIdentify.start();
-			executeMethod(context);
-			finish(context);
-			return HandleResultEnum.SUCCESS;
+			PrintUtils.monitorInfo("beigin executeMethod", context);
+			RetryResponse retryResponse = retryInvocationHandler.invoke(context);
+			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor(retryResponse.getResponse(),context);
+			PrintUtils.monitorInfo("ecuteMethod success ", context);
 		} catch (Throwable t) {
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}
-			String errorMsg = PrintUtils.printCommonMethodInfo(context);
-			if (context.getStopStrategy().shouldStop(context)) {
-				stop(context);
-				log.error(errorMsg + "will stop", t);
-				return HandleResultEnum.STOP;
-			} else {
-				log.error(errorMsg + "will try later", t);
-				context.getWaitStrategy().backOff(context);
-				return HandleResultEnum.FAILURE;
-			}
-		} finally {
-			RetryIdentify.stop();
+			log.error("ecuteMethod failed task arg is {} task id is {}", context.getArgs(),context.getRetryTask().getId(),t);
+			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor(
+				t, context);
 		}
+		abstractAsynPersistenceOnRetryProcessor.process();
+		HandleResultEnum handleResult = abstractAsynPersistenceOnRetryProcessor.getRetryResult();
+		PrintUtils.monitorInfo("handleResult ", context, "handleResult is " + handleResult);
+		switch (handleResult) {
+			case SUCCESS:
+				finish(context);
+				break;
+			case STOP:
+				stop(context);
+				break;
+			case FAILURE:
+		}
+		return handleResult;
 	}
 
-	private void executeMethod(RetryContext context)
+	private Object executeMethod(RetryContext context)
 		throws InvocationTargetException, IllegalAccessException {
 		Object executor = context.getExecutor();
-		context.getMethod().invoke(executor, context.getArgs());
+		return context.getMethod().invoke(executor, context.getArgs());
 	}
 
 	private void finish(RetryContext context) {

@@ -128,7 +128,7 @@ public class SimpleRetryContainer implements RetryContainer {
 
 		private long sleepTimes = 0L;
 
-		private volatile Long lastId = 0L;
+		private volatile Long lastId = -1L;
 
 		public TaskProducer(BlockingQueue<RetryContext> queue) {
 			this.queue = queue;
@@ -186,6 +186,7 @@ public class SimpleRetryContainer implements RetryContainer {
 							.buildMaxRetryTimes()
 							.buildOnFailureMethod()
 							.buildPriority(0L)
+							.buildResultPredicateSerializer()
 							.build();
 					retryContext.start();
 

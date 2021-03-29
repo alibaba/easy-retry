@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
@@ -27,6 +28,28 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 	public boolean saveRetryTask(RetryTask retryTask) {
 		RetryTaskPO retryTaskPO = covert(retryTask);
 		return retryTaskDAO.saveRetryTask(retryTaskPO);
+	}
+
+	private RetryTaskPO covert(RetryTask retryTask) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskPO.setSharding(HostUtils.getHostIP());
+		retryTaskPO.setBizId(retryTask.getBizId());
+		retryTaskPO.setExecutorName(retryTask.getExecutorName());
+		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
+
+		Map<String, String> extAttrs = retryTask.getExtAttrs();
+		if (Objects.isNull(extAttrs)) {
+			extAttrs = Maps.newHashMap();
+		}
+		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
+		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
+		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
+		retryTaskPO.setArgsStr(retryTask.getArgsStr());
+		retryTaskPO.setNamespace(retryTask.getNamespace());
+		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
+		retryTaskPO.setGmtModified(retryTask.getGmtModified());
+		return retryTaskPO;
 	}
 
 	@Override
@@ -47,6 +70,12 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.ERROR);
 	}
 
+	private boolean updateRetryTaskStatus(RetryTask retryTask, RetryTaskStatusEnum status) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskPO.setRetryStatus(status.getCode());
+		return retryTaskDAO.updateRetryTask(retryTaskPO);
+	}
 
 	@Override
 	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
@@ -64,27 +93,6 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		return retryTasks.stream().map(this::convert).collect(Collectors.toList());
 	}
 
-	private RetryTaskPO covert(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskPO.setSharding(HostUtils.getHostIP());
-		retryTaskPO.setBizId(retryTask.getBizId());
-		retryTaskPO.setExecutorName(retryTask.getExecutorName());
-		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
-
-		Map<String, String> ext = Maps.newHashMap();
-		ext.put("onFailureMethod", retryTask.getOnFailureMethod());
-		retryTaskPO.setExtAttrs(JSON.toJSONString(ext));
-
-		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
-		retryTaskPO.setExtAttrs(retryTask.getExtAttrs());
-		retryTaskPO.setArgsStr(retryTask.getArgsStr());
-		retryTaskPO.setNamespace(retryTask.getNamespace());
-		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
-		retryTaskPO.setGmtModified(retryTask.getGmtModified());
-		return retryTaskPO;
-	}
-
 	private RetryTask convert(RetryTaskPO retryTaskPO) {
 		RetryTask retryTask = new RetryTask();
 		retryTask.setId(retryTaskPO.getId());
@@ -97,12 +105,4 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setExecutorMethodName(retryTaskPO.getExecutorMethodName());
 		return retryTask;
 	}
-
-	private boolean updateRetryTaskStatus(RetryTask retryTask, RetryTaskStatusEnum status) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskPO.setRetryStatus(status.getCode());
-		return retryTaskDAO.updateRetryTask(retryTaskPO);
-	}
-
 }

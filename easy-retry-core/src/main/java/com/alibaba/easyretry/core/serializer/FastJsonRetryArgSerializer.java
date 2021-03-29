@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.core.serializer;
 
-import com.alibaba.easyretry.common.serializer.ArgDeSerializerInfo;
 import com.alibaba.easyretry.common.serializer.ArgSerializerInfo;
 import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
 import com.alibaba.fastjson.JSON;
@@ -11,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  *
  */
-public class FastJsonRetrySerializer implements RetryArgSerializer {
+public class FastJsonRetryArgSerializer implements RetryArgSerializer {
 
 	public static final String SPLIT = "||";
 
@@ -35,9 +34,9 @@ public class FastJsonRetrySerializer implements RetryArgSerializer {
 	}
 
 	@Override
-	public Object[] deSerialize(ArgDeSerializerInfo argDeSerializerInfo) {
-		String[] strs = StringUtils.split(argDeSerializerInfo.getArgsStr(), SPLIT);
-		return Stream.of(strs)
+	public ArgSerializerInfo deSerialize(String argsStr) {
+		String[] strs = StringUtils.split(argsStr, SPLIT);
+		Object[] arg = Stream.of(strs)
 			.map(
 				(str) -> {
 					String[] inner = str.split(INNER_SPLIT);
@@ -48,5 +47,8 @@ public class FastJsonRetrySerializer implements RetryArgSerializer {
 					}
 				})
 			.toArray();
+		ArgSerializerInfo argSerializerInfo = new ArgSerializerInfo();
+		argSerializerInfo.setArgs(arg);
+		return argSerializerInfo;
 	}
 }

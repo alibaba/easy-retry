@@ -19,7 +19,7 @@ class RetryTaskDAOImplTest {
 
 	@BeforeAll
 	static void prepare() {
-		retryTaskDAO = new RetryTaskDAOImplV2(MyBatisConfig.getFactory());
+		retryTaskDAO = new RetryTaskDAOImpl(MyBatisConfig.getFactory());
 	}
 
 	@Test

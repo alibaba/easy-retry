@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.common.access;
 
-import com.alibaba.easyretry.common.entity.RetryTask;
 import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
 
 /**
@@ -17,11 +16,4 @@ public interface RetrySerializerAccess {
 	 */
 	RetryArgSerializer getCurrentGlobalRetrySerializer();
 
-	/**
-	 * 根据重试任务获取序列化器
-	 *
-	 * @param retryTask
-	 * @return
-	 */
-	RetryArgSerializer getRetrySerializer(RetryTask retryTask);
 }
