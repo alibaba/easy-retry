@@ -42,8 +42,6 @@ public class RetryTaskPO {
 
 	private String argsStr;
 
-	private String namespace;
-
 	private Date gmtCreate;
 
 	private Date gmtModified;

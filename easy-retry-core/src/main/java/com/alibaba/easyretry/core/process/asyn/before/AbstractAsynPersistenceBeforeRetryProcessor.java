@@ -42,7 +42,6 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 
 		RetryTask retryTask = new RetryTask();
 		retryTask.setBizId(retryerInfo.getBizId());
-		retryTask.setNamespace(retryerInfo.getNamespace());
 		retryTask.setArgsStr(argsStr);
 		retryTask.setStatus(RetryTaskStatusEnum.INIT);
 		retryTask.setExecutorMethodName(retryerInfo.getExecutorMethodName());

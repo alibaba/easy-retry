@@ -53,10 +53,6 @@ public class RetryTask {
 	 */
 	private String argsStr;
 
-	/**
-	 * 执行namespace
-	 */
-	private String namespace;
 
 	private Date gmtCreate;
 

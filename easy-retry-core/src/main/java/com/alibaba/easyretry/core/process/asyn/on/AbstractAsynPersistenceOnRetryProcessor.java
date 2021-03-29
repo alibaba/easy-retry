@@ -25,6 +25,7 @@ public abstract class AbstractAsynPersistenceOnRetryProcessor<R> extends
 	public void process() {
 		if (!needRetry()) {
 			retryResult = HandleResultEnum.SUCCESS;
+			return;
 		}
 		doProcess();
 	}
