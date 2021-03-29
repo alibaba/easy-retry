@@ -9,11 +9,6 @@
 			"name": "spring.easyretry.memory.maxRetryTimes",
 			"type": "java.lang.Integer",
 			"description": "definition the maxRetryTimes"
-		},
-		{
-			"name": "spring.easyretry.memory.namespace",
-			"type": "java.lang.String",
-			"description": "definition the namespace"
 		}
 	]
 }

@@ -12,10 +12,8 @@ public class MethodExcuteRetryFilter implements RetryFilter {
 
 	@Override
 	public RetryResponse doFilter(RetryContext retryContext) throws Throwable {
-		Object executor = retryContext.getExecutor();
-		Object object = retryContext.getMethod().invoke(executor, retryContext.getArgs());
 		RetryResponse retryResponse = new RetryResponse();
-		retryResponse.setResponse(object);
+		retryResponse.setResponse(retryContext.getInvocation().invoke());
 		return retryResponse;
 	}
 

@@ -21,26 +21,30 @@ public class RetryInterceptor {
 	@Setter
 	private ApplicationContext applicationContext;
 
-	@Setter
-	private String namespace;
-
 	@Around("@annotation(retryable)")
 	public Object around(ProceedingJoinPoint invocation, EasyRetryable retryable) throws Throwable {
 		if (RetryIdentify.isOnRetry()) {
 			return invocation.proceed();
 		}
 		MethodSignature signature = (MethodSignature) invocation.getSignature();
-		PersistenceRetryerBuilder builder = PersistenceRetryerBuilder.of()
+		PersistenceRetryerBuilder builder = PersistenceRetryerBuilder.of(retryConfiguration)
 			.withExecutorName(getBeanId(signature.getDeclaringType()))
 			.withExecutorMethodName(signature.getMethod().getName())
 			.withArgs(invocation.getArgs())
 			.withConfiguration(retryConfiguration)
-			.withOnFailureMethod(retryable.onFailureMethod())
-			.withNamespace(namespace)
+//			.withOnFailureMethod(retryable.onFailureMethod())
+//			.withNamespace(namespace)
 			.withReThrowException(retryable.reThrowException());
 		if (StringUtils.isNotBlank(retryable.resultCondition())) {
 			builder.withResultPredicate(new SPELResultPredicate(retryable.resultCondition()));
 		}
+
+//		if (StringUtils.isNotBlank(retryable.bizId())) {
+//			SPELParamPredicate param = new SPELParamPredicate(retryable.bizId(),
+//				signature.getMethod());
+//			String bizId = param.apply(invocation.getArgs());
+//			builder.withBizId(bizId);
+//		}
 		PersistenceRetryer persistenceRetryer = builder.build();
 		return persistenceRetryer.call(invocation::proceed);
 	}

@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.core.serializer;
 
-import com.alibaba.easyretry.common.ResultPredicate;
+import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.core.utils.HessianSerializerUtils;
 
@@ -10,12 +10,12 @@ import com.alibaba.easyretry.core.utils.HessianSerializerUtils;
 public class HessianResultPredicateSerializer implements ResultPredicateSerializer {
 
 	@Override
-	public String serialize(ResultPredicate serializeInfo) {
+	public String serialize(AbstractResultPredicate serializeInfo) {
 		return HessianSerializerUtils.serialize(serializeInfo);
 	}
 
 	@Override
-	public ResultPredicate deSerialize(String infoStr) {
-		return HessianSerializerUtils.deSerialize(infoStr, ResultPredicate.class);
+	public AbstractResultPredicate deSerialize(String infoStr) {
+		return HessianSerializerUtils.deSerialize(infoStr, AbstractResultPredicate.class);
 	}
 }
