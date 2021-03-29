@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.extension.mybatis.dao;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import com.alibaba.easyretry.extension.mybatis.MyBatisConfig;

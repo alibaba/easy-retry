@@ -17,45 +17,46 @@
 	</resultMap>
 
 	<sql id="all_column">
-    `id`,
-    `sharding`,
-    `biz_id`,
-    `executor_name`,
-    `executor_method_name`,
-    `retry_status`,
-    `args_str`,
-    `gmt_create`,
-    `gmt_modified`,
-    `ext_attrs`
-  </sql>
+		`id`,
+		`sharding`,
+		`biz_id`,
+		`executor_name`,
+		`executor_method_name`,
+		`retry_status`,
+		`args_str`,
+		`gmt_create`,
+		`gmt_modified`,
+		`ext_attrs`
+	</sql>
 
 	<insert id="saveRetryTask">
-    INSERT INTO easy_retry_task (
-    `id`,
-    `sharding`,
-    `biz_id`,
-    `executor_name`,
-    `executor_method_name`,
-    `retry_status`,
-    `args_str`,
-    `gmt_create`,
-    `gmt_modified`,
-    `ext_attrs`
-    ) VALUES (
-    #{id},
-    #{sharding},
-    #{bizId},
-    #{executorName},
-    #{executorMethodName},
-    #{retryStatus},
-    #{argsStr},
-    #{gmtCreate},
-    #{gmtModified},
-    #{extAttrs}
-    )
-  </insert>
+		INSERT INTO easy_retry_task (
+		`id`,
+		`sharding`,
+		`biz_id`,
+		`executor_name`,
+		`executor_method_name`,
+		`retry_status`,
+		`args_str`,
+		`gmt_create`,
+		`gmt_modified`,
+		`ext_attrs`
+		) VALUES (
+		#{id},
+		#{sharding},
+		#{bizId},
+		#{executorName},
+		#{executorMethodName},
+		#{retryStatus},
+		#{argsStr},
+		#{gmtCreate},
+		#{gmtModified},
+		#{extAttrs}
+		)
+	</insert>
 
-	<select id="listRetryTask" parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery"
+	<select id="listRetryTask"
+		parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery"
 		resultMap="RetryTaskMAP">
 		SELECT * FROM easy_retry_task
 		<where>
@@ -91,7 +92,7 @@
 
 	<delete id="deleteRetryTask"
 		parameterType="com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO">
-    DELETE FROM easy_retry_task
-    WHERE id=#{id}
-  </delete>
+		DELETE FROM easy_retry_task
+		WHERE id=#{id}
+	</delete>
 </mapper>
