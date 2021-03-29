@@ -1,9 +1,13 @@
-package com.alibaba.easyretry.core.process.asyn;
+package com.alibaba.easyretry.core.process.asyn.before;
 
+import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.common.event.before.AfterSaveBeforeRetryEvent;
+import com.alibaba.easyretry.common.event.before.PrepSaveBeforeRetryEvent;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 import com.alibaba.easyretry.common.serializer.ArgSerializerInfo;
+import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceProcessor;
 import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.Map;
@@ -19,9 +23,12 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 
 	protected RetryerInfo retryerInfo;
 
+	private RetryConfiguration retryConfiguration;
+
 	public AbstractAsynPersistenceBeforeRetryProcessor(
-		RetryerInfo retryerInfo) {
+		RetryerInfo retryerInfo, RetryConfiguration retryConfiguration) {
 		this.retryerInfo = retryerInfo;
+		this.retryConfiguration = retryConfiguration;
 	}
 
 	@Override
@@ -30,15 +37,11 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 		argSerializerInfo.setArgs(retryerInfo.getArgs());
 		argSerializerInfo.setExecutorMethodName(retryerInfo.getExecutorMethodName());
 		argSerializerInfo.setExecutorName(retryerInfo.getExecutorName());
-		String argsStr =
-			retryerInfo.getRetryConfiguration()
-				.getRetrySerializerAccess()
-				.getCurrentGlobalRetrySerializer()
-				.serialize(argSerializerInfo);
+		String argsStr = retryerInfo.getRetryConfiguration().getRetrySerializerAccess()
+			.getCurrentGlobalRetrySerializer().serialize(argSerializerInfo);
 
 		RetryTask retryTask = new RetryTask();
 		retryTask.setBizId(retryerInfo.getBizId());
-		retryTask.setNamespace(retryerInfo.getNamespace());
 		retryTask.setArgsStr(argsStr);
 		retryTask.setStatus(RetryTaskStatusEnum.INIT);
 		retryTask.setExecutorMethodName(retryerInfo.getExecutorMethodName());
@@ -54,7 +57,15 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 					.serialize(retryerInfo.getResultPredicate()));
 		}
 		retryTask.setExtAttrs(extAttrs);
+
+		PrepSaveBeforeRetryEvent prepSaveBeforeRetryEvent = new PrepSaveBeforeRetryEvent(retryTask);
+		retryConfiguration.getRetryEventMulticaster().multicast(prepSaveBeforeRetryEvent);
+
 		retryerInfo.getRetryConfiguration().getRetryTaskAccess().saveRetryTask(retryTask);
+
+		AfterSaveBeforeRetryEvent afterSaveBeforeRetryEvent = new AfterSaveBeforeRetryEvent(
+			retryTask);
+		retryConfiguration.getRetryEventMulticaster().multicast(afterSaveBeforeRetryEvent);
 	}
 
 }

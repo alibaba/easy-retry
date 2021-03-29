@@ -5,8 +5,8 @@ import java.io.Serializable;
 /**
  * @author Created by wuhao on 2021/3/18.
  */
-public interface ResultPredicate<R> extends Serializable {
+public interface EasyRetryPredicate<T, R> extends Serializable {
 
-	boolean apply(R var1);
+	R apply(T result);
 
 }

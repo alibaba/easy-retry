@@ -2,7 +2,7 @@ package com.alibaba.easyretry.core.utils;
 
 class TestClass {
 
-	public void say(){
+	public void say() {
 		System.out.println("1");
 	}
 

@@ -1,16 +1,17 @@
-package com.alibaba.easyretry.core.process.asyn;
+package com.alibaba.easyretry.core.process.asyn.on;
 
-import com.alibaba.easyretry.common.RetryContext;
+import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 
 /**
  * @author Created by wuhao on 2021/3/19.
  */
 public class ExceptionPersistenceAsynOnRetryProcessor<R> extends
-	AbstractAsynPersistenceOnRetryProcessor {
+	AbstractAsynPersistenceOnRetryProcessor<R> {
 
 	private Throwable throwable;
 
-	public ExceptionPersistenceAsynOnRetryProcessor(Throwable throwable, RetryContext context) {
+	public ExceptionPersistenceAsynOnRetryProcessor(Throwable throwable,
+		MaxAttemptsPersistenceRetryContext context) {
 		super(context);
 		this.throwable = throwable;
 	}

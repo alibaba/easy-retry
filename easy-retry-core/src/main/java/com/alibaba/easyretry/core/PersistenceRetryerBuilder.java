@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.core;
 
-import com.alibaba.easyretry.common.ResultPredicate;
+import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 
@@ -11,13 +11,13 @@ public class PersistenceRetryerBuilder {
 
 	private PersistenceRetryer persistenceRetryer;
 
-	public static PersistenceRetryerBuilder of() {
-		return new PersistenceRetryerBuilder();
+	public PersistenceRetryerBuilder(RetryConfiguration retryConfiguration) {
+		RetryerInfo retryerInfo = new RetryerInfo();
+		persistenceRetryer = new PersistenceRetryer(retryerInfo, retryConfiguration);
 	}
 
-	public PersistenceRetryerBuilder() {
-		RetryerInfo retryerInfo = new RetryerInfo();
-		persistenceRetryer = new PersistenceRetryer(retryerInfo);
+	public static PersistenceRetryerBuilder of(RetryConfiguration retryConfiguration) {
+		return new PersistenceRetryerBuilder(retryConfiguration);
 	}
 
 	public PersistenceRetryerBuilder withExecutorName(String executorName) {
@@ -65,8 +65,9 @@ public class PersistenceRetryerBuilder {
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withResultPredicate(ResultPredicate resultPredicate) {
-		persistenceRetryer.getRetryerInfo().setResultPredicate(resultPredicate);
+	public PersistenceRetryerBuilder withResultPredicate(
+		AbstractResultPredicate abstractResultPredicate) {
+		persistenceRetryer.getRetryerInfo().setResultPredicate(abstractResultPredicate);
 		return this;
 	}
 

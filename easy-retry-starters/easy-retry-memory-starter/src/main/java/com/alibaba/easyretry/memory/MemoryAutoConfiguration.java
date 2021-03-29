@@ -6,16 +6,18 @@ import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
+import com.alibaba.easyretry.common.event.RetryEventMulticaster;
+import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
 import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
-import com.alibaba.easyretry.core.DefaultRetryExecutor;
-import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
-import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
+import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.access.MemoryRetryTaskAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
+import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
+import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
@@ -98,6 +100,11 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 			public Integer getMaxRetryTimes() {
 				return easyRetryMemoryCompatibleProperties.getMaxRetryTimes();
 			}
+
+			@Override
+			public RetryEventMulticaster getRetryEventMulticaster() {
+				return new SimpleRetryEventMulticaster();
+			}
 		};
 	}
 
@@ -107,7 +114,6 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 		RetryInterceptor retryInterceptor = new RetryInterceptor();
 		retryInterceptor.setApplicationContext(applicationContext);
 		retryInterceptor.setRetryConfiguration(configuration);
-		retryInterceptor.setNamespace(easyRetryMemoryCompatibleProperties.getNamespace());
 		return retryInterceptor;
 	}
 
@@ -116,7 +122,7 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 		RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
 		log.warn("RetryConfiguration start");
 		return new SimpleRetryContainer(
-			configuration, easyRetryMemoryCompatibleProperties.getNamespace(),
+			configuration,
 			defaultRetryExecutor);
 	}
 
@@ -135,10 +141,11 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 
 	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
-	public DefaultRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,RetryInvocationHandler retryInvocationHandler) {
-		DefaultRetryExecutor defaultRetryExecutor = new DefaultRetryExecutor();
-		defaultRetryExecutor.setRetryConfiguration(configuration);
-		defaultRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
-		return defaultRetryExecutor;
+	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
+		RetryInvocationHandler retryInvocationHandler) {
+		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
+		persistenceRetryExecutor.setRetryConfiguration(configuration);
+		persistenceRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
+		return persistenceRetryExecutor;
 	}
 }

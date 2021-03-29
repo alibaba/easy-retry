@@ -1,8 +1,8 @@
-package com.alibaba.easyretry.core.process.asyn;
+package com.alibaba.easyretry.core.process.asyn.on;
 
-import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
-import com.alibaba.easyretry.core.utils.PrintUtils;
+import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
+import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractAsynPersistenceOnRetryProcessor<R> extends
 	AbstractAsynPersistenceProcessor<R> {
 
-	protected RetryContext context;
+	protected MaxAttemptsPersistenceRetryContext context;
 
 	private HandleResultEnum retryResult;
 
 
-	public AbstractAsynPersistenceOnRetryProcessor(RetryContext context) {
+	public AbstractAsynPersistenceOnRetryProcessor(MaxAttemptsPersistenceRetryContext context) {
 		this.context = context;
 	}
 
@@ -25,18 +25,18 @@ public abstract class AbstractAsynPersistenceOnRetryProcessor<R> extends
 	public void process() {
 		if (!needRetry()) {
 			retryResult = HandleResultEnum.SUCCESS;
+			return;
 		}
 		doProcess();
 	}
 
 	@Override
 	public void doProcess() {
-		String message = PrintUtils.printCommonMethodInfo(context);
 		if (context.getStopStrategy().shouldStop(context)) {
-			log.error(message + "will stop");
+			log.error(context.getInvocation() + " will stop");
 			retryResult = HandleResultEnum.STOP;
 		} else {
-			log.error(message + "will try later");
+			log.error(context.getInvocation() + " will try later");
 			context.getWaitStrategy().backOff(context);
 			retryResult = HandleResultEnum.FAILURE;
 		}

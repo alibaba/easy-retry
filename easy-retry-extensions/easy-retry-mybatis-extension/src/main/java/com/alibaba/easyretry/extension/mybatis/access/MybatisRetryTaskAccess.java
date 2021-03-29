@@ -8,6 +8,7 @@ import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
@@ -46,7 +47,6 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
 		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
 		retryTaskPO.setArgsStr(retryTask.getArgsStr());
-		retryTaskPO.setNamespace(retryTask.getNamespace());
 		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
 		retryTaskPO.setGmtModified(retryTask.getGmtModified());
 		return retryTaskPO;
@@ -78,7 +78,7 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 	}
 
 	@Override
-	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+	public List<RetryTask> listAvailableTasks(Long lastId) {
 		RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
 		retryTaskQuery.setRetryStatus(
 			Lists.newArrayList(
@@ -98,11 +98,12 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setId(retryTaskPO.getId());
 		retryTask.setStatus(RetryTaskStatusEnum.fromCode(retryTaskPO.getRetryStatus()));
 		retryTask.setArgsStr(retryTaskPO.getArgsStr());
-		retryTask.setNamespace(retryTaskPO.getNamespace());
 		retryTask.setGmtCreate(retryTaskPO.getGmtCreate());
 		retryTask.setGmtModified(retryTaskPO.getGmtModified());
 		retryTask.setExecutorName(retryTaskPO.getExecutorName());
 		retryTask.setExecutorMethodName(retryTaskPO.getExecutorMethodName());
+		retryTask.setBizId(retryTaskPO.getBizId());
+		retryTask.setExtAttrs(JSON.parseObject(retryTaskPO.getExtAttrs(),new TypeReference<Map<String, String>>() {}));
 		return retryTask;
 	}
 }
