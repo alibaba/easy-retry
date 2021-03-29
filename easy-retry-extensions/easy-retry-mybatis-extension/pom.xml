@@ -9,21 +9,25 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>easy-retry-mybatis-extension</artifactId>
+  <artifactId>easy-retry-mybatis-extension</artifactId>
 	<name>easy-retry-mybatis-extension</name>
 	<description>easy-retry-mybatis-extension</description>
+  <properties>
+    <mybatis.version>3.5.6</mybatis.version>
+    <h2.version>1.4.200</h2.version>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>easy-retry-common</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>easy-retry-common</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.5.6</version>
-		</dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>${mybatis.version}</version>
+    </dependency>
 
 		<dependency>
 			<groupId>org.mybatis</groupId>
@@ -47,5 +51,18 @@
 			<artifactId>fastjson</artifactId>
 		</dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>4.0.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

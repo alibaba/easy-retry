@@ -13,20 +13,55 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 /**
  * @author Created by wuhao on 2020/11/8.
  */
+@AllArgsConstructor
 public class MybatisRetryTaskAccess implements RetryTaskAccess {
 
-	@Setter
-	private RetryTaskDAO retryTaskDAO;
+	private final RetryTaskDAO retryTaskDAO;
 
 	@Override
 	public boolean saveRetryTask(RetryTask retryTask) {
 		RetryTaskPO retryTaskPO = covert(retryTask);
 		return retryTaskDAO.saveRetryTask(retryTaskPO);
+	}
+
+	@Override
+	public boolean handlingRetryTask(RetryTask retryTask) {
+		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.HANDLING);
+	}
+
+	@Override
+	public boolean finishRetryTask(RetryTask retryTask) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskDAO.deleteRetryTask(retryTaskPO);
+		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
+	}
+
+	@Override
+	public boolean stopRetryTask(RetryTask retryTask) {
+		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.ERROR);
+	}
+
+
+	@Override
+	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+		RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
+		retryTaskQuery.setRetryStatus(
+			Lists.newArrayList(
+				RetryTaskStatusEnum.INIT.getCode(), RetryTaskStatusEnum.HANDLING.getCode()));
+		retryTaskQuery.setLastId(lastId);
+		retryTaskQuery.setSharding(HostUtils.getHostIP());
+		List<RetryTaskPO> retryTasks = retryTaskDAO.listRetryTask(retryTaskQuery);
+		return convert(retryTasks);
+	}
+
+	private List<RetryTask> convert(List<RetryTaskPO> retryTasks) {
+		return retryTasks.stream().map(this::convert).collect(Collectors.toList());
 	}
 
 	private RetryTaskPO covert(RetryTask retryTask) {
@@ -50,47 +85,6 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		return retryTaskPO;
 	}
 
-	@Override
-	public boolean handlingRetryTask(RetryTask retryTask) {
-		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.HANDLING);
-	}
-
-	@Override
-	public boolean finishRetryTask(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskDAO.deleteRetryTask(retryTaskPO);
-		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
-	}
-
-	@Override
-	public boolean stopRetryTask(RetryTask retryTask) {
-		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.ERROR);
-	}
-
-	private boolean updateRetryTaskStatus(RetryTask retryTask, RetryTaskStatusEnum status) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskPO.setRetryStatus(status.getCode());
-		return retryTaskDAO.updateRetryTask(retryTaskPO);
-	}
-
-	@Override
-	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
-		RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
-		retryTaskQuery.setRetryStatus(
-			Lists.newArrayList(
-				RetryTaskStatusEnum.INIT.getCode(), RetryTaskStatusEnum.HANDLING.getCode()));
-		retryTaskQuery.setLastId(lastId);
-		retryTaskQuery.setSharding(HostUtils.getHostIP());
-		List<RetryTaskPO> retryTasks = retryTaskDAO.listRetryTask(retryTaskQuery);
-		return convert(retryTasks);
-	}
-
-	private List<RetryTask> convert(List<RetryTaskPO> retryTasks) {
-		return retryTasks.stream().map(this::convert).collect(Collectors.toList());
-	}
-
 	private RetryTask convert(RetryTaskPO retryTaskPO) {
 		RetryTask retryTask = new RetryTask();
 		retryTask.setId(retryTaskPO.getId());
@@ -103,4 +97,12 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setExecutorMethodName(retryTaskPO.getExecutorMethodName());
 		return retryTask;
 	}
+
+	private boolean updateRetryTaskStatus(RetryTask retryTask, RetryTaskStatusEnum status) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskPO.setRetryStatus(status.getCode());
+		return retryTaskDAO.updateRetryTask(retryTaskPO);
+	}
+
 }

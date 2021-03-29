@@ -6,7 +6,7 @@
 #### Memory Retry
 增加pom依赖
 
-```
+```xml
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-memory-starter</artifactId>
@@ -19,8 +19,9 @@
 
 `spring.easyretry.memory.enabled = true`
 
-在需要重试的方法上增加@EasyRetryable注解
-```
+在需要重试的方法上增加`@EasyRetryable`注解
+
+```java
 public class MemoryUserService {
     @EasyRetryable
     public User getUserById(Long userId){
@@ -30,7 +31,8 @@ public class MemoryUserService {
 ```
 
 #### Mybatis Retry
-```
+
+```xml
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-mybatis-starter</artifactId>
@@ -61,7 +63,8 @@ CREATE TABLE `easy_retry_task` (
 ```
 
 在需要重试的方法上增加@EasyRetryable注解
-```
+
+```java
 public class MybatisUserService {
     @EasyRetryable
     public User getUserById(Long userId){
@@ -70,7 +73,7 @@ public class MybatisUserService {
 }
 ```
 
-###Built With
+### Built With
 • JDK1.8
 
 • Spring Framework5+

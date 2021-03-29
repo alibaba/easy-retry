@@ -3,11 +3,13 @@ package com.alibaba.easyretry.extension.mybatis.po;
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author Created by wuhao on 2020/11/8.
  */
 @Data
+@Accessors(chain = true)
 public class RetryTaskPO {
 
 	/**

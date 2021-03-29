@@ -74,9 +74,10 @@ public class MybatisAutoConfiguration implements ApplicationContextAware {
 
 	@Bean
 	public RetryTaskAccess mybatisRetryTaskAccess(RetryTaskDAO retryTaskDAO) {
-		MybatisRetryTaskAccess mybatisRetryTaskAccess = new MybatisRetryTaskAccess();
-		mybatisRetryTaskAccess.setRetryTaskDAO(retryTaskDAO);
-		return mybatisRetryTaskAccess;
+//		MybatisRetryTaskAccess mybatisRetryTaskAccess = new MybatisRetryTaskAccess();
+//		mybatisRetryTaskAccess.setRetryTaskDAO(retryTaskDAO);
+//		return mybatisRetryTaskAccess;
+		return null;
 	}
 
 	@Bean
