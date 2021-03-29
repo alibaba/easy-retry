@@ -3,6 +3,7 @@ package com.alibaba.easyretry.common;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
+import com.alibaba.easyretry.common.event.RetryEventMulticaster;
 import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 
@@ -22,4 +23,6 @@ public interface RetryConfiguration {
 	ResultPredicateSerializer getResultPredicateSerializer();
 
 	Integer getMaxRetryTimes();
+
+	RetryEventMulticaster getRetryEventMulticaster();
 }

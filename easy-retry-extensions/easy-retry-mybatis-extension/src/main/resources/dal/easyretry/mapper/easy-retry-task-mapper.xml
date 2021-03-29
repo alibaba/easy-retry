@@ -55,7 +55,8 @@
     )
   </insert>
 
-	<select id="listRetryTask" parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery"
+	<select id="listRetryTask"
+		parameterType="com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery"
 		resultMap="RetryTaskMAP">
 		SELECT * FROM easy_retry_task
 		<where>

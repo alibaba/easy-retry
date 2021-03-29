@@ -78,7 +78,7 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 	}
 
 	@Override
-	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+	public List<RetryTask> listAvailableTasks(Long lastId) {
 		RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
 		retryTaskQuery.setRetryStatus(
 			Lists.newArrayList(

@@ -19,13 +19,9 @@ public class FastJsonRetryArgSerializer implements RetryArgSerializer {
 	@Override
 	public String serialize(ArgSerializerInfo argSerializerInfo) {
 		StringBuilder sb = new StringBuilder();
-		Stream.of(argSerializerInfo.getArgs())
-			.forEach(
-				(arg) ->
-					sb.append(JSON.toJSONString(arg))
-						.append(INNER_SPLIT)
-						.append(arg.getClass().getName())
-						.append(SPLIT));
+		Stream.of(argSerializerInfo.getArgs()).forEach(
+			(arg) -> sb.append(JSON.toJSONString(arg)).append(INNER_SPLIT)
+				.append(arg.getClass().getName()).append(SPLIT));
 		if (sb.length() >= SPLIT.length()) {
 			return sb.subSequence(0, sb.length() - SPLIT.length()).toString();
 		} else {
@@ -37,15 +33,14 @@ public class FastJsonRetryArgSerializer implements RetryArgSerializer {
 	public ArgSerializerInfo deSerialize(String argsStr) {
 		String[] strs = StringUtils.split(argsStr, SPLIT);
 		Object[] arg = Stream.of(strs)
-			.map(
-				(str) -> {
-					String[] inner = str.split(INNER_SPLIT);
-					try {
-						return JSON.parseObject(inner[0], ClassUtils.getClass(inner[1]));
-					} catch (ClassNotFoundException e) {
-						throw new RuntimeException(e);
-					}
-				})
+			.map((str) -> {
+				String[] inner = str.split(INNER_SPLIT);
+				try {
+					return JSON.parseObject(inner[0], ClassUtils.getClass(inner[1]));
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+			})
 			.toArray();
 		ArgSerializerInfo argSerializerInfo = new ArgSerializerInfo();
 		argSerializerInfo.setArgs(arg);

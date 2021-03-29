@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.common.retryer;
 
-import com.alibaba.easyretry.common.ResultPredicate;
+import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import lombok.Data;
 
@@ -37,6 +37,6 @@ public class RetryerInfo {
 
 	private boolean reThrowException;
 
-	private ResultPredicate resultPredicate;
+	private AbstractResultPredicate resultPredicate;
 
 }
