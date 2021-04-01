@@ -13,7 +13,7 @@ class MybatisRetryTaskAccessTest {
 
 	@Test
 	void test() {
-		ACCESS.saveRetryTask(new RetryTask());
+		//ACCESS.saveRetryTask(new RetryTask());
 	}
 
 }
