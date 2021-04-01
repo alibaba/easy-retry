@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 /**
  * @author Created by wuhao on 2020/11/8.
  */
+@AllArgsConstructor
 public class MybatisRetryTaskAccess implements RetryTaskAccess {
 
-	@Setter
-	private RetryTaskDAO retryTaskDAO;
+	private final RetryTaskDAO retryTaskDAO;
 
 	@Override
 	public boolean saveRetryTask(RetryTask retryTask) {
