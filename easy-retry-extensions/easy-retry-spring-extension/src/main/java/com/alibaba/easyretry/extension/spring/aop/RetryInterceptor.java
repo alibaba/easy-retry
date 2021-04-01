@@ -27,7 +27,7 @@ public class RetryInterceptor {
 			return invocation.proceed();
 		}
 		MethodSignature signature = (MethodSignature) invocation.getSignature();
-		PersistenceRetryerBuilder builder = PersistenceRetryerBuilder.of(retryConfiguration)
+		PersistenceRetryerBuilder<Object> builder = PersistenceRetryerBuilder.of(retryConfiguration)
 			.withExecutorName(getBeanId(signature.getDeclaringType()))
 			.withExecutorMethodName(signature.getMethod().getName())
 			.withArgs(invocation.getArgs())
@@ -36,7 +36,7 @@ public class RetryInterceptor {
 //			.withNamespace(namespace)
 			.withReThrowException(retryable.reThrowException());
 		if (StringUtils.isNotBlank(retryable.resultCondition())) {
-			builder.withResultPredicate(new SPELResultPredicate(retryable.resultCondition()));
+			builder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
 		}
 
 //		if (StringUtils.isNotBlank(retryable.bizId())) {
@@ -45,7 +45,7 @@ public class RetryInterceptor {
 //			String bizId = param.apply(invocation.getArgs());
 //			builder.withBizId(bizId);
 //		}
-		PersistenceRetryer persistenceRetryer = builder.build();
+		PersistenceRetryer<Object> persistenceRetryer = builder.build();
 		return persistenceRetryer.call(invocation::proceed);
 	}
 

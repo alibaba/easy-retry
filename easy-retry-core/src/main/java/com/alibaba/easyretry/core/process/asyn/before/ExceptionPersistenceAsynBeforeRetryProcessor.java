@@ -14,7 +14,7 @@ public class ExceptionPersistenceAsynBeforeRetryProcessor<R> extends
 	private Throwable throwable;
 
 	public ExceptionPersistenceAsynBeforeRetryProcessor(Throwable throwable,
-		RetryerInfo retryerInfo, RetryConfiguration retryConfiguration) {
+		RetryerInfo<R> retryerInfo, RetryConfiguration retryConfiguration) {
 		super(retryerInfo, retryConfiguration);
 		this.throwable = throwable;
 	}

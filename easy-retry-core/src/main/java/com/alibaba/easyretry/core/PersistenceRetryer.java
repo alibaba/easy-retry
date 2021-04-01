@@ -15,18 +15,18 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Data
-public class PersistenceRetryer implements Retryer {
+public class PersistenceRetryer<V> implements Retryer<V> {
 
-	private RetryerInfo retryerInfo;
+	private RetryerInfo<V> retryerInfo;
 
 	private RetryConfiguration retryConfiguration;
 
-	public PersistenceRetryer(RetryerInfo retryerInfo, RetryConfiguration retryConfiguration) {
+	public PersistenceRetryer(RetryerInfo<V> retryerInfo, RetryConfiguration retryConfiguration) {
 		this.retryConfiguration = retryConfiguration;
 		this.retryerInfo = retryerInfo;
 	}
 
-	public <V> V call(SCallable<V> callable) throws Throwable {
+	public V call(SCallable<V> callable) throws Throwable {
 		AsynPersistenceProcessor<V> asynPersistenceProcessor;
 		try {
 			V result = callable.call();

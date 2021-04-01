@@ -48,19 +48,21 @@ public class MemoryUserService {
 新增持久化表
 ```
 CREATE TABLE `easy_retry_task` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `gmt_create` datetime NOT NULL COMMENT '创建时间',
-    `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-    `sharding` varchar(64) NULL COMMENT '数据库分片字段',
-    `biz_id` varchar(64) NULL COMMENT '业务id',
-    `executor_name` varchar(512) NOT NULL COMMENT '执行名称',
-    `executor_method_name` varchar(512) NOT NULL COMMENT '执行方法名称',
-    `retry_status` tinyint NOT NULL COMMENT '重试状态',
-    `args_str` varchar(6000) NULL COMMENT '执行方法参数',
-    `ext_attrs` varchar(3000) NULL COMMENT '扩展字段',
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=0 COMMENT='easy_retry_task';
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `sharding` varchar(64) DEFAULT NULL COMMENT '数据库分片字段',
+  `biz_id` varchar(64) DEFAULT NULL COMMENT '业务id',
+  `executor_name` varchar(512) NOT NULL COMMENT '执行名称',
+  `executor_method_name` varchar(512) NOT NULL COMMENT '执行方法名称',
+  `retry_status` tinyint(4) NOT NULL COMMENT '重试状态',
+  `args_str` varchar(7168) DEFAULT NULL COMMENT '执行方法参数',
+  `ext_attrs` varchar(3000) DEFAULT NULL COMMENT '扩展字段',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='easy_retry_task'
+;
 ```
+
 
 在需要重试的方法上增加@EasyRetryable注解
 

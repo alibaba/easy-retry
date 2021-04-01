@@ -8,7 +8,7 @@ import lombok.Data;
  * @author Created by wuhao on 2021/3/19.
  */
 @Data
-public class RetryerInfo {
+public class RetryerInfo<T> {
 
 	/**
 	 * 执行者名称
@@ -37,6 +37,6 @@ public class RetryerInfo {
 
 	private boolean reThrowException;
 
-	private AbstractResultPredicate resultPredicate;
+	private AbstractResultPredicate<T> resultPredicate;
 
 }

@@ -7,72 +7,71 @@ import com.alibaba.easyretry.common.retryer.RetryerInfo;
 /**
  * @author Created by wuhao on 2020/11/1.
  */
-public class PersistenceRetryerBuilder {
+public class PersistenceRetryerBuilder<T> {
 
-	private PersistenceRetryer persistenceRetryer;
+	private PersistenceRetryer<T> persistenceRetryer;
 
 	public PersistenceRetryerBuilder(RetryConfiguration retryConfiguration) {
-		RetryerInfo retryerInfo = new RetryerInfo();
-		persistenceRetryer = new PersistenceRetryer(retryerInfo, retryConfiguration);
+		RetryerInfo<T> retryerInfo = new RetryerInfo<>();
+		persistenceRetryer = new PersistenceRetryer<T>(retryerInfo, retryConfiguration);
 	}
 
-	public static PersistenceRetryerBuilder of(RetryConfiguration retryConfiguration) {
-		return new PersistenceRetryerBuilder(retryConfiguration);
+	public static <T> PersistenceRetryerBuilder<T> of(RetryConfiguration retryConfiguration) {
+		return new PersistenceRetryerBuilder<>(retryConfiguration);
 	}
 
-	public PersistenceRetryerBuilder withExecutorName(String executorName) {
+	public PersistenceRetryerBuilder<T> withExecutorName(String executorName) {
 		persistenceRetryer.getRetryerInfo().setExecutorName(executorName);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withExecutorMethodName(String executorMethodName) {
+	public PersistenceRetryerBuilder<T> withExecutorMethodName(String executorMethodName) {
 		persistenceRetryer.getRetryerInfo().setExecutorMethodName(executorMethodName);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withBizId(String bizId) {
+	public PersistenceRetryerBuilder<T> withBizId(String bizId) {
 		persistenceRetryer.getRetryerInfo().setBizId(bizId);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withArgs(Object[] args) {
+	public PersistenceRetryerBuilder<T> withArgs(Object[] args) {
 		persistenceRetryer.getRetryerInfo().setArgs(args);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withOnException(Class<? extends Throwable> onException) {
+	public PersistenceRetryerBuilder<T> withOnException(Class<? extends Throwable> onException) {
 		persistenceRetryer.getRetryerInfo().setOnException(onException);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withOnFailureMethod(String onFailureMethod) {
+	public PersistenceRetryerBuilder<T> withOnFailureMethod(String onFailureMethod) {
 		persistenceRetryer.getRetryerInfo().setOnFailureMethod(onFailureMethod);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withReThrowException(boolean reThrowException) {
+	public PersistenceRetryerBuilder<T> withReThrowException(boolean reThrowException) {
 		persistenceRetryer.getRetryerInfo().setReThrowException(reThrowException);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withNamespace(String namespace) {
+	public PersistenceRetryerBuilder<T> withNamespace(String namespace) {
 		persistenceRetryer.getRetryerInfo().setNamespace(namespace);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withConfiguration(RetryConfiguration retryConfiguration) {
+	public PersistenceRetryerBuilder<T> withConfiguration(RetryConfiguration retryConfiguration) {
 		persistenceRetryer.getRetryerInfo().setRetryConfiguration(retryConfiguration);
 		return this;
 	}
 
-	public PersistenceRetryerBuilder withResultPredicate(
-		AbstractResultPredicate abstractResultPredicate) {
+	public PersistenceRetryerBuilder<T> withResultPredicate(AbstractResultPredicate<T> abstractResultPredicate) {
 		persistenceRetryer.getRetryerInfo().setResultPredicate(abstractResultPredicate);
 		return this;
 	}
 
 
-	public PersistenceRetryer build() {
+	public PersistenceRetryer<T> build() {
 		return persistenceRetryer;
 	}
 }
