@@ -81,9 +81,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				doExecute();
 				long totalTime = sleepTimes * SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(
-						totalTime > MAX_SLEEP_TIME_MILLISECONDS ? MAX_SLEEP_TIME_MILLISECONDS
-							: totalTime);
+					Thread.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}
@@ -138,9 +136,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				long totalTime =
 					sleepTimes * SLEEP_BASE_TIME_MILLISECONDS + SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(
-						totalTime > MAX_SLEEP_TIME_MILLISECONDS ? MAX_SLEEP_TIME_MILLISECONDS
-							: totalTime);
+					Thread.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}
