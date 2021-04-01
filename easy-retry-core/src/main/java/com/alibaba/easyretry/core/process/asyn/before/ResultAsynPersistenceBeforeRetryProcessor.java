@@ -13,7 +13,7 @@ public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
 
 	private R result;
 
-	public ResultAsynPersistenceBeforeRetryProcessor(R result, RetryerInfo retryerInfo,
+	public ResultAsynPersistenceBeforeRetryProcessor(R result, RetryerInfo<R> retryerInfo,
 		RetryConfiguration retryConfiguration) {
 		super(retryerInfo, retryConfiguration);
 		this.result = result;

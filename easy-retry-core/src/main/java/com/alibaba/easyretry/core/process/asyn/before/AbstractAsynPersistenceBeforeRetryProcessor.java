@@ -21,12 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 	AbstractAsynPersistenceProcessor<R> {
 
-	protected RetryerInfo retryerInfo;
+	protected RetryerInfo<R> retryerInfo;
 
 	private RetryConfiguration retryConfiguration;
 
 	public AbstractAsynPersistenceBeforeRetryProcessor(
-		RetryerInfo retryerInfo, RetryConfiguration retryConfiguration) {
+		RetryerInfo<R> retryerInfo, RetryConfiguration retryConfiguration) {
 		this.retryerInfo = retryerInfo;
 		this.retryConfiguration = retryConfiguration;
 	}
