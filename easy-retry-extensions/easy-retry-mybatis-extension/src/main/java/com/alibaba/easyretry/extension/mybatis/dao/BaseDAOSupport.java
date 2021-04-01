@@ -1,6 +1,7 @@
 package com.alibaba.easyretry.extension.mybatis.dao;
 
-import lombok.Setter;
+import java.util.Objects;
+import java.util.function.Function;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -9,19 +10,16 @@ import org.apache.ibatis.session.SqlSessionFactory;
  */
 public abstract class BaseDAOSupport {
 
-	@Setter
-	private SqlSessionFactory sqlSessionFactory;
+	private final SqlSessionFactory sqlSessionFactory;
 
+	public BaseDAOSupport(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
 
-	protected <T> T excute(Excute<T> excute) {
-		try (SqlSession session = sqlSessionFactory.openSession()) {
-			return excute.excute(session);
+	protected <T> T execute(Function<SqlSession, T> function) {
+		Objects.requireNonNull(sqlSessionFactory, "require sqlSessionFactory non null");
+		try (final SqlSession session = sqlSessionFactory.openSession()) {
+			return function.apply(session);
 		}
 	}
-
-	public interface Excute<T> {
-
-		T excute(SqlSession sqlSession);
-	}
-
 }

@@ -77,16 +77,12 @@ public class MybatisAutoConfiguration implements ApplicationContextAware,
 	@Bean
 	public RetryTaskDAO retryTaskDAO(
 		@Qualifier("easyRetrySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-		RetryTaskDAOImpl retryTaskDAO = new RetryTaskDAOImpl();
-		retryTaskDAO.setSqlSessionFactory(sqlSessionFactory);
-		return retryTaskDAO;
+		return new RetryTaskDAOImpl(sqlSessionFactory);
 	}
 
 	@Bean
 	public RetryTaskAccess mybatisRetryTaskAccess(RetryTaskDAO retryTaskDAO) {
-		MybatisRetryTaskAccess mybatisRetryTaskAccess = new MybatisRetryTaskAccess();
-		mybatisRetryTaskAccess.setRetryTaskDAO(retryTaskDAO);
-		return mybatisRetryTaskAccess;
+		return new MybatisRetryTaskAccess(retryTaskDAO);
 	}
 
 	@Bean
@@ -177,8 +173,7 @@ public class MybatisAutoConfiguration implements ApplicationContextAware,
 	@Bean
 	@ConditionalOnMissingBean(RetryEventMulticaster.class)
 	public RetryEventMulticaster retryEventMulticaster() {
-		SimpleRetryEventMulticaster simpleRetryEventMulticaster = new SimpleRetryEventMulticaster();
-		return simpleRetryEventMulticaster;
+		return new SimpleRetryEventMulticaster();
 	}
 
 
