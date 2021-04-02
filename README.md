@@ -10,7 +10,7 @@
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-memory-starter</artifactId>
-    <version>1.0.0.RC1</version>
+    <version>1.0.0.RC3</version>
 </dependency>
 ```
 
