@@ -59,17 +59,17 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 			.handlingRetryTask(maxAttemptsPersistenceRetryContext.getRetryTask());
 		AbstractAsynPersistenceOnRetryProcessor<Object> abstractAsynPersistenceOnRetryProcessor;
 		try {
-			PrintUtils.monitorInfo("beigin executeMethod", context);
+			PrintUtils.monitorInfo("beigin excuteMethod", context);
 			RetryFilterResponse retryFilterResponse = retryFilterInvocation.invoke(context);
 			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor<>(
 				retryFilterResponse.getResponse(),
 				maxAttemptsPersistenceRetryContext);
-			PrintUtils.monitorInfo("ecuteMethod success ", context);
+			PrintUtils.monitorInfo("excuteMethod success ", context);
 		} catch (Throwable t) {
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}
-			log.error("ecuteMethod failed task arg is {} task id is {}", context.getInvocation(),
+			log.error("excuteMethod failed task arg is {} task id is {}", context.getInvocation(),
 				context.getId(), t);
 			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor<>(
 				t,

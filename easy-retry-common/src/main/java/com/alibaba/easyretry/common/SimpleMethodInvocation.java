@@ -27,7 +27,7 @@ public class SimpleMethodInvocation implements Invocation {
 
 	@Override
 	public String toString() {
-		return "[Invocation] executor is " + executor.getClass().getName() + "method is " + method
+		return "[Invocation] executor is " + executor.getClass().getName() + " method is " + method
 			.getName() + " args is " + Arrays.toString(args);
 
 	}
