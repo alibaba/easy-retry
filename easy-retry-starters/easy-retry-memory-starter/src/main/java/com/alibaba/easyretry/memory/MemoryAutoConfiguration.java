@@ -23,6 +23,8 @@ import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
 import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.memory.config.EasyRetryMemoryCompatibleProperties;
+import com.alibaba.easyretry.starter.common.CommonAutoConfiguration;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,81 +43,15 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @EnableConfigurationProperties(EasyRetryMemoryCompatibleProperties.class)
 @ConditionalOnProperty(name = "spring.easyretry.memory.enabled", havingValue = "true")
-public class MemoryAutoConfiguration implements ApplicationContextAware {
-
-	private ApplicationContext applicationContext;
+public class MemoryAutoConfiguration extends CommonAutoConfiguration {
 
 	@Autowired
 	private EasyRetryMemoryCompatibleProperties easyRetryMemoryCompatibleProperties;
 
 	@Bean
 	@ConditionalOnMissingBean(MemoryRetryTaskAccess.class)
-	public MemoryRetryTaskAccess memoryRetryTaskAccess() {
+	public MemoryRetryTaskAccess retryTaskAccess() {
 		return new MemoryRetryTaskAccess();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryConfiguration.class)
-	public RetryConfiguration configuration(RetryTaskAccess amobaARetryTaskAccess) {
-		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
-		ResultPredicateSerializer resultPredicateSerializer = new HessianResultPredicateSerializer();
-		return new RetryConfiguration() {
-			@Override
-			public RetryTaskAccess getRetryTaskAccess() {
-				return amobaARetryTaskAccess;
-			}
-
-			@Override
-			public RetrySerializerAccess getRetrySerializerAccess() {
-				return new DefaultRetrySerializerAccess();
-			}
-
-			@Override
-			public RetryStrategyAccess getRetryStrategyAccess() {
-				return new RetryStrategyAccess() {
-
-					@Override
-					public StopStrategy getCurrentGlobalStopStrategy() {
-						return defaultRetryStrategy;
-					}
-
-					@Override
-					public WaitStrategy getCurrentGlobalWaitStrategy() {
-						return defaultRetryStrategy;
-					}
-
-				};
-			}
-
-			@Override
-			public ExecutorSolver getExecutorSolver() {
-				return executorName -> applicationContext.getBean(executorName);
-			}
-
-			@Override
-			public ResultPredicateSerializer getResultPredicateSerializer() {
-				return resultPredicateSerializer;
-			}
-
-			@Override
-			public Integer getMaxRetryTimes() {
-				return easyRetryMemoryCompatibleProperties.getMaxRetryTimes();
-			}
-
-			@Override
-			public RetryEventMulticaster getRetryEventMulticaster() {
-				return new SimpleRetryEventMulticaster();
-			}
-		};
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryInterceptor.class)
-	public RetryInterceptor retryInterceptor(RetryConfiguration configuration) {
-		RetryInterceptor retryInterceptor = new RetryInterceptor();
-		retryInterceptor.setApplicationContext(applicationContext);
-		retryInterceptor.setRetryConfiguration(configuration);
-		return retryInterceptor;
 	}
 
 	@Bean(initMethod = "start")
@@ -127,34 +63,15 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 			defaultRetryExecutor);
 	}
 
+
+	@Override
+	public Integer getMaxRetryTimes() {
+		return easyRetryMemoryCompatibleProperties.getMaxRetryTimes();
+	}
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
-	@Bean
-	@ConditionalOnMissingBean(RetryFilterInvocationHandler.class)
-	public RetryFilterInvocationHandler retryInvocationHandler() {
-		DefaultRetryFilterInvocationHandler retryInvocationHandler = new DefaultRetryFilterInvocationHandler();
-		return retryInvocationHandler;
-	}
-	//
-	//@Bean
-	//@ConditionalOnMissingBean(RetryExecutor.class)
-	//public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
-	//	RetryFilterInvocationHandler retryFilterInvocationHandler) {
-	//	PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
-	//	persistenceRetryExecutor.setRetryConfiguration(configuration);
-	//	persistenceRetryExecutor.setRetryFilterInvocation(retryFilterInvocationHandler);
-	//	return persistenceRetryExecutor;
-	//}
-	//
-	//@Bean
-	//@ConditionalOnMissingBean(RetryListenerInitialize.class)
-	//public RetryListenerInitialize Initialize() {
-	//	RetryEventMulticaster retryEventMulticaster = new SimpleRetryEventMulticaster();
-	//	RetryListenerInitialize retryListenerInitialize = new RetryListenerInitialize();
-	//	retryListenerInitialize.setRetryEventMulticaster(retryEventMulticaster);
-	//	return retryListenerInitialize;
-	//}
 }

@@ -19,13 +19,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>easy-retry-spring-extension</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>easy-retry-core</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+			<groupId>${project.groupId}</groupId>
+            <artifactId>easy-retry-starter-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

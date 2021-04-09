@@ -33,6 +33,7 @@ import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
 import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.mybatis.conifg.EasyRetryMybatisProperties;
+import com.alibaba.easyretry.starter.common.CommonAutoConfiguration;
 
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -59,9 +60,7 @@ import org.springframework.core.io.Resource;
 @Slf4j
 @EnableConfigurationProperties(EasyRetryMybatisProperties.class)
 @ConditionalOnProperty(name = "spring.easyretry.mybatis.enabled", matchIfMissing = true)
-public class MybatisAutoConfiguration implements ApplicationContextAware{
-
-	private ApplicationContext applicationContext;
+public class MybatisAutoConfiguration extends CommonAutoConfiguration {
 
 	@Autowired
 	private EasyRetryMybatisProperties easyRetryMybatisProperties;
@@ -79,81 +78,6 @@ public class MybatisAutoConfiguration implements ApplicationContextAware{
 		return sqlSessionFactoryBean.getObject();
 	}
 
-	@Bean
-	public RetryTaskDAO retryTaskDAO(
-		@Qualifier("easyRetrySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-		return new RetryTaskDAOImpl(sqlSessionFactory);
-	}
-
-	@Bean
-	public RetryTaskAccess mybatisRetryTaskAccess(RetryTaskDAO retryTaskDAO) {
-		return new MybatisRetryTaskAccess(retryTaskDAO);
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryConfiguration.class)
-	public RetryConfiguration configuration(RetryTaskAccess mybatisRetryTaskAccess,
-		RetryEventMulticaster retryEventMulticaster) {
-		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
-		ResultPredicateSerializer resultPredicateSerializer = new HessianResultPredicateSerializer();
-		return new RetryConfiguration() {
-			@Override
-			public RetryTaskAccess getRetryTaskAccess() {
-				return mybatisRetryTaskAccess;
-			}
-
-			@Override
-			public RetrySerializerAccess getRetrySerializerAccess() {
-				return new DefaultRetrySerializerAccess();
-			}
-
-			@Override
-			public RetryStrategyAccess getRetryStrategyAccess() {
-				return new RetryStrategyAccess() {
-
-					@Override
-					public StopStrategy getCurrentGlobalStopStrategy() {
-						return defaultRetryStrategy;
-					}
-
-					@Override
-					public WaitStrategy getCurrentGlobalWaitStrategy() {
-						return defaultRetryStrategy;
-					}
-				};
-			}
-
-			@Override
-			public ExecutorSolver getExecutorSolver() {
-				return executorName -> applicationContext.getBean(executorName);
-			}
-
-			@Override
-			public ResultPredicateSerializer getResultPredicateSerializer() {
-				return resultPredicateSerializer;
-			}
-
-			@Override
-			public Integer getMaxRetryTimes() {
-				return easyRetryMybatisProperties.getMaxRetryTimes();
-			}
-
-			@Override
-			public RetryEventMulticaster getRetryEventMulticaster() {
-				return retryEventMulticaster;
-			}
-		};
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryInterceptor.class)
-	public RetryInterceptor retryInterceptor(RetryConfiguration configuration) {
-		RetryInterceptor retryInterceptor = new RetryInterceptor();
-		retryInterceptor.setApplicationContext(applicationContext);
-		retryInterceptor.setRetryConfiguration(configuration);
-		return retryInterceptor;
-	}
-
 	@Bean(initMethod = "start")
 	public RetryContainer retryContainer(
 		RetryConfiguration configuration, RetryExecutor defaultRetryExecutor) {
@@ -162,70 +86,24 @@ public class MybatisAutoConfiguration implements ApplicationContextAware{
 			configuration, defaultRetryExecutor);
 	}
 
+	@Bean
+	public RetryTaskDAO retryTaskDAO(
+		@Qualifier("easyRetrySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+		return new RetryTaskDAOImpl(sqlSessionFactory);
+	}
+
+	@Bean
+	public RetryTaskAccess retryTaskAccess(RetryTaskDAO retryTaskDAO) {
+		return new MybatisRetryTaskAccess(retryTaskDAO);
+	}
+
+	@Override
+	public Integer getMaxRetryTimes() {
+		return easyRetryMybatisProperties.getMaxRetryTimes();
+	}
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
-
-	@Bean
-	@ConditionalOnMissingBean(RetryExecutor.class)
-	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration, RetryFilterInvocation retryInvocationHandler) {
-		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
-		persistenceRetryExecutor.setRetryConfiguration(configuration);
-		persistenceRetryExecutor.setRetryFilterInvocation(retryInvocationHandler);
-		return persistenceRetryExecutor;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryEventMulticaster.class)
-	public RetryEventMulticaster retryEventMulticaster() {
-		return new SimpleRetryEventMulticaster();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryListenerInitialize.class)
-	public RetryListenerInitialize retryListenerInitialize(RetryEventMulticaster retryEventMulticaster) {
-		RetryListenerInitialize retryListenerInitialize = new RetryListenerInitialize();
-		retryListenerInitialize.setRetryEventMulticaster(retryEventMulticaster);
-		return retryListenerInitialize;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(SpringRetryFilterDiscover.class)
-	public SpringRetryFilterDiscover springRetryFilterDiscover() {
-		return new SpringRetryFilterDiscover();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryFilterRegister.class)
-	public SimpleRetryFilterRegister simpleRetryFilterRegister(){
-		return new SimpleRetryFilterRegister();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryFilterInvocationHandler.class)
-	public DefaultRetryFilterInvocationHandler retryInvocationHandler(RetryFilterRegister simpleRetryFilterRegister) {
-		DefaultRetryFilterInvocationHandler defaultRetryFilterInvocationHandler =  new DefaultRetryFilterInvocationHandler();
-		defaultRetryFilterInvocationHandler.setRetryFilterRegister(simpleRetryFilterRegister);
-		return defaultRetryFilterInvocationHandler;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(RetryFilterRegisterHandler.class)
-	public RetryFilterRegisterHandler retryFilterRegisterHandler(RetryFilterDiscover springRetryFilterDiscover,RetryFilterRegister simpleRetryFilterRegister){
-		DefaultRetryFilterRegisterHandler defaultRetryFilterRegisterHandler = new DefaultRetryFilterRegisterHandler();
-		defaultRetryFilterRegisterHandler.setRetryFilterRegister(simpleRetryFilterRegister);
-		defaultRetryFilterRegisterHandler.setRetryFilterDiscover(springRetryFilterDiscover);
-		return defaultRetryFilterRegisterHandler;
-	}
-
-	@Bean
-	public ApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,RetryFilterRegisterHandler retryFilterRegisterHandler){
-		SpringEventApplicationListener springEventApplicationListener = new SpringEventApplicationListener();
-		springEventApplicationListener.setRetryFilterRegisterHandler(retryFilterRegisterHandler);
-		springEventApplicationListener.setRetryFilterInvocationHandler(retryFilterInvocationHandler);
-		return springEventApplicationListener;
-	}
-
 }

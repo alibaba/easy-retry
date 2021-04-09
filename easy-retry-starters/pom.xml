@@ -18,6 +18,7 @@
 	<modules>
 		<module>easy-retry-memory-starter</module>
 		<module>easy-retry-mybatis-starter</module>
+		<module>easy-retry-starter-common</module>
 	</modules>
 
 	<dependencyManagement>
