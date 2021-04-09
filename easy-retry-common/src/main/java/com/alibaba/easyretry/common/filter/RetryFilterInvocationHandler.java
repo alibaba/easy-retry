@@ -5,9 +5,7 @@ import com.alibaba.easyretry.common.RetryContext;
 /**
  * @author Created by wuhao on 2021/3/19.
  */
-public interface RetryInvocationHandler {
-
-	RetryResponse invoke(RetryContext retryContext) throws Throwable;
-
+public interface RetryFilterInvocationHandler {
+	void handle();
 
 }

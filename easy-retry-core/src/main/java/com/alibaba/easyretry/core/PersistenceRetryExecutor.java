@@ -6,8 +6,9 @@ import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
-import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
-import com.alibaba.easyretry.common.filter.RetryResponse;
+import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
+import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryFilterResponse;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 import com.alibaba.easyretry.core.process.asyn.on.AbstractAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.process.asyn.on.ExceptionPersistenceAsynOnRetryProcessor;
@@ -28,7 +29,7 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 	private RetryConfiguration retryConfiguration;
 
 	@Setter
-	private RetryInvocationHandler retryInvocationHandler;
+	private RetryFilterInvocation retryFilterInvocation;
 
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
@@ -53,9 +54,9 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 		AbstractAsynPersistenceOnRetryProcessor<Object> abstractAsynPersistenceOnRetryProcessor;
 		try {
 			PrintUtils.monitorInfo("beigin executeMethod", context);
-			RetryResponse retryResponse = retryInvocationHandler.invoke(context);
+			RetryFilterResponse retryFilterResponse = retryFilterInvocation.invoke(context);
 			abstractAsynPersistenceOnRetryProcessor = new ResultAsynPersistenceOnRetryProcessor<>(
-				retryResponse.getResponse(),
+				retryFilterResponse.getResponse(),
 				maxAttemptsPersistenceRetryContext);
 			PrintUtils.monitorInfo("ecuteMethod success ", context);
 		} catch (Throwable t) {

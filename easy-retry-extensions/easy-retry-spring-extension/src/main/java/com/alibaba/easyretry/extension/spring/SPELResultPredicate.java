@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.extension.spring.aop;
+package com.alibaba.easyretry.extension.spring;
 
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import lombok.Data;

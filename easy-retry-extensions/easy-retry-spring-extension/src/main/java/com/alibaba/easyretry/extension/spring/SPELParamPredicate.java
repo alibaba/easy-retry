@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.extension.spring.aop;
+package com.alibaba.easyretry.extension.spring;
 
 import com.alibaba.easyretry.common.EasyRetryPredicate;
 import java.lang.reflect.Method;

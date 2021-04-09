@@ -7,8 +7,11 @@ import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.event.RetryEventMulticaster;
-import com.alibaba.easyretry.common.event.RetryListener;
-import com.alibaba.easyretry.common.filter.RetryInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryFilterDiscover;
+import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
+import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
+import com.alibaba.easyretry.common.filter.RetryFilterRegister;
+import com.alibaba.easyretry.common.filter.RetryFilterRegisterHandler;
 import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
@@ -17,23 +20,25 @@ import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
-import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
+import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
+import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
+import com.alibaba.easyretry.core.filter.SimpleRetryFilterRegister;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
 import com.alibaba.easyretry.extension.mybatis.access.MybatisRetryTaskAccess;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
+import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
+import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
+import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.mybatis.conifg.EasyRetryMybatisProperties;
-import com.google.common.collect.Lists;
-import java.util.Map;
+
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +47,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -53,8 +59,7 @@ import org.springframework.core.io.Resource;
 @Slf4j
 @EnableConfigurationProperties(EasyRetryMybatisProperties.class)
 @ConditionalOnProperty(name = "spring.easyretry.mybatis.enabled", matchIfMissing = true)
-public class MybatisAutoConfiguration implements ApplicationContextAware,
-	SmartInitializingSingleton {
+public class MybatisAutoConfiguration implements ApplicationContextAware{
 
 	private ApplicationContext applicationContext;
 
@@ -162,12 +167,14 @@ public class MybatisAutoConfiguration implements ApplicationContextAware,
 		this.applicationContext = applicationContext;
 	}
 
+
 	@Bean
-	@ConditionalOnMissingBean(RetryInvocationHandler.class)
-	public RetryInvocationHandler retryInvocationHandler() {
-		DefaultRetryInvocationHandler retryInvocationHandler = new DefaultRetryInvocationHandler();
-		retryInvocationHandler.init();
-		return retryInvocationHandler;
+	@ConditionalOnMissingBean(RetryExecutor.class)
+	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration, RetryFilterInvocation retryInvocationHandler) {
+		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
+		persistenceRetryExecutor.setRetryConfiguration(configuration);
+		persistenceRetryExecutor.setRetryFilterInvocation(retryInvocationHandler);
+		return persistenceRetryExecutor;
 	}
 
 	@Bean
@@ -176,24 +183,49 @@ public class MybatisAutoConfiguration implements ApplicationContextAware,
 		return new SimpleRetryEventMulticaster();
 	}
 
+	@Bean
+	@ConditionalOnMissingBean(RetryListenerInitialize.class)
+	public RetryListenerInitialize retryListenerInitialize(RetryEventMulticaster retryEventMulticaster) {
+		RetryListenerInitialize retryListenerInitialize = new RetryListenerInitialize();
+		retryListenerInitialize.setRetryEventMulticaster(retryEventMulticaster);
+		return retryListenerInitialize;
+	}
 
 	@Bean
-	@ConditionalOnMissingBean(RetryExecutor.class)
-	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
-		RetryInvocationHandler retryInvocationHandler) {
-		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
-		persistenceRetryExecutor.setRetryConfiguration(configuration);
-		persistenceRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
-		return persistenceRetryExecutor;
+	@ConditionalOnMissingBean(SpringRetryFilterDiscover.class)
+	public SpringRetryFilterDiscover springRetryFilterDiscover() {
+		return new SpringRetryFilterDiscover();
 	}
 
-	@Override
-	public void afterSingletonsInstantiated() {
-		Map<String, RetryListener> map = applicationContext.getBeansOfType(RetryListener.class);
-		if (MapUtils.isNotEmpty(map)) {
-			SimpleRetryEventMulticaster.setListenerCaches(Lists.newArrayList(map.values()));
-		} else {
-			SimpleRetryEventMulticaster.setListenerCaches(Lists.newArrayList());
-		}
+	@Bean
+	@ConditionalOnMissingBean(RetryFilterRegister.class)
+	public SimpleRetryFilterRegister simpleRetryFilterRegister(){
+		return new SimpleRetryFilterRegister();
 	}
+
+	@Bean
+	@ConditionalOnMissingBean(RetryFilterInvocationHandler.class)
+	public DefaultRetryFilterInvocationHandler retryInvocationHandler(RetryFilterRegister simpleRetryFilterRegister) {
+		DefaultRetryFilterInvocationHandler defaultRetryFilterInvocationHandler =  new DefaultRetryFilterInvocationHandler();
+		defaultRetryFilterInvocationHandler.setRetryFilterRegister(simpleRetryFilterRegister);
+		return defaultRetryFilterInvocationHandler;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RetryFilterRegisterHandler.class)
+	public RetryFilterRegisterHandler retryFilterRegisterHandler(RetryFilterDiscover springRetryFilterDiscover,RetryFilterRegister simpleRetryFilterRegister){
+		DefaultRetryFilterRegisterHandler defaultRetryFilterRegisterHandler = new DefaultRetryFilterRegisterHandler();
+		defaultRetryFilterRegisterHandler.setRetryFilterRegister(simpleRetryFilterRegister);
+		defaultRetryFilterRegisterHandler.setRetryFilterDiscover(springRetryFilterDiscover);
+		return defaultRetryFilterRegisterHandler;
+	}
+
+	@Bean
+	public ApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,RetryFilterRegisterHandler retryFilterRegisterHandler){
+		SpringEventApplicationListener springEventApplicationListener = new SpringEventApplicationListener();
+		springEventApplicationListener.setRetryFilterRegisterHandler(retryFilterRegisterHandler);
+		springEventApplicationListener.setRetryFilterInvocationHandler(retryFilterInvocationHandler);
+		return springEventApplicationListener;
+	}
+
 }

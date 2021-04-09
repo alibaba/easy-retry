@@ -13,7 +13,7 @@ import lombok.Setter;
 public class SimpleRetryEventMulticaster implements RetryEventMulticaster {
 
 	@Setter
-	private static List<RetryListener> listenerCaches = Lists.newArrayList();
+	private List<RetryListener> listenerCaches = Lists.newArrayList();
 
 
 	@Override

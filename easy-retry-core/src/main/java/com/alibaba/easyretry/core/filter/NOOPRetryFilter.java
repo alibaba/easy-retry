@@ -2,7 +2,7 @@ package com.alibaba.easyretry.core.filter;
 
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.filter.AbstractRetryFilter;
-import com.alibaba.easyretry.common.filter.RetryResponse;
+import com.alibaba.easyretry.common.filter.RetryFilterResponse;
 
 /**
  * @author Created by wuhao on 2021/3/22.
@@ -10,7 +10,7 @@ import com.alibaba.easyretry.common.filter.RetryResponse;
 public class NOOPRetryFilter extends AbstractRetryFilter {
 
 	@Override
-	public RetryResponse doFilter(RetryContext retryContext) throws Throwable {
+	public RetryFilterResponse doFilter(RetryContext retryContext) throws Throwable {
 		return next.doFilter(retryContext);
 	}
 
