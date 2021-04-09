@@ -1,6 +1,7 @@
 package com.alibaba.easyretry.core.process.asyn;
 
 import com.alibaba.easyretry.common.processor.AsynPersistenceProcessor;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,7 +19,6 @@ public abstract class AbstractAsynPersistenceProcessor<R> implements AsynPersist
 	}
 
 	protected abstract void doProcess();
-
 
 	public abstract boolean needRetry();
 

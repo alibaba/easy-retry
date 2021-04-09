@@ -1,5 +1,7 @@
 package com.alibaba.easyretry.core;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
@@ -7,13 +9,10 @@ import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
 import com.alibaba.easyretry.common.event.RetryEvent;
-import com.alibaba.easyretry.common.event.before.PrepSaveBeforeRetryEvent;
 import com.alibaba.easyretry.common.event.on.FailureOnRetryEvent;
-import com.alibaba.easyretry.common.event.on.OnRetryEvent;
 import com.alibaba.easyretry.common.event.on.StopOnRetryEvent;
 import com.alibaba.easyretry.common.event.on.SuccessOnRetryEvent;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
-import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
 import com.alibaba.easyretry.common.filter.RetryFilterResponse;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 import com.alibaba.easyretry.core.process.asyn.on.AbstractAsynPersistenceOnRetryProcessor;
@@ -21,7 +20,7 @@ import com.alibaba.easyretry.core.process.asyn.on.ExceptionPersistenceAsynOnRetr
 import com.alibaba.easyretry.core.process.asyn.on.ResultAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.utils.LogUtils;
 import com.alibaba.easyretry.core.utils.PrintUtils;
-import java.lang.reflect.InvocationTargetException;
+
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +48,8 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 	}
 
 	private HandleResultEnum handle(RetryContext context) {
-		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+			= (MaxAttemptsPersistenceRetryContext)context;
 		if (maxAttemptsPersistenceRetryContext.getWaitStrategy().shouldWait(context)) {
 			PrintUtils.monitorInfo("shouldWait", context);
 			return HandleResultEnum.WAITING;
@@ -96,7 +96,8 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 	}
 
 	private void finish(RetryContext context) {
-		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+			= (MaxAttemptsPersistenceRetryContext)context;
 		RetryTask retryTask = maxAttemptsPersistenceRetryContext.getRetryTask();
 		try {
 			RetryTaskAccess retryTaskAccess = retryConfiguration.getRetryTaskAccess();
@@ -110,7 +111,8 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 
 	private void stop(RetryContext context) {
 		try {
-			MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+			MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+				= (MaxAttemptsPersistenceRetryContext)context;
 			RetryTaskAccess retryTaskAccess = retryConfiguration.getRetryTaskAccess();
 			retryTaskAccess.stopRetryTask(maxAttemptsPersistenceRetryContext.getRetryTask());
 			//executeOnFailureMethod(context);

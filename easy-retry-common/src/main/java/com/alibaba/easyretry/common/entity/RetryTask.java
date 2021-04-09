@@ -1,8 +1,10 @@
 package com.alibaba.easyretry.common.entity;
 
-import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import java.util.Date;
 import java.util.Map;
+
+import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
+
 import lombok.Data;
 
 /**
@@ -52,7 +54,6 @@ public class RetryTask {
 	 * 重试执行者方法参数
 	 */
 	private String argsStr;
-
 
 	private Date gmtCreate;
 

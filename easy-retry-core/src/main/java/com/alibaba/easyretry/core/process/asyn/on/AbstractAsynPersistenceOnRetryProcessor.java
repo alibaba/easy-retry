@@ -3,6 +3,7 @@ package com.alibaba.easyretry.core.process.asyn.on;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceProcessor;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,7 +16,6 @@ public abstract class AbstractAsynPersistenceOnRetryProcessor<R> extends
 	protected MaxAttemptsPersistenceRetryContext context;
 
 	private HandleResultEnum retryResult;
-
 
 	public AbstractAsynPersistenceOnRetryProcessor(MaxAttemptsPersistenceRetryContext context) {
 		this.context = context;

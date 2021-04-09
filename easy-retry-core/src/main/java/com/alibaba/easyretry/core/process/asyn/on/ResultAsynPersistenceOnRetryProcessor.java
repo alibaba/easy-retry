@@ -2,6 +2,7 @@ package com.alibaba.easyretry.core.process.asyn.on;
 
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -13,7 +14,7 @@ public class ResultAsynPersistenceOnRetryProcessor<R> extends
 	private R result;
 
 	public ResultAsynPersistenceOnRetryProcessor(R result,
-		MaxAttemptsPersistenceRetryContext context) {
+												 MaxAttemptsPersistenceRetryContext context) {
 		super(context);
 		this.result = result;
 	}

@@ -10,5 +10,4 @@ public class RetryFilterResponse {
 
 	private Object response;
 
-
 }

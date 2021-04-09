@@ -1,5 +1,10 @@
 package com.alibaba.easyretry.extension.mybatis.access;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
@@ -9,12 +14,9 @@ import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
 /**
@@ -103,7 +105,8 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setExecutorName(retryTaskPO.getExecutorName());
 		retryTask.setExecutorMethodName(retryTaskPO.getExecutorMethodName());
 		retryTask.setBizId(retryTaskPO.getBizId());
-		retryTask.setExtAttrs(JSON.parseObject(retryTaskPO.getExtAttrs(),new TypeReference<Map<String, String>>() {}));
+		retryTask.setExtAttrs(JSON.parseObject(retryTaskPO.getExtAttrs(),
+			new TypeReference<Map<String, String>>() {}));
 		return retryTask;
 	}
 }

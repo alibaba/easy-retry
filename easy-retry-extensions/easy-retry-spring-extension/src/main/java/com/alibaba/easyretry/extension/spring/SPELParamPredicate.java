@@ -1,7 +1,9 @@
 package com.alibaba.easyretry.extension.spring;
 
-import com.alibaba.easyretry.common.EasyRetryPredicate;
 import java.lang.reflect.Method;
+
+import com.alibaba.easyretry.common.EasyRetryPredicate;
+
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -28,7 +30,6 @@ public class SPELParamPredicate implements EasyRetryPredicate<Object[], String> 
 
 	public SPELParamPredicate() {
 	}
-
 
 	@Override
 	public String apply(Object[] params) {

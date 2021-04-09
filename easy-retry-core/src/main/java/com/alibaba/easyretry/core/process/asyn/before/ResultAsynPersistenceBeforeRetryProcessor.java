@@ -1,9 +1,10 @@
 package com.alibaba.easyretry.core.process.asyn.before;
 
+import java.util.Objects;
+
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
-import java.util.Objects;
 
 /**
  * @author Created by wuhao on 2021/3/19.
@@ -14,7 +15,7 @@ public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
 	private R result;
 
 	public ResultAsynPersistenceBeforeRetryProcessor(R result, RetryerInfo<R> retryerInfo,
-		RetryConfiguration retryConfiguration) {
+													 RetryConfiguration retryConfiguration) {
 		super(retryerInfo, retryConfiguration);
 		this.result = result;
 	}

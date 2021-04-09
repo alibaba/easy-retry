@@ -1,9 +1,6 @@
 package com.alibaba.easyretry.starter.common;
 
-import javax.sql.DataSource;
-
 import com.alibaba.easyretry.common.RetryConfiguration;
-import com.alibaba.easyretry.common.RetryContainer;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
@@ -20,7 +17,6 @@ import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
-import com.alibaba.easyretry.core.container.SimpleRetryContainer;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
@@ -43,14 +39,14 @@ import org.springframework.context.annotation.Bean;
  * @author Created by wuhao on 2021/2/19.
  */
 @Slf4j
-public abstract class CommonAutoConfiguration implements ApplicationContextAware{
+public abstract class CommonAutoConfiguration implements ApplicationContextAware {
 
 	protected ApplicationContext applicationContext;
 
 	@Bean
 	@ConditionalOnMissingBean(RetryConfiguration.class)
 	public RetryConfiguration configuration(RetryTaskAccess retryTaskAccess,
-		RetryEventMulticaster retryEventMulticaster) {
+											RetryEventMulticaster retryEventMulticaster) {
 		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
 		return new RetryConfiguration() {
 			@Override
@@ -112,7 +108,8 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 
 	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
-	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration, RetryFilterInvocation retryInvocationHandler) {
+	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
+														 RetryFilterInvocation retryInvocationHandler) {
 		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
 		persistenceRetryExecutor.setRetryConfiguration(configuration);
 		persistenceRetryExecutor.setRetryFilterInvocation(retryInvocationHandler);
@@ -141,21 +138,23 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 
 	@Bean
 	@ConditionalOnMissingBean(RetryFilterRegister.class)
-	public SimpleRetryFilterRegister simpleRetryFilterRegister(){
+	public SimpleRetryFilterRegister simpleRetryFilterRegister() {
 		return new SimpleRetryFilterRegister();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(RetryFilterInvocationHandler.class)
 	public DefaultRetryFilterInvocationHandler retryInvocationHandler(RetryFilterRegister simpleRetryFilterRegister) {
-		DefaultRetryFilterInvocationHandler defaultRetryFilterInvocationHandler =  new DefaultRetryFilterInvocationHandler();
+		DefaultRetryFilterInvocationHandler defaultRetryFilterInvocationHandler
+			= new DefaultRetryFilterInvocationHandler();
 		defaultRetryFilterInvocationHandler.setRetryFilterRegister(simpleRetryFilterRegister);
 		return defaultRetryFilterInvocationHandler;
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(RetryFilterRegisterHandler.class)
-	public RetryFilterRegisterHandler retryFilterRegisterHandler(RetryFilterDiscover springRetryFilterDiscover,RetryFilterRegister simpleRetryFilterRegister){
+	public RetryFilterRegisterHandler retryFilterRegisterHandler(RetryFilterDiscover springRetryFilterDiscover,
+																 RetryFilterRegister simpleRetryFilterRegister) {
 		DefaultRetryFilterRegisterHandler defaultRetryFilterRegisterHandler = new DefaultRetryFilterRegisterHandler();
 		defaultRetryFilterRegisterHandler.setRetryFilterRegister(simpleRetryFilterRegister);
 		defaultRetryFilterRegisterHandler.setRetryFilterDiscover(springRetryFilterDiscover);
@@ -163,7 +162,8 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 	}
 
 	@Bean
-	public ApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,RetryFilterRegisterHandler retryFilterRegisterHandler){
+	public ApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,
+															RetryFilterRegisterHandler retryFilterRegisterHandler) {
 		SpringEventApplicationListener springEventApplicationListener = new SpringEventApplicationListener();
 		springEventApplicationListener.setRetryFilterRegisterHandler(retryFilterRegisterHandler);
 		springEventApplicationListener.setRetryFilterInvocationHandler(retryFilterInvocationHandler);

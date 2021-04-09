@@ -1,8 +1,9 @@
 package com.alibaba.easyretry.extension.mybatis;
 
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
 import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

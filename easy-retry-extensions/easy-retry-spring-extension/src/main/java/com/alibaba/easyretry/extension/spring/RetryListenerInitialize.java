@@ -1,14 +1,10 @@
 package com.alibaba.easyretry.extension.spring;
 
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.easyretry.common.event.RetryEventMulticaster;
 import com.alibaba.easyretry.common.event.RetryListener;
-import com.alibaba.easyretry.common.filter.RetryFilter;
-import com.alibaba.easyretry.common.filter.RetryFilterDiscover;
 
-import com.google.common.collect.Lists;
 import lombok.Setter;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.BeansException;
@@ -29,7 +25,8 @@ public class RetryListenerInitialize implements SmartInitializingSingleton, Appl
 	@Override
 	public void afterSingletonsInstantiated() {
 		Map<String, RetryListener> retryListenerMap = applicationContext.getBeansOfType(RetryListener.class);
-		MapUtils.emptyIfNull(retryListenerMap).values().forEach((retryListener) -> retryEventMulticaster.register(retryListener));
+		MapUtils.emptyIfNull(retryListenerMap).values().forEach(
+			(retryListener) -> retryEventMulticaster.register(retryListener));
 	}
 
 	@Override

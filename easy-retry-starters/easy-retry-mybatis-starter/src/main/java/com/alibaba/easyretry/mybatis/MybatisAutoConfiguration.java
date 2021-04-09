@@ -1,41 +1,18 @@
 package com.alibaba.easyretry.mybatis;
 
+import javax.sql.DataSource;
+
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContainer;
 import com.alibaba.easyretry.common.RetryExecutor;
-import com.alibaba.easyretry.common.access.RetrySerializerAccess;
-import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
-import com.alibaba.easyretry.common.event.RetryEventMulticaster;
-import com.alibaba.easyretry.common.filter.RetryFilterDiscover;
-import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
-import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
-import com.alibaba.easyretry.common.filter.RetryFilterRegister;
-import com.alibaba.easyretry.common.filter.RetryFilterRegisterHandler;
-import com.alibaba.easyretry.common.resolve.ExecutorSolver;
-import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
-import com.alibaba.easyretry.common.strategy.StopStrategy;
-import com.alibaba.easyretry.common.strategy.WaitStrategy;
-import com.alibaba.easyretry.core.PersistenceRetryExecutor;
-import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
-import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
-import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
-import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
-import com.alibaba.easyretry.core.filter.SimpleRetryFilterRegister;
-import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
-import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
 import com.alibaba.easyretry.extension.mybatis.access.MybatisRetryTaskAccess;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
-import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
-import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
-import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
-import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import com.alibaba.easyretry.mybatis.conifg.EasyRetryMybatisProperties;
 import com.alibaba.easyretry.starter.common.CommonAutoConfiguration;
 
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;

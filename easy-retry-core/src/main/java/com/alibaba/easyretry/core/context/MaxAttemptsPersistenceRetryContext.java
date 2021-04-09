@@ -1,5 +1,11 @@
 package com.alibaba.easyretry.core.context;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import com.alibaba.easyretry.common.Invocation;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
@@ -10,12 +16,8 @@ import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
+
 import com.google.common.collect.Maps;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -88,7 +90,6 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		return retryTask.getId() + "";
 	}
 
-
 	public static class RetryContextBuilder {
 
 		private MaxAttemptsPersistenceRetryContext retryContext;
@@ -117,7 +118,6 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 			retryContext.setInvocation(simpleMethodInvocation);
 			return this;
 		}
-
 
 		public RetryContextBuilder buildRetryArgSerializer() {
 			retryContext.setRetryArgSerializer(
