@@ -6,6 +6,12 @@ import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.common.event.RetryEvent;
+import com.alibaba.easyretry.common.event.before.PrepSaveBeforeRetryEvent;
+import com.alibaba.easyretry.common.event.on.FailureOnRetryEvent;
+import com.alibaba.easyretry.common.event.on.OnRetryEvent;
+import com.alibaba.easyretry.common.event.on.StopOnRetryEvent;
+import com.alibaba.easyretry.common.event.on.SuccessOnRetryEvent;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
 import com.alibaba.easyretry.common.filter.RetryFilterResponse;
@@ -72,15 +78,20 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 		abstractAsynPersistenceOnRetryProcessor.process();
 		HandleResultEnum handleResult = abstractAsynPersistenceOnRetryProcessor.getRetryResult();
 		PrintUtils.monitorInfo("handleResult ", context, "handleResult is " + handleResult);
+		RetryEvent onRetryEvent = null;
 		switch (handleResult) {
 			case SUCCESS:
 				finish(context);
+				onRetryEvent = new SuccessOnRetryEvent(context);
 				break;
 			case STOP:
 				stop(context);
+				onRetryEvent = new StopOnRetryEvent(context);
 				break;
 			case FAILURE:
+				onRetryEvent = new FailureOnRetryEvent(context);
 		}
+		retryConfiguration.getRetryEventMulticaster().multicast(onRetryEvent);
 		return handleResult;
 	}
 
