@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS easy_retry_task (
     executor_method_name varchar(512) NULL COMMENT '执行方法名称',
     retry_status tinyint NOT NULL COMMENT '重试状态',
     args_str varchar(3000) NULL COMMENT '执行方法参数',
-    ext_attrs varchar(3000) NULL COMMENT '扩展字段',
+    ext_attrs varchar(3000) NULL COMMENT '扩展字段'
 );
