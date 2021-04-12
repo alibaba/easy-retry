@@ -96,8 +96,4 @@
 		WHERE id=#{id}
 	</delete>
 
-	<select id="all"
-			resultMap="RetryTaskMAP">
-		SELECT * FROM easy_retry_task order by id Asc limit 500
-	</select>
 </mapper>
