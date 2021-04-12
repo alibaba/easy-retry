@@ -39,8 +39,8 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 	@Override
 	public boolean finishRetryTask(RetryTask retryTask) {
 		RetryTaskPO retryTaskPO = new RetryTaskPO().setId(retryTask.getId());
-		retryTaskDAO.deleteRetryTask(retryTaskPO);
-		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
+		return retryTaskDAO.deleteRetryTask(retryTaskPO);
+//		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
 	}
 
 	@Override
