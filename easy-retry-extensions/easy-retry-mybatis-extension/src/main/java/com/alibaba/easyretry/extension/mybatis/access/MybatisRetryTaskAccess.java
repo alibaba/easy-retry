@@ -31,27 +31,6 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		return retryTaskDAO.saveRetryTask(retryTaskPO);
 	}
 
-	private RetryTaskPO covert(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskPO.setSharding(HostUtils.getHostIP());
-		retryTaskPO.setBizId(retryTask.getBizId());
-		retryTaskPO.setExecutorName(retryTask.getExecutorName());
-		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
-
-		Map<String, String> extAttrs = retryTask.getExtAttrs();
-		if (Objects.isNull(extAttrs)) {
-			extAttrs = Maps.newHashMap();
-		}
-		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
-		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
-		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
-		retryTaskPO.setArgsStr(retryTask.getArgsStr());
-		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
-		retryTaskPO.setGmtModified(retryTask.getGmtModified());
-		return retryTaskPO;
-	}
-
 	@Override
 	public boolean handlingRetryTask(RetryTask retryTask) {
 		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.HANDLING);
@@ -59,8 +38,7 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 
 	@Override
 	public boolean finishRetryTask(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
+		RetryTaskPO retryTaskPO = new RetryTaskPO().setId(retryTask.getId());
 		retryTaskDAO.deleteRetryTask(retryTaskPO);
 		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
 	}
@@ -106,4 +84,26 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setExtAttrs(JSON.parseObject(retryTaskPO.getExtAttrs(),new TypeReference<Map<String, String>>() {}));
 		return retryTask;
 	}
+
+	private RetryTaskPO covert(RetryTask retryTask) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskPO.setSharding(HostUtils.getHostIP());
+		retryTaskPO.setBizId(retryTask.getBizId());
+		retryTaskPO.setExecutorName(retryTask.getExecutorName());
+		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
+
+		Map<String, String> extAttrs = retryTask.getExtAttrs();
+		if (Objects.isNull(extAttrs)) {
+			extAttrs = Maps.newHashMap();
+		}
+		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
+		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
+		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
+		retryTaskPO.setArgsStr(retryTask.getArgsStr());
+		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
+		retryTaskPO.setGmtModified(retryTask.getGmtModified());
+		return retryTaskPO;
+	}
+
 }
