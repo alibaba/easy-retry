@@ -13,7 +13,7 @@ public class PersistenceRetryerBuilder<T> {
 
 	public PersistenceRetryerBuilder(RetryConfiguration retryConfiguration) {
 		RetryerInfo<T> retryerInfo = new RetryerInfo<>();
-		persistenceRetryer = new PersistenceRetryer<T>(retryerInfo, retryConfiguration);
+		persistenceRetryer = new PersistenceRetryer<T>(retryerInfo);
 	}
 
 	public static <T> PersistenceRetryerBuilder<T> of(RetryConfiguration retryConfiguration) {

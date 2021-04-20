@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.core.process.asyn.before;
+package com.alibaba.easyretry.core.process.async.before;
 
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
@@ -7,7 +7,7 @@ import com.alibaba.easyretry.common.event.before.AfterSaveBeforeRetryEvent;
 import com.alibaba.easyretry.common.event.before.PrepSaveBeforeRetryEvent;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 import com.alibaba.easyretry.common.serializer.ArgSerializerInfo;
-import com.alibaba.easyretry.core.process.asyn.AbstractAsynPersistenceProcessor;
+import com.alibaba.easyretry.core.process.async.AbstractAsyncPersistenceProcessor;
 import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.Map;
@@ -18,26 +18,27 @@ import lombok.extern.slf4j.Slf4j;
  * @author Created by wuhao on 2021/3/19.
  */
 @Slf4j
-public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
-	AbstractAsynPersistenceProcessor<R> {
+public abstract class AbstractAsyncPersistenceBeforeRetryProcessor<R> extends
+	AbstractAsyncPersistenceProcessor<R> {
 
 	protected RetryerInfo<R> retryerInfo;
 
-	private RetryConfiguration retryConfiguration;
+//	private RetryConfiguration retryConfiguration;
 
-	public AbstractAsynPersistenceBeforeRetryProcessor(
-		RetryerInfo<R> retryerInfo, RetryConfiguration retryConfiguration) {
+	public AbstractAsyncPersistenceBeforeRetryProcessor(
+		RetryerInfo<R> retryerInfo) {
 		this.retryerInfo = retryerInfo;
-		this.retryConfiguration = retryConfiguration;
+//		this.retryConfiguration = retryConfiguration;
 	}
 
 	@Override
 	public void doProcess() {
+		RetryConfiguration retryConfiguration = retryerInfo.getRetryConfiguration();
 		ArgSerializerInfo argSerializerInfo = new ArgSerializerInfo();
 		argSerializerInfo.setArgs(retryerInfo.getArgs());
 		argSerializerInfo.setExecutorMethodName(retryerInfo.getExecutorMethodName());
 		argSerializerInfo.setExecutorName(retryerInfo.getExecutorName());
-		String argsStr = retryerInfo.getRetryConfiguration().getRetrySerializerAccess()
+		String argsStr = retryConfiguration.getRetrySerializerAccess()
 			.getCurrentGlobalRetrySerializer().serialize(argSerializerInfo);
 
 		RetryTask retryTask = new RetryTask();
@@ -53,7 +54,7 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 		Map<String, String> extAttrs = Maps.newHashMap();
 		if (Objects.nonNull(retryerInfo.getResultPredicate())) {
 			extAttrs.put("resultPredicateSerializer",
-				retryerInfo.getRetryConfiguration().getResultPredicateSerializer()
+				retryConfiguration.getResultPredicateSerializer()
 					.serialize(retryerInfo.getResultPredicate()));
 		}
 		retryTask.setExtAttrs(extAttrs);
@@ -61,7 +62,7 @@ public abstract class AbstractAsynPersistenceBeforeRetryProcessor<R> extends
 		PrepSaveBeforeRetryEvent prepSaveBeforeRetryEvent = new PrepSaveBeforeRetryEvent(retryTask);
 		retryConfiguration.getRetryEventMulticaster().multicast(prepSaveBeforeRetryEvent);
 
-		retryerInfo.getRetryConfiguration().getRetryTaskAccess().saveRetryTask(retryTask);
+		retryConfiguration.getRetryTaskAccess().saveRetryTask(retryTask);
 
 		AfterSaveBeforeRetryEvent afterSaveBeforeRetryEvent = new AfterSaveBeforeRetryEvent(
 			retryTask);

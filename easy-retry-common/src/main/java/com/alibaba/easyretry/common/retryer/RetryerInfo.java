@@ -3,11 +3,13 @@ package com.alibaba.easyretry.common.retryer;
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author Created by wuhao on 2021/3/19.
  */
 @Data
+@Accessors(chain = true)
 public class RetryerInfo<T> {
 
 	/**
