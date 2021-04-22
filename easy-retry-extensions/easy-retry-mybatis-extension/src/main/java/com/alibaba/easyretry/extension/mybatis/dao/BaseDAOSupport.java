@@ -18,7 +18,14 @@ public abstract class BaseDAOSupport {
 
 	protected <T> T execute(Function<SqlSession, T> function) {
 		Objects.requireNonNull(sqlSessionFactory, "require sqlSessionFactory non null");
-		try (final SqlSession session = sqlSessionFactory.openSession()) {
+		try (final SqlSession session = sqlSessionFactory.openSession(false)) {
+			return function.apply(session);
+		}
+	}
+
+	protected <T> T execute(Function<SqlSession, T> function, boolean autoCommit) {
+		Objects.requireNonNull(sqlSessionFactory, "require sqlSessionFactory non null");
+		try (final SqlSession session = sqlSessionFactory.openSession(autoCommit)) {
 			return function.apply(session);
 		}
 	}

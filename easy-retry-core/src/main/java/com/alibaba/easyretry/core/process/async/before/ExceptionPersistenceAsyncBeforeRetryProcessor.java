@@ -1,6 +1,5 @@
-package com.alibaba.easyretry.core.process.asyn.before;
+package com.alibaba.easyretry.core.process.async.before;
 
-import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 import java.util.Objects;
 import org.apache.commons.lang3.ClassUtils;
@@ -8,14 +7,14 @@ import org.apache.commons.lang3.ClassUtils;
 /**
  * @author Created by wuhao on 2021/3/19.
  */
-public class ExceptionPersistenceAsynBeforeRetryProcessor<R> extends
-	AbstractAsynPersistenceBeforeRetryProcessor<R> {
+public class ExceptionPersistenceAsyncBeforeRetryProcessor<R> extends
+	AbstractAsyncPersistenceBeforeRetryProcessor<R> {
 
 	private Throwable throwable;
 
-	public ExceptionPersistenceAsynBeforeRetryProcessor(Throwable throwable,
-		RetryerInfo<R> retryerInfo, RetryConfiguration retryConfiguration) {
-		super(retryerInfo, retryConfiguration);
+	public ExceptionPersistenceAsyncBeforeRetryProcessor(Throwable throwable,
+		RetryerInfo<R> retryerInfo) {
+		super(retryerInfo);
 		this.throwable = throwable;
 	}
 

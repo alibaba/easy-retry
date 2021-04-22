@@ -95,4 +95,5 @@
 		DELETE FROM easy_retry_task
 		WHERE id=#{id}
 	</delete>
+
 </mapper>
