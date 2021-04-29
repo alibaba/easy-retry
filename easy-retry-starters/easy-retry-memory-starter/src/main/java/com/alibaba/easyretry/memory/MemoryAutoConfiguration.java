@@ -12,10 +12,13 @@ import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
+import com.alibaba.easyretry.core.DegradeAbleRetryExecutor;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.access.MemoryRetryTaskAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
+import com.alibaba.easyretry.core.degrade.DefaultEasyRetryDegradeHelper;
+import com.alibaba.easyretry.core.degrade.EasyRetryDegradeHelper;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
 import com.alibaba.easyretry.core.filter.DefaultRetryInvocationHandler;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
@@ -140,7 +143,31 @@ public class MemoryAutoConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(EasyRetryDegradeHelper.class)
+	public EasyRetryDegradeHelper defaultEasyRetryDegradeHelper() {
+		EasyRetryDegradeHelper defaultEasyRetryDegradeHelper = new DefaultEasyRetryDegradeHelper();
+		return defaultEasyRetryDegradeHelper;
+	}
+
+	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
+	@ConditionalOnProperty(name = "spring.easyretry.degrade.enabled", havingValue = "true", matchIfMissing = false)
+	public DegradeAbleRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
+														 RetryInvocationHandler retryInvocationHandler,
+														 EasyRetryDegradeHelper defaultEasyRetryDegradeHelper) {
+		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
+		persistenceRetryExecutor.setRetryConfiguration(configuration);
+		persistenceRetryExecutor.setRetryInvocationHandler(retryInvocationHandler);
+
+		DegradeAbleRetryExecutor degradeAbleRetryExecutor = new DegradeAbleRetryExecutor();
+		degradeAbleRetryExecutor.setRetryExecutor(persistenceRetryExecutor);
+		degradeAbleRetryExecutor.setEasyRetryDegradeHelper(defaultEasyRetryDegradeHelper);
+		return degradeAbleRetryExecutor;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RetryExecutor.class)
+	@ConditionalOnProperty(name = "spring.easyretry.degrade.enabled", havingValue = "false", matchIfMissing = true)
 	public PersistenceRetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
 		RetryInvocationHandler retryInvocationHandler) {
 		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
