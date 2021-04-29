@@ -3,9 +3,6 @@ package com.alibaba.easyretry.common.serializer;
 /**
  * Retry 序列化器
  */
-public interface RetryArgSerializer {
+public interface RetryArgSerializer extends EasyRetrySerializer<ArgSerializerInfo> {
 
-	String serialize(ArgSerializerInfo argSerializerInfo);
-
-	Object[] deSerialize(ArgDeSerializerInfo argDeSerializerInfo);
 }

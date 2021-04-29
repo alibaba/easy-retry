@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
  */
 public class MemoryRetryTaskAccess implements RetryTaskAccess {
 
-	private static Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
+	private static final Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
 
-	private static AtomicLong atomicLong = new AtomicLong();
+	private static final AtomicLong atomicLong = new AtomicLong();
 
 	@Override
 	public boolean saveRetryTask(RetryTask retryTask) {
@@ -47,9 +47,11 @@ public class MemoryRetryTaskAccess implements RetryTaskAccess {
 	}
 
 	@Override
-	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+	public List<RetryTask> listAvailableTasks(Long lastId) {
 		return retryTaskMap.values().stream()
 			.filter((retryTask) -> retryTask.getStatus() == RetryTaskStatusEnum.INIT)
+			.filter((retryTask) -> retryTask.getId() > lastId)
+			.sorted((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1)
 			.collect(Collectors.toList());
 	}
 }

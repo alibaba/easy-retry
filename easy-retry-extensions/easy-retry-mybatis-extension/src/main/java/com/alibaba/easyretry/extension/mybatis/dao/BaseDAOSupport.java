@@ -1,18 +1,32 @@
 package com.alibaba.easyretry.extension.mybatis.dao;
 
-import lombok.Setter;
+import java.util.Objects;
+import java.util.function.Function;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.support.SqlSessionDaoSupport;
 
 /**
  * @author wuhao
  */
-public class BaseDAOSupport extends SqlSessionDaoSupport {
+public abstract class BaseDAOSupport {
 
-	@Setter
-	private SqlSessionFactory sqlSessionFactory;
+	private final SqlSessionFactory sqlSessionFactory;
 
-	public void init() {
-		super.setSqlSessionFactory(sqlSessionFactory);
+	public BaseDAOSupport(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	protected <T> T execute(Function<SqlSession, T> function) {
+		Objects.requireNonNull(sqlSessionFactory, "require sqlSessionFactory non null");
+		try (final SqlSession session = sqlSessionFactory.openSession(false)) {
+			return function.apply(session);
+		}
+	}
+
+	protected <T> T execute(Function<SqlSession, T> function, boolean autoCommit) {
+		Objects.requireNonNull(sqlSessionFactory, "require sqlSessionFactory non null");
+		try (final SqlSession session = sqlSessionFactory.openSession(autoCommit)) {
+			return function.apply(session);
+		}
 	}
 }

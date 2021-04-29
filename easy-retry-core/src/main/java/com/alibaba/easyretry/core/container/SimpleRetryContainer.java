@@ -3,10 +3,10 @@ package com.alibaba.easyretry.core.container;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContainer;
 import com.alibaba.easyretry.common.RetryContext;
-import com.alibaba.easyretry.common.RetryContext.RetryContextBuilder;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext.RetryContextBuilder;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -26,16 +26,13 @@ public class SimpleRetryContainer implements RetryContainer {
 
 	private RetryConfiguration retryConfiguration;
 
-	private String namespace;
-
 	private RetryExecutor retryExecutor;
 
 	public SimpleRetryContainer() {
 	}
 
 	public SimpleRetryContainer(
-		RetryConfiguration retryConfiguration, String namespace, RetryExecutor retryExecutor) {
-		this.namespace = namespace;
+		RetryConfiguration retryConfiguration, RetryExecutor retryExecutor) {
 		this.retryConfiguration = retryConfiguration;
 		this.retryExecutor = retryExecutor;
 	}
@@ -71,7 +68,7 @@ public class SimpleRetryContainer implements RetryContainer {
 
 		private static final long MAX_SLEEP_TIME_MILLISECONDS = 10 * 1000L;
 		private static final long SLEEP_BASE_TIME_MILLISECONDS = 1000L;
-		private BlockingQueue<RetryContext> queue;
+		private final BlockingQueue<RetryContext> queue;
 		private long sleepTimes = 0L;
 
 		private TaskConsumer(BlockingQueue<RetryContext> queue) {
@@ -84,9 +81,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				doExecute();
 				long totalTime = sleepTimes * SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(
-						totalTime > MAX_SLEEP_TIME_MILLISECONDS ? MAX_SLEEP_TIME_MILLISECONDS
-							: totalTime);
+					TimeUnit.MILLISECONDS.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}
@@ -124,11 +119,11 @@ public class SimpleRetryContainer implements RetryContainer {
 		private static final long MAX_SLEEP_TIME_MILLISECONDS = 10 * 1000L;
 		private static final long SLEEP_BASE_TIME_MILLISECONDS = 1000L;
 
-		private BlockingQueue<RetryContext> queue;
+		private final BlockingQueue<RetryContext> queue;
 
 		private long sleepTimes = 0L;
 
-		private volatile Long lastId = 0L;
+		private volatile Long lastId = -1L;
 
 		public TaskProducer(BlockingQueue<RetryContext> queue) {
 			this.queue = queue;
@@ -141,9 +136,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				long totalTime =
 					sleepTimes * SLEEP_BASE_TIME_MILLISECONDS + SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(
-						totalTime > MAX_SLEEP_TIME_MILLISECONDS ? MAX_SLEEP_TIME_MILLISECONDS
-							: totalTime);
+					TimeUnit.MILLISECONDS.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}
@@ -157,7 +150,7 @@ public class SimpleRetryContainer implements RetryContainer {
 			}
 
 			List<RetryTask> tasks =
-				retryConfiguration.getRetryTaskAccess().listAvailableTasks(namespace, lastId);
+				retryConfiguration.getRetryTaskAccess().listAvailableTasks(lastId);
 			if (CollectionUtils.isEmpty(tasks)) {
 				sleepTimes++;
 				return;
@@ -176,9 +169,7 @@ public class SimpleRetryContainer implements RetryContainer {
 					lastId = task.getId();
 					RetryContext retryContext =
 						new RetryContextBuilder(retryConfiguration, task)
-							.buildArgs()
-							.buildExecutor()
-							.buildMethod()
+							.buildInvocation()
 							.buildRetryArgSerializer()
 							.buildStopStrategy()
 							.buildWaitStrategy()
@@ -186,14 +177,15 @@ public class SimpleRetryContainer implements RetryContainer {
 							.buildMaxRetryTimes()
 							.buildOnFailureMethod()
 							.buildPriority(0L)
+							.buildResultPredicateSerializer()
 							.build();
 					retryContext.start();
 
 					queue.put(retryContext);
-					log.warn("add retry task to queue. namespace:{}, task:{}", namespace,
+					log.warn("add retry task to queue, task:{}",
 						task.getId());
 				} catch (Throwable e) {
-					log.error("add retry task to queue. namespace:{}, task:{}", namespace,
+					log.error("add retry task to queue , task:{}",
 						task.getId(), e);
 					// 出现异常task将放不进queue中，就不会再重试了
 					// 是否需要更新task的状态，并且加上失败的原因？

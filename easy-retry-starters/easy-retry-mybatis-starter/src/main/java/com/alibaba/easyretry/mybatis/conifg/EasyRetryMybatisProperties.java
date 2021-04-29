@@ -8,9 +8,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "spring.easyretry.mybatis")
 @Data
-public class MybatisProperties {
+public class EasyRetryMybatisProperties {
 
 	private Integer maxRetryTimes = 5;
 
-	private String namespace = "easy-retry";
 }

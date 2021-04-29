@@ -8,46 +8,27 @@ import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 /**
  * @author Created by wuhao on 2020/11/8.
  */
+@AllArgsConstructor
 public class MybatisRetryTaskAccess implements RetryTaskAccess {
 
-	@Setter
-	private RetryTaskDAO retryTaskDAO;
+	private final RetryTaskDAO retryTaskDAO;
 
 	@Override
 	public boolean saveRetryTask(RetryTask retryTask) {
 		RetryTaskPO retryTaskPO = covert(retryTask);
 		return retryTaskDAO.saveRetryTask(retryTaskPO);
-	}
-
-	private RetryTaskPO covert(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskPO.setSharding(HostUtils.getHostIP());
-		retryTaskPO.setBizId(retryTask.getBizId());
-		retryTaskPO.setExecutorName(retryTask.getExecutorName());
-		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
-
-		Map<String, String> ext = Maps.newHashMap();
-		ext.put("onFailureMethod", retryTask.getOnFailureMethod());
-		retryTaskPO.setExtAttrs(JSON.toJSONString(ext));
-
-		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
-		retryTaskPO.setExtAttrs(retryTask.getExtAttrs());
-		retryTaskPO.setArgsStr(retryTask.getArgsStr());
-		retryTaskPO.setNamespace(retryTask.getNamespace());
-		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
-		retryTaskPO.setGmtModified(retryTask.getGmtModified());
-		return retryTaskPO;
 	}
 
 	@Override
@@ -57,10 +38,9 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 
 	@Override
 	public boolean finishRetryTask(RetryTask retryTask) {
-		RetryTaskPO retryTaskPO = new RetryTaskPO();
-		retryTaskPO.setId(retryTask.getId());
-		retryTaskDAO.deleteRetryTask(retryTaskPO);
-		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
+		RetryTaskPO retryTaskPO = new RetryTaskPO().setId(retryTask.getId());
+		return retryTaskDAO.deleteRetryTask(retryTaskPO);
+//		return updateRetryTaskStatus(retryTask, RetryTaskStatusEnum.FINISH);
 	}
 
 	@Override
@@ -76,7 +56,7 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 	}
 
 	@Override
-	public List<RetryTask> listAvailableTasks(String namespace, Long lastId) {
+	public List<RetryTask> listAvailableTasks(Long lastId) {
 		RetryTaskQuery retryTaskQuery = new RetryTaskQuery();
 		retryTaskQuery.setRetryStatus(
 			Lists.newArrayList(
@@ -96,11 +76,34 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		retryTask.setId(retryTaskPO.getId());
 		retryTask.setStatus(RetryTaskStatusEnum.fromCode(retryTaskPO.getRetryStatus()));
 		retryTask.setArgsStr(retryTaskPO.getArgsStr());
-		retryTask.setNamespace(retryTaskPO.getNamespace());
 		retryTask.setGmtCreate(retryTaskPO.getGmtCreate());
 		retryTask.setGmtModified(retryTaskPO.getGmtModified());
 		retryTask.setExecutorName(retryTaskPO.getExecutorName());
 		retryTask.setExecutorMethodName(retryTaskPO.getExecutorMethodName());
+		retryTask.setBizId(retryTaskPO.getBizId());
+		retryTask.setExtAttrs(JSON.parseObject(retryTaskPO.getExtAttrs(),new TypeReference<Map<String, String>>() {}));
 		return retryTask;
 	}
+
+	private RetryTaskPO covert(RetryTask retryTask) {
+		RetryTaskPO retryTaskPO = new RetryTaskPO();
+		retryTaskPO.setId(retryTask.getId());
+		retryTaskPO.setSharding(HostUtils.getHostIP());
+		retryTaskPO.setBizId(retryTask.getBizId());
+		retryTaskPO.setExecutorName(retryTask.getExecutorName());
+		retryTaskPO.setExecutorMethodName(retryTask.getExecutorMethodName());
+
+		Map<String, String> extAttrs = retryTask.getExtAttrs();
+		if (Objects.isNull(extAttrs)) {
+			extAttrs = Maps.newHashMap();
+		}
+		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
+		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
+		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
+		retryTaskPO.setArgsStr(retryTask.getArgsStr());
+		retryTaskPO.setGmtCreate(retryTask.getGmtCreate());
+		retryTaskPO.setGmtModified(retryTask.getGmtModified());
+		return retryTaskPO;
+	}
+
 }

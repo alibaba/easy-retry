@@ -10,16 +10,17 @@ import java.lang.annotation.Target;
 public @interface EasyRetryable {
 
 	/**
-	 * 重试失败后最终调用的方法,方法格式应该为 public void onRetryFailed(RetryContext context)
+	 * 处理完成以后是否需要把异常重新抛出
 	 *
-	 * @return
+	 * @return 是否需要抛出异
 	 */
-	String onFailureMethod() default "";
+	boolean reThrowException() default false;
+
 
 	/**
-	 * 最大重试次数
-	 *
-	 * @return
+	 * 通过结果判断是否重试
 	 */
-	int maxRetryTimes() default 10;
+	String resultCondition() default "";
+
+
 }
