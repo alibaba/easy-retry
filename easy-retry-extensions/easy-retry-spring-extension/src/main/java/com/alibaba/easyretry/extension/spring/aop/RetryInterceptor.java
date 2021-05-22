@@ -4,6 +4,8 @@ import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryIdentify;
 import com.alibaba.easyretry.core.PersistenceRetryer;
 import com.alibaba.easyretry.core.PersistenceRetryerBuilder;
+import com.alibaba.easyretry.extension.spring.SPELResultPredicate;
+
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -26,25 +28,25 @@ public class RetryInterceptor {
 		if (RetryIdentify.isOnRetry()) {
 			return invocation.proceed();
 		}
-		MethodSignature signature = (MethodSignature) invocation.getSignature();
+		MethodSignature signature = (MethodSignature)invocation.getSignature();
 		PersistenceRetryerBuilder<Object> builder = PersistenceRetryerBuilder.of(retryConfiguration)
 			.withExecutorName(getBeanId(signature.getDeclaringType()))
 			.withExecutorMethodName(signature.getMethod().getName())
 			.withArgs(invocation.getArgs())
 			.withConfiguration(retryConfiguration)
-//			.withOnFailureMethod(retryable.onFailureMethod())
-//			.withNamespace(namespace)
+			//			.withOnFailureMethod(retryable.onFailureMethod())
+			//			.withNamespace(namespace)
 			.withReThrowException(retryable.reThrowException());
 		if (StringUtils.isNotBlank(retryable.resultCondition())) {
 			builder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
 		}
 
-//		if (StringUtils.isNotBlank(retryable.bizId())) {
-//			SPELParamPredicate param = new SPELParamPredicate(retryable.bizId(),
-//				signature.getMethod());
-//			String bizId = param.apply(invocation.getArgs());
-//			builder.withBizId(bizId);
-//		}
+		//		if (StringUtils.isNotBlank(retryable.bizId())) {
+		//			SPELParamPredicate param = new SPELParamPredicate(retryable.bizId(),
+		//				signature.getMethod());
+		//			String bizId = param.apply(invocation.getArgs());
+		//			builder.withBizId(bizId);
+		//		}
 		PersistenceRetryer<Object> persistenceRetryer = builder.build();
 		return persistenceRetryer.call(invocation::proceed);
 	}

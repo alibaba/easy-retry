@@ -1,8 +1,8 @@
 package com.alibaba.easyretry.extension.mybatis.common.utils;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class HostUtilsTest {
 

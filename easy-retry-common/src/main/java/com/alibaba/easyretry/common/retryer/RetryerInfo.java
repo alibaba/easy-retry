@@ -2,6 +2,7 @@ package com.alibaba.easyretry.common.retryer;
 
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

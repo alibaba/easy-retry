@@ -1,5 +1,7 @@
 package com.alibaba.easyretry.extension.mybatis.dao;
 
+import java.util.List;
+
 import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 

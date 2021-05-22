@@ -1,6 +1,7 @@
-package com.alibaba.easyretry.extension.spring.aop;
+package com.alibaba.easyretry.extension.spring;
 
 import com.alibaba.easyretry.common.AbstractResultPredicate;
+
 import lombok.Data;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -20,7 +21,6 @@ public class SPELResultPredicate<T> extends AbstractResultPredicate<T> {
 
 	public SPELResultPredicate() {
 	}
-
 
 	@Override
 	public Boolean apply(T result) {

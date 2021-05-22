@@ -16,11 +16,9 @@ public @interface EasyRetryable {
 	 */
 	boolean reThrowException() default false;
 
-
 	/**
 	 * 通过结果判断是否重试
 	 */
 	String resultCondition() default "";
-
 
 }

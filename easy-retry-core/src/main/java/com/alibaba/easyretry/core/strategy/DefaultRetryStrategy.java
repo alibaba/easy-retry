@@ -1,13 +1,15 @@
 package com.alibaba.easyretry.core.strategy;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
+
 import com.google.common.collect.Maps;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,7 +22,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 
 	@Override
 	public boolean shouldStop(RetryContext context) {
-		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+			= (MaxAttemptsPersistenceRetryContext)context;
 		Integer retryTimes = retryTimeMap.get(context.getId());
 		if (Objects.isNull(retryTimes)) {
 			retryTimes = 1;
@@ -35,7 +38,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 
 	@Override
 	public boolean shouldWait(RetryContext context) {
-		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+			= (MaxAttemptsPersistenceRetryContext)context;
 		internalTimeMap.putIfAbsent(context.getId(), 0L);
 		Long priority = maxAttemptsPersistenceRetryContext.getNextRetryTime(TimeUnit.MILLISECONDS);
 		if (Objects.isNull(priority)) {
@@ -46,7 +50,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 
 	@Override
 	public void backOff(RetryContext context) {
-		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext
+			= (MaxAttemptsPersistenceRetryContext)context;
 
 		Integer retryTime = retryTimeMap.get(context.getId());
 		Long lastInternalTime = internalTimeMap.get(context.getId());

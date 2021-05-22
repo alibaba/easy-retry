@@ -1,7 +1,9 @@
 package com.alibaba.easyretry.extension.mybatis.po;
 
-import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import java.util.Date;
+
+import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

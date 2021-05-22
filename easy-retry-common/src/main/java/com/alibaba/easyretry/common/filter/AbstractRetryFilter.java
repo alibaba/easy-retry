@@ -7,7 +7,6 @@ public abstract class AbstractRetryFilter implements RetryFilter {
 
 	protected RetryFilter next;
 
-
 	@Override
 	public void setNext(RetryFilter next) {
 		this.next = next;

@@ -1,10 +1,13 @@
 package com.alibaba.easyretry.core.event;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.alibaba.easyretry.common.event.RetryEvent;
 import com.alibaba.easyretry.common.event.RetryEventMulticaster;
 import com.alibaba.easyretry.common.event.RetryListener;
+
 import com.google.common.collect.Lists;
-import java.util.List;
 import lombok.Setter;
 
 /**
@@ -13,8 +16,7 @@ import lombok.Setter;
 public class SimpleRetryEventMulticaster implements RetryEventMulticaster {
 
 	@Setter
-	private static List<RetryListener> listenerCaches = Lists.newArrayList();
-
+	private List<RetryListener> listenerCaches = Lists.newArrayList();
 
 	@Override
 	public void register(RetryListener listener) {
@@ -23,6 +25,9 @@ public class SimpleRetryEventMulticaster implements RetryEventMulticaster {
 
 	@Override
 	public void multicast(RetryEvent retryEvent) {
+		if (Objects.isNull(retryEvent)) {
+			return;
+		}
 		listenerCaches.forEach((retryListener) -> retryListener.onRetryEvent(retryEvent));
 	}
 }

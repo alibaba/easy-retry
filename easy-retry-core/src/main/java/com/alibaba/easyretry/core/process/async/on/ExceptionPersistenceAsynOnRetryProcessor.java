@@ -11,7 +11,7 @@ public class ExceptionPersistenceAsynOnRetryProcessor<R> extends
 	private final Throwable throwable;
 
 	public ExceptionPersistenceAsynOnRetryProcessor(Throwable throwable,
-		MaxAttemptsPersistenceRetryContext context) {
+													MaxAttemptsPersistenceRetryContext context) {
 		super(context);
 		this.throwable = throwable;
 	}
