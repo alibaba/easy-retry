@@ -1,10 +1,12 @@
 package com.alibaba.easyretry.common.event.before;
 
-import com.alibaba.easyretry.common.entity.RetryTask;
-import com.alibaba.easyretry.common.event.RetryEvent;
-import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Objects;
+
+import com.alibaba.easyretry.common.entity.RetryTask;
+import com.alibaba.easyretry.common.event.RetryEvent;
+
+import com.google.common.collect.Maps;
 
 /**
  * @author Created by wuhao on 2021/3/25.
@@ -32,6 +34,5 @@ public abstract class BeforeRetryEvent implements RetryEvent {
 	public String getName() {
 		return this.getClass().getSimpleName();
 	}
-
 
 }

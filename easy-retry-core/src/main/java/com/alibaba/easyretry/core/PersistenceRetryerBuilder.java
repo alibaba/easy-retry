@@ -70,7 +70,6 @@ public class PersistenceRetryerBuilder<T> {
 		return this;
 	}
 
-
 	public PersistenceRetryer<T> build() {
 		return persistenceRetryer;
 	}

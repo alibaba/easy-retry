@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
@@ -14,7 +14,7 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<revision>1.0.0.RC3</revision>
+		<revision>1.0.0.RC4</revision>
 		<slf4j.version>1.7.30</slf4j.version>
 		<lombok.version>1.18.18</lombok.version>
 		<guava.version>16.0</guava.version>
@@ -140,6 +140,12 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>easy-retry-mybatis-extension</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>easy-retry-starter-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

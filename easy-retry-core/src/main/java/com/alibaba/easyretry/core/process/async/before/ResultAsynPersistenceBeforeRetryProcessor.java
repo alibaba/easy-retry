@@ -1,8 +1,9 @@
 package com.alibaba.easyretry.core.process.async.before;
 
+import java.util.Objects;
+
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
-import java.util.Objects;
 
 /**
  * @author Created by wuhao on 2021/3/19.
