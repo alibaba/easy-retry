@@ -2,12 +2,11 @@ package com.alibaba.easyretry.core;
 
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.SCallable;
-import com.alibaba.easyretry.common.processor.AsynPersistenceProcessor;
+import com.alibaba.easyretry.common.processor.AsyncPersistenceProcessor;
 import com.alibaba.easyretry.common.retryer.Retryer;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
-import com.alibaba.easyretry.core.process.asyn.before.ExceptionPersistenceAsynBeforeRetryProcessor;
-import com.alibaba.easyretry.core.process.asyn.before.ResultAsynPersistenceBeforeRetryProcessor;
-
+import com.alibaba.easyretry.core.process.async.before.ExceptionPersistenceAsyncBeforeRetryProcessor;
+import com.alibaba.easyretry.core.process.async.before.ResultAsynPersistenceBeforeRetryProcessor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,19 +19,18 @@ public class PersistenceRetryer<V> implements Retryer<V> {
 
 	private RetryerInfo<V> retryerInfo;
 
-	private RetryConfiguration retryConfiguration;
+//	private RetryConfiguration retryConfiguration;
 
-	public PersistenceRetryer(RetryerInfo<V> retryerInfo, RetryConfiguration retryConfiguration) {
-		this.retryConfiguration = retryConfiguration;
+	public PersistenceRetryer(RetryerInfo<V> retryerInfo) {
 		this.retryerInfo = retryerInfo;
 	}
 
 	public V call(SCallable<V> callable) throws Throwable {
-		AsynPersistenceProcessor<V> asynPersistenceProcessor;
+		AsyncPersistenceProcessor<V> asynPersistenceProcessor;
 		try {
 			V result = callable.call();
 			asynPersistenceProcessor = new ResultAsynPersistenceBeforeRetryProcessor<>(result,
-				retryerInfo, retryConfiguration);
+				retryerInfo);
 		} catch (Throwable e) {
 			log.error(
 				"call method error executorMethodName is {} executorName name is {} args is {}",
@@ -40,8 +38,8 @@ public class PersistenceRetryer<V> implements Retryer<V> {
 				retryerInfo.getExecutorName(),
 				retryerInfo.getArgs(),
 				e);
-			asynPersistenceProcessor = new ExceptionPersistenceAsynBeforeRetryProcessor<>(e,
-				retryerInfo, retryConfiguration);
+			asynPersistenceProcessor = new ExceptionPersistenceAsyncBeforeRetryProcessor<>(e,
+				retryerInfo);
 		}
 		asynPersistenceProcessor.process();
 		return asynPersistenceProcessor.getResult();

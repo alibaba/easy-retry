@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.core.process.asyn.on;
+package com.alibaba.easyretry.core.process.async.on;
 
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Created by wuhao on 2021/3/19.
  */
 public class ResultAsynPersistenceOnRetryProcessor<R> extends
-	AbstractAsynPersistenceOnRetryProcessor<R> {
+    AbstractAsyncPersistenceOnRetryProcessor<R> {
 
 	private R result;
 

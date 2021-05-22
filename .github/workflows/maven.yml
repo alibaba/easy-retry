@@ -3,13 +3,16 @@
 
 name: Java CI with Maven
 
-on: [ push, pull_request ]
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
 
 jobs:
     build:
-
         runs-on: ubuntu-latest
-
         steps:
             -   uses: actions/checkout@v2
             -   name: Set up JDK 1.8
@@ -18,4 +21,3 @@ jobs:
                     java-version: 1.8
             -   name: Build with Maven
                 run: mvn -B package --file pom.xml
-

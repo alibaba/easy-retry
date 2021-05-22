@@ -17,8 +17,8 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 
 	private static final Long MAX_INTERNAL_TIME = 15 * 60 * 1000L;
 	private static final Long BASE_INTERNAL_TIME = 5000L;
-	private Map<String, Long> internalTimeMap = Maps.newConcurrentMap();
-	private Map<String, Integer> retryTimeMap = Maps.newConcurrentMap();
+	private final Map<String, Long> internalTimeMap = Maps.newConcurrentMap();
+	private final Map<String, Integer> retryTimeMap = Maps.newConcurrentMap();
 
 	@Override
 	public boolean shouldStop(RetryContext context) {
@@ -31,6 +31,7 @@ public class DefaultRetryStrategy implements StopStrategy, WaitStrategy {
 		log.warn(
 			"shouldStop retryTime is {} id is {} maxRetryTime is {}",
 			retryTimes,
+			context.getId(),
 			maxAttemptsPersistenceRetryContext.getMaxRetryTimes());
 		return retryTimes >= maxAttemptsPersistenceRetryContext.getMaxRetryTimes();
 	}

@@ -5,6 +5,8 @@ import java.util.List;
 import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
@@ -18,10 +20,10 @@ public class RetryTaskDAOImpl extends BaseDAOSupport implements RetryTaskDAO {
 
 	@Override
 	public boolean saveRetryTask(RetryTaskPO retryTaskPO) {
-		return execute(sqlSession -> sqlSession.insert(
-			"com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.saveRetryTask",
-			retryTaskPO)
-			> 0);
+		return execute(
+			sqlSession ->
+				sqlSession.insert("com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.saveRetryTask", retryTaskPO) > 0
+			, true);
 	}
 
 	@Override
@@ -36,20 +38,20 @@ public class RetryTaskDAOImpl extends BaseDAOSupport implements RetryTaskDAO {
 	@Override
 	public boolean updateRetryTask(RetryTaskPO retryTaskPO) {
 		return execute(sqlSession ->
-			sqlSession.update(
-				"com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.updateRetryTask",
-				retryTaskPO)
-				> 0
-		);
+				sqlSession.update(
+					"com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.updateRetryTask",
+					retryTaskPO)
+					> 0
+			, true);
 	}
 
 	@Override
 	public boolean deleteRetryTask(RetryTaskPO retryTaskPO) {
 		return execute(sqlSession ->
-			sqlSession.delete(
-				"com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.deleteRetryTask",
-				retryTaskPO)
-				> 0
-		);
+				sqlSession.delete(
+					"com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO.deleteRetryTask",
+					retryTaskPO)
+					> 0
+			, true);
 	}
 }
