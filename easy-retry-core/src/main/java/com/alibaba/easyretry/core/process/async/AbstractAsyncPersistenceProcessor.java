@@ -19,7 +19,6 @@ public abstract class AbstractAsyncPersistenceProcessor<R> implements AsyncPersi
 
 	protected abstract void doProcess();
 
-
 	public abstract boolean needRetry();
 
 }

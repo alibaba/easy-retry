@@ -7,7 +7,7 @@ import com.alibaba.easyretry.common.RetryContext;
  */
 public interface RetryFilter {
 
-	RetryResponse doFilter(RetryContext retryContext) throws Throwable;
+	RetryFilterResponse doFilter(RetryContext retryContext) throws Throwable;
 
 	void setNext(RetryFilter next);
 

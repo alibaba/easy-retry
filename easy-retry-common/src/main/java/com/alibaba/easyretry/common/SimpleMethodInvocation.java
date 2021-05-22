@@ -2,6 +2,7 @@ package com.alibaba.easyretry.common;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
@@ -27,7 +28,7 @@ public class SimpleMethodInvocation implements Invocation {
 
 	@Override
 	public String toString() {
-		return "[Invocation] executor is " + executor.getClass().getName() + "method is " + method
+		return "[Invocation] executor is " + executor.getClass().getName() + " method is " + method
 			.getName() + " args is " + Arrays.toString(args);
 
 	}

@@ -7,6 +7,6 @@ import com.alibaba.easyretry.common.SCallable;
  */
 public interface Retryer<V> {
 
-	 V call(SCallable<V> callable) throws Throwable;
+	V call(SCallable<V> callable) throws Throwable;
 
 }

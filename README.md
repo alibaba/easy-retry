@@ -1,9 +1,12 @@
 # Easy-Retry
+
 一种存储介质可扩展的持久化重试方案
 ![img](img/readme/arch.jpg)
 
 ### Getting started
+
 #### Memory Retry
+
 增加pom依赖
 
 ```xml
@@ -13,7 +16,6 @@
     <version>1.0.0.RC3</version>
 </dependency>
 ```
-
 
 在application.properties增加配置
 
@@ -40,12 +42,12 @@ public class MemoryUserService {
 </dependency>
 ```
 
-
 在application.properties增加配置
 
 `spring.easyretry.mybatis.enabled = true`
 
 新增持久化表
+
 ```
 CREATE TABLE `easy_retry_task` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -63,7 +65,6 @@ CREATE TABLE `easy_retry_task` (
 ;
 ```
 
-
 在需要重试的方法上增加@EasyRetryable注解
 
 ```java
@@ -75,8 +76,7 @@ public class MybatisUserService {
 }
 ```
 
-
-###  Built With
+### Built With
 
 • JDK1.8
 
