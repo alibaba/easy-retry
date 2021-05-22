@@ -16,9 +16,9 @@ import com.google.common.collect.Maps;
  */
 public class MemoryRetryTaskAccess implements RetryTaskAccess {
 
-	private static Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
+	private static final Map<Long, RetryTask> retryTaskMap = Maps.newConcurrentMap();
 
-	private static AtomicLong atomicLong = new AtomicLong();
+	private static final AtomicLong atomicLong = new AtomicLong();
 
 	@Override
 	public boolean saveRetryTask(RetryTask retryTask) {

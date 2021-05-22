@@ -15,9 +15,9 @@ import com.alibaba.easyretry.common.event.on.SuccessOnRetryEvent;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
 import com.alibaba.easyretry.common.filter.RetryFilterResponse;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
-import com.alibaba.easyretry.core.process.asyn.on.AbstractAsynPersistenceOnRetryProcessor;
-import com.alibaba.easyretry.core.process.asyn.on.ExceptionPersistenceAsynOnRetryProcessor;
-import com.alibaba.easyretry.core.process.asyn.on.ResultAsynPersistenceOnRetryProcessor;
+import com.alibaba.easyretry.core.process.async.on.AbstractAsyncPersistenceOnRetryProcessor;
+import com.alibaba.easyretry.core.process.async.on.ExceptionPersistenceAsynOnRetryProcessor;
+import com.alibaba.easyretry.core.process.async.on.ResultAsynPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.utils.LogUtils;
 import com.alibaba.easyretry.core.utils.PrintUtils;
 
@@ -57,7 +57,7 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 		PrintUtils.monitorInfo("handlingRetryTask", context);
 		retryConfiguration.getRetryTaskAccess()
 			.handlingRetryTask(maxAttemptsPersistenceRetryContext.getRetryTask());
-		AbstractAsynPersistenceOnRetryProcessor<Object> abstractAsynPersistenceOnRetryProcessor;
+		AbstractAsyncPersistenceOnRetryProcessor<Object> abstractAsynPersistenceOnRetryProcessor;
 		try {
 			PrintUtils.monitorInfo("beigin excuteMethod", context);
 			RetryFilterResponse retryFilterResponse = retryFilterInvocation.invoke(context);

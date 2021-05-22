@@ -70,7 +70,7 @@ public class SimpleRetryContainer implements RetryContainer {
 
 		private static final long MAX_SLEEP_TIME_MILLISECONDS = 10 * 1000L;
 		private static final long SLEEP_BASE_TIME_MILLISECONDS = 1000L;
-		private BlockingQueue<RetryContext> queue;
+		private final BlockingQueue<RetryContext> queue;
 		private long sleepTimes = 0L;
 
 		private TaskConsumer(BlockingQueue<RetryContext> queue) {
@@ -83,7 +83,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				doExecute();
 				long totalTime = sleepTimes * SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
+					TimeUnit.MILLISECONDS.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}
@@ -121,7 +121,7 @@ public class SimpleRetryContainer implements RetryContainer {
 		private static final long MAX_SLEEP_TIME_MILLISECONDS = 10 * 1000L;
 		private static final long SLEEP_BASE_TIME_MILLISECONDS = 1000L;
 
-		private BlockingQueue<RetryContext> queue;
+		private final BlockingQueue<RetryContext> queue;
 
 		private long sleepTimes = 0L;
 
@@ -138,7 +138,7 @@ public class SimpleRetryContainer implements RetryContainer {
 				long totalTime =
 					sleepTimes * SLEEP_BASE_TIME_MILLISECONDS + SLEEP_BASE_TIME_MILLISECONDS;
 				try {
-					Thread.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
+					TimeUnit.MILLISECONDS.sleep(Math.min(totalTime, MAX_SLEEP_TIME_MILLISECONDS));
 				} catch (InterruptedException e) {
 					log.error("taskConsumer interruptedException error", e);
 				}

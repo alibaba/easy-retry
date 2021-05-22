@@ -1,16 +1,17 @@
 package com.alibaba.easyretry.extension.mybatis.access;
 
+<<<<<<< HEAD
+import com.alibaba.easyretry.extension.mybatis.MyBatisConfig;
+import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
+
+import org.junit.jupiter.api.Test;
+=======
 import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
 import com.alibaba.easyretry.extension.mybatis.MyBatisConfig;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+>>>>>>> origin/main
 
 import java.util.Date;
 import java.util.List;

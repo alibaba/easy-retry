@@ -5,7 +5,7 @@ import java.io.IOException;
 import lombok.Getter;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.logging.stdout.StdOutImpl;
+import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -32,7 +32,7 @@ public final class MyBatisConfig {
 		final Environment development = new Environment("development",
 			new JdbcTransactionFactory(), DbConfig.getDataSource());
 		parse.setEnvironment(development);
-		parse.setLogImpl(StdOutImpl.class);
+		parse.setLogImpl(Slf4jImpl.class);
 		factory = new SqlSessionFactoryBuilder().build(parse);
 	}
 

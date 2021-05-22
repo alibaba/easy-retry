@@ -5,6 +5,11 @@ import java.util.List;
 import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
 import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 
+<<<<<<< HEAD
+=======
+import java.util.List;
+
+>>>>>>> origin/main
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
