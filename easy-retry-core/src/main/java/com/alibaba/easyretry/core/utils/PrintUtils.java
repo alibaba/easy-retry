@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Created by wuhao on 2020/11/14.
  */
-@Slf4j
+@Slf4j(topic = "easyRetryLog")
 public class PrintUtils {
 
 	public static void monitorInfo(String action, RetryContext context) {

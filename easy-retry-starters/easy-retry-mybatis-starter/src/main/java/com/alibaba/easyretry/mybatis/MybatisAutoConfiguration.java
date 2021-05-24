@@ -1,7 +1,5 @@
 package com.alibaba.easyretry.mybatis;
 
-import javax.sql.DataSource;
-
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContainer;
 import com.alibaba.easyretry.common.RetryExecutor;
@@ -12,7 +10,6 @@ import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAO;
 import com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImpl;
 import com.alibaba.easyretry.mybatis.conifg.EasyRetryMybatisProperties;
 import com.alibaba.easyretry.starter.common.CommonAutoConfiguration;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -26,6 +23,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+
+import javax.sql.DataSource;
 
 /**
  * @author Created by wuhao on 2021/2/19.

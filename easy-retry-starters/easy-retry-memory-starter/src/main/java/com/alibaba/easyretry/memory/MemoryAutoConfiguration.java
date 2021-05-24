@@ -7,7 +7,6 @@ import com.alibaba.easyretry.core.access.MemoryRetryTaskAccess;
 import com.alibaba.easyretry.core.container.SimpleRetryContainer;
 import com.alibaba.easyretry.memory.config.EasyRetryMemoryCompatibleProperties;
 import com.alibaba.easyretry.starter.common.CommonAutoConfiguration;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +53,4 @@ public class MemoryAutoConfiguration extends CommonAutoConfiguration {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
 }
