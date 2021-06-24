@@ -18,7 +18,6 @@ import com.alibaba.easyretry.common.strategy.WaitStrategy;
 import com.alibaba.easyretry.core.DegradeAbleRetryExecutor;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
-import com.alibaba.easyretry.core.degrade.DefaultEasyRetryDegradeHelper;
 import com.alibaba.easyretry.core.degrade.EasyRetryDegradeHelper;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
@@ -34,7 +33,6 @@ import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
@@ -112,29 +110,12 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(EasyRetryDegradeHelper.class)
-	public EasyRetryDegradeHelper defaultEasyRetryDegradeHelper() {
-		EasyRetryDegradeHelper defaultEasyRetryDegradeHelper = new DefaultEasyRetryDegradeHelper();
-		return defaultEasyRetryDegradeHelper;
-	}
-
-
-	@Bean
 	@ConditionalOnMissingBean(RetryExecutor.class)
 	public RetryExecutor defaultRetryExecutor(RetryConfiguration configuration,
-														 RetryFilterInvocation retryInvocationHandler,
-														 EasyRetryDegradeHelper defaultEasyRetryDegradeHelper,
-														 @Value("#{new Boolean('${spring.easyretry.degrade.enabled:false}')}") Boolean degrade) {
+														 RetryFilterInvocation retryInvocationHandler) {
 		PersistenceRetryExecutor persistenceRetryExecutor = new PersistenceRetryExecutor();
 		persistenceRetryExecutor.setRetryConfiguration(configuration);
 		persistenceRetryExecutor.setRetryFilterInvocation(retryInvocationHandler);
-
-		if (Boolean.TRUE.equals(degrade)) {
-			DegradeAbleRetryExecutor degradeAbleRetryExecutor = new DegradeAbleRetryExecutor();
-			degradeAbleRetryExecutor.setRetryExecutor(persistenceRetryExecutor);
-			degradeAbleRetryExecutor.setEasyRetryDegradeHelper(defaultEasyRetryDegradeHelper);
-			return degradeAbleRetryExecutor;
-		}
 		return persistenceRetryExecutor;
 	}
 
