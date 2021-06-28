@@ -74,9 +74,4 @@ public class MybatisAutoConfiguration extends CommonAutoConfiguration {
 	public Integer getMaxRetryTimes() {
 		return easyRetryMybatisProperties.getMaxRetryTimes();
 	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
 }

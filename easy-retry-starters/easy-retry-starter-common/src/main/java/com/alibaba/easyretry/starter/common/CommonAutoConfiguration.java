@@ -31,6 +31,7 @@ import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -171,6 +172,11 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 		springEventApplicationListener.setRetryFilterRegisterHandler(retryFilterRegisterHandler);
 		springEventApplicationListener.setRetryFilterInvocationHandler(retryFilterInvocationHandler);
 		return springEventApplicationListener;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 	public abstract Integer getMaxRetryTimes();
