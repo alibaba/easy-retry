@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Created by gejinfeng on 2021/4/29.
  */
-@Slf4j(topic = "easyRetryLog")
+@Slf4j
 public class DegradeAbleRetryExecutor implements RetryExecutor {
 
 	@Setter
@@ -22,7 +22,6 @@ public class DegradeAbleRetryExecutor implements RetryExecutor {
 	@Override
 	public HandleResultEnum doExecute(RetryContext context) {
 		if (easyRetryDegradeHelper.degrade(context)) {
-			log.warn("retry degrade, context:{}", context);
 			return HandleResultEnum.STOP;
 		}
 		return retryExecutor.doExecute(context);

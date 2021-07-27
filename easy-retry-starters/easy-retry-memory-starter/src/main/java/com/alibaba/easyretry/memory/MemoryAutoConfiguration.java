@@ -48,9 +48,4 @@ public class MemoryAutoConfiguration extends CommonAutoConfiguration {
 	public Integer getMaxRetryTimes() {
 		return easyRetryMemoryCompatibleProperties.getMaxRetryTimes();
 	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
 }
