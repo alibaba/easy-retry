@@ -7,21 +7,21 @@
 
 #### Memory Retry
 
-增加pom依赖
+1. 增加pom依赖
 
 ```xml
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-memory-starter</artifactId>
-    <version>1.0.0.RC3</version>
+    <version>${last-version}</version>
 </dependency>
 ```
 
-在application.properties增加配置
+2. 在application.properties增加配置
 
 `spring.easyretry.memory.enabled = true`
 
-在需要重试的方法上增加`@EasyRetryable`注解
+3. 在需要重试的方法上增加`@EasyRetryable`注解
 
 ```java
 public class MemoryUserService {
@@ -34,19 +34,33 @@ public class MemoryUserService {
 
 #### Mybatis Retry
 
+1. 增加pom依赖
 ```xml
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easy-retry-mybatis-starter</artifactId>
-    <version>1.0.0.RC3</version>
+    <version>${last-version}</version>
 </dependency>
 ```
 
-在application.properties增加配置
+2. 在application.properties增加配置
 
 `spring.easyretry.mybatis.enabled = true`
 
-新增持久化表
+3. 声明`javax.sql.DataSource`的`Bean`实例，参考下面例子（以`druid`连接池为例）
+```
+@Bean(name = "easyRetryMybatisDataSource", initMethod = "init", destroyMethod = "close")
+public DataSource easyRetryMybatisDataSource() {
+    DruidDataSource tds = new DruidDataSource();
+    tds.setUrl("");
+    tds.setUsername("");
+    tds.setPassword("");
+    ...
+    return tds;
+}
+```
+
+4. 新增持久化表
 
 ```
 CREATE TABLE `easy_retry_task` (
@@ -65,7 +79,7 @@ CREATE TABLE `easy_retry_task` (
 ;
 ```
 
-在需要重试的方法上增加@EasyRetryable注解
+5. 在需要重试的方法上增加@EasyRetryable注解
 
 ```java
 public class MybatisUserService {
