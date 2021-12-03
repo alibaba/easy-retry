@@ -1,4 +1,6 @@
 # Easy-Retry
+更多信息请参考 [Easy-Retry文档](https://www.yuque.com/easyretry/index)
+
 
 一种存储介质可扩展的持久化重试方案
 ![img](img/readme/arch.jpg)
