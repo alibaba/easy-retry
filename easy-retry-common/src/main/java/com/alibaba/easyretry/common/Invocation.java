@@ -2,13 +2,16 @@ package com.alibaba.easyretry.common;
 
 import java.lang.reflect.Method;
 
-/**
- * @author Created by wuhao on 2021/3/29.
- */
-public interface Invocation {
+import lombok.Data;
 
-	Object invokeRetryMethod() throws Throwable;
 
-	Object invokeMethod(Method method, Object[] args) throws Throwable;
+@Data
+public class Invocation {
+
+	private Object executor;
+
+	private Method method;
+
+	private Object[] args;
 
 }

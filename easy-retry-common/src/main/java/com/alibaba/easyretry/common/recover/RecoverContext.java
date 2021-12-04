@@ -6,6 +6,4 @@ public interface RecoverContext {
 
 	Object[] getArgs();
 
-	Throwable getThrowable();
-
 }

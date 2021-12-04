@@ -6,9 +6,6 @@ import com.alibaba.easyretry.common.RetryContext;
  * @author Created by wuhao on 2021/3/22.
  */
 public interface RetryFilter {
-
-	RetryFilterResponse doFilter(RetryContext retryContext) throws Throwable;
-
-	void setNext(RetryFilter next);
+	RetryFilterResponse doFilter(RetryFilterChain invocation, RetryContext retryContext) throws Throwable;
 
 }

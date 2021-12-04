@@ -33,10 +33,10 @@ public abstract class AbstractAsyncPersistenceOnRetryProcessor<R> extends
 	@Override
 	public void doProcess() {
 		if (context.getStopStrategy().shouldStop(context)) {
-			log.error(context.getInvocation() + " will stop");
+			log.error(context.getInvokeExecutor() + " will stop");
 			retryResult = HandleResultEnum.STOP;
 		} else {
-			log.error(context.getInvocation() + " will try later");
+			log.error(context.getInvokeExecutor() + " will try later");
 			context.getWaitStrategy().backOff(context);
 			retryResult = HandleResultEnum.FAILURE;
 		}

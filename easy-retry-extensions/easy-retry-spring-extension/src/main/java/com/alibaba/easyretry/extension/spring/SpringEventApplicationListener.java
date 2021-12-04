@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.extension.spring;
 
-import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
 import com.alibaba.easyretry.common.filter.RetryFilterRegisterHandler;
 
 import lombok.Setter;
@@ -14,9 +13,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 public class SpringEventApplicationListener implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Setter
-	private RetryFilterInvocationHandler retryFilterInvocationHandler;
-
-	@Setter
 	private RetryFilterRegisterHandler retryFilterRegisterHandler;
 
 	@Override
@@ -27,6 +23,5 @@ public class SpringEventApplicationListener implements ApplicationListener<Conte
 			return;
 		}
 		retryFilterRegisterHandler.handle();
-		retryFilterInvocationHandler.handle();
 	}
 }

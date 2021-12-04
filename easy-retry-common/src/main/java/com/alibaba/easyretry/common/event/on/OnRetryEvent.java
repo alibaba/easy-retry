@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.common.event.on;
 
-import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.event.RetryEvent;
 
 /**

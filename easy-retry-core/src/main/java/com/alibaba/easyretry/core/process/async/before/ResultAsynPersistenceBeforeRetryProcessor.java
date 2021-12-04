@@ -4,12 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.easyretry.common.predicate.AbstractResultPredicate;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
+import com.alibaba.easyretry.core.process.async.before.AbstractAsyncPersistenceBeforeRetryProcessor;
 
 /**
  * @author Created by wuhao on 2021/3/19.
  */
 public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
-    AbstractAsyncPersistenceBeforeRetryProcessor<R> {
+	AbstractAsyncPersistenceBeforeRetryProcessor<R> {
 
 	private final R result;
 

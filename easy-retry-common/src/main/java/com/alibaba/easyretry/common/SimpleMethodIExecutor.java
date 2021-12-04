@@ -10,7 +10,7 @@ import lombok.Setter;
  * @author Created by wuhao on 2021/3/29.
  */
 @AllArgsConstructor
-public class SimpleMethodInvocation implements Invocation {
+public class SimpleMethodIExecutor implements InvokeExecutor {
 
 	@Setter
 	private Object executor;
@@ -24,11 +24,6 @@ public class SimpleMethodInvocation implements Invocation {
 	@Override
 	public Object invokeRetryMethod() throws Throwable {
 		return method.invoke(executor, args);
-	}
-
-	@Override
-	public Object invokeMethod(Method method, Object[] args) throws Throwable {
-		return null;
 	}
 
 	@Override

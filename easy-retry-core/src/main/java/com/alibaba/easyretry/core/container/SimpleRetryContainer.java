@@ -13,7 +13,7 @@ import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.constant.enums.HandleResultEnum;
 import com.alibaba.easyretry.common.entity.RetryTask;
-import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext.RetryContextBuilder;
+import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -170,17 +170,15 @@ public class SimpleRetryContainer implements RetryContainer {
 				try {
 					lastId = task.getId();
 					RetryContext retryContext =
-						new RetryContextBuilder(retryConfiguration, task)
+						new MaxAttemptsPersistenceRetryContext.MaxAttemptsRetryContextBuilder(retryConfiguration, task)
 							.buildInvocation()
 							.buildRetryArgSerializer()
 							.buildStopStrategy()
 							.buildWaitStrategy()
 							.buildRetryTask()
-							.buildMaxRetryTimes()
 							.buildOnFailureMethod()
 							.buildPriority(0L)
-							//TODO
-//							.buildResultPredicateSerializer()
+							.buildResultPredicateProduce()
 							.build();
 					retryContext.start();
 

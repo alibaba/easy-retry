@@ -5,11 +5,6 @@ package com.alibaba.easyretry.common.processor;
  */
 public interface AsyncPersistenceProcessor<R> extends RetryProcessor {
 
-	@Override
-	void process();
-
-	boolean needRetry();
-
-	R getResult() throws Throwable;
+    R getResult() throws Throwable;
 
 }

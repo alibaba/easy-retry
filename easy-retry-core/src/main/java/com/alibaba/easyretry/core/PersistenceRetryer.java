@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.core;
 
-import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.SCallable;
 import com.alibaba.easyretry.common.processor.AsyncPersistenceProcessor;
 import com.alibaba.easyretry.common.retryer.Retryer;
