@@ -12,7 +12,7 @@ public class MethodExcuteRetryFilter implements RetryFilter {
 	@Override
 	public RetryFilterResponse doFilter(RetryContext retryContext) throws Throwable {
 		RetryFilterResponse retryFilterResponse = new RetryFilterResponse();
-		retryFilterResponse.setResponse(retryContext.getInvocation().invoke());
+		retryFilterResponse.setResponse(retryContext.getInvocation().invokeRetryMethod());
 		return retryFilterResponse;
 	}
 

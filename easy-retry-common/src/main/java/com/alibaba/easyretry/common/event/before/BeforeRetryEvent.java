@@ -19,12 +19,6 @@ public abstract class BeforeRetryEvent implements RetryEvent {
 		this.retryTask = retryTask;
 	}
 
-	@Override
-	public boolean isOnRetry() {
-		return false;
-	}
-
-	@Override
 	public void setAttribute(String key, String value) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {

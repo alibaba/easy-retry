@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.core;
 
-import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 
@@ -45,8 +44,8 @@ public class PersistenceRetryerBuilder<T> {
 		return this;
 	}
 
-	public PersistenceRetryerBuilder<T> withOnFailureMethod(String onFailureMethod) {
-		persistenceRetryer.getRetryerInfo().setOnFailureMethod(onFailureMethod);
+	public PersistenceRetryerBuilder<T> withRecoverMethod(String recoverMethod) {
+		persistenceRetryer.getRetryerInfo().setRecoverMethod(recoverMethod);
 		return this;
 	}
 
@@ -65,8 +64,8 @@ public class PersistenceRetryerBuilder<T> {
 		return this;
 	}
 
-	public PersistenceRetryerBuilder<T> withResultPredicate(AbstractResultPredicate<T> abstractResultPredicate) {
-		persistenceRetryer.getRetryerInfo().setResultPredicate(abstractResultPredicate);
+	public PersistenceRetryerBuilder<T> withResultCondition(String resultCondition) {
+		persistenceRetryer.getRetryerInfo().setResultCondition(resultCondition);
 		return this;
 	}
 

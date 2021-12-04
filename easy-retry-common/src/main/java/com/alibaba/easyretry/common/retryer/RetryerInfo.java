@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.common.retryer;
 
-import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 
 import lombok.Data;
@@ -23,7 +22,9 @@ public class RetryerInfo<T> {
 	 */
 	private String executorMethodName;
 
-	private String onFailureMethod;
+	private String recoverMethod;
+
+	private String resultCondition;
 
 	/**
 	 * 业务id，外部可以自定义存储一些信息
@@ -39,7 +40,5 @@ public class RetryerInfo<T> {
 	private String namespace;
 
 	private boolean reThrowException;
-
-	private AbstractResultPredicate<T> resultPredicate;
 
 }

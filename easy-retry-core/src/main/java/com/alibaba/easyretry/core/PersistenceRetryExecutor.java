@@ -1,6 +1,9 @@
 package com.alibaba.easyretry.core;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryContext;
@@ -14,6 +17,7 @@ import com.alibaba.easyretry.common.event.on.StopOnRetryEvent;
 import com.alibaba.easyretry.common.event.on.SuccessOnRetryEvent;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
 import com.alibaba.easyretry.common.filter.RetryFilterResponse;
+import com.alibaba.easyretry.common.recover.RecoverContext;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 import com.alibaba.easyretry.core.process.async.on.AbstractAsyncPersistenceOnRetryProcessor;
 import com.alibaba.easyretry.core.process.async.on.ExceptionPersistenceAsynOnRetryProcessor;
@@ -66,13 +70,14 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 				maxAttemptsPersistenceRetryContext);
 			PrintUtils.monitorInfo("excuteMethod success ", context);
 		} catch (Throwable t) {
-			if (t instanceof InvocationTargetException) {
-				t = t.getCause();
+			Throwable throwable = t;
+			if (throwable instanceof InvocationTargetException) {
+				throwable = throwable.getCause();
 			}
 			log.error("excuteMethod failed task arg is {} task id is {}", context.getInvocation(),
-				context.getId(), t);
+				context.getId(), throwable);
 			abstractAsynPersistenceOnRetryProcessor = new ExceptionPersistenceAsynOnRetryProcessor<>(
-				t,
+				throwable,
 				maxAttemptsPersistenceRetryContext);
 		}
 		abstractAsynPersistenceOnRetryProcessor.process();
@@ -82,14 +87,17 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 		switch (handleResult) {
 			case SUCCESS:
 				finish(context);
-				onRetryEvent = new SuccessOnRetryEvent(context);
+				onRetryEvent = new SuccessOnRetryEvent();
 				break;
 			case STOP:
 				stop(context);
-				onRetryEvent = new StopOnRetryEvent(context);
+				onRetryEvent = new StopOnRetryEvent();
 				break;
 			case FAILURE:
-				onRetryEvent = new FailureOnRetryEvent(context);
+				onRetryEvent = new FailureOnRetryEvent();
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + handleResult);
 		}
 		retryConfiguration.getRetryEventMulticaster().multicast(onRetryEvent);
 		return handleResult;
@@ -115,7 +123,7 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 				= (MaxAttemptsPersistenceRetryContext)context;
 			RetryTaskAccess retryTaskAccess = retryConfiguration.getRetryTaskAccess();
 			retryTaskAccess.stopRetryTask(maxAttemptsPersistenceRetryContext.getRetryTask());
-			//executeOnFailureMethod(context);
+			recover(context);
 			context.stop();
 		} catch (Throwable t) {
 			LogUtils.CONSISTENCY_LOGGER
@@ -123,27 +131,40 @@ public class PersistenceRetryExecutor implements RetryExecutor {
 		}
 	}
 
-	//private void executeOnFailureMethod(RetryContext context) {
-	//
-	//	MaxRetryTimesRetryContext maxRetryTimesRetryContext = (MaxRetryTimesRetryContext)context;
-	//	String methodName = maxRetryTimesRetryContext.getOnFailureMethod();
-	//	if (StringUtils.isEmpty(methodName)) {
-	//		return;
-	//	}
-	//	Object executor = context.getExecutor();
-	//	Method onFailure = BeanUtils.getMethod(methodName, executor.getClass());
-	//	if (Objects.isNull(onFailure)) {
-	//		return;
-	//	}
-	//	try {
-	//		onFailure.invoke(executor, context);
-	//	} catch (Throwable t) {
-	//		LogUtils.CONSISTENCY_LOGGER.error(
-	//			"executeOnFailureMethod failed onFailureMethod = {}"
-	//				+ PrintUtils.printCommonMethodInfo(context)
-	//				+ " please check",
-	//			methodName,
-	//			t);
-	//	}
-	//}
+	private void recover(RetryContext context) {
+		MaxAttemptsPersistenceRetryContext maxAttemptsPersistenceRetryContext = (MaxAttemptsPersistenceRetryContext) context;
+		String methodName = maxAttemptsPersistenceRetryContext.getOnFailureMethod();
+		if (StringUtils.isEmpty(methodName)) {
+			return;
+		}
+		RecoverContext recoverContext = new RecoverContext() {
+			@Override
+			public Object[] getArgs() {
+				return new Object[0];
+			}
+
+			@Override
+			public Throwable getThrowable() {
+				return null;
+			}
+		};
+
+//		context.getInvocation().invokeMethod()
+//
+//		Object executor = context.getExecutor();
+//		Method onFailure = BeanUtils.getMethod(methodName, executor.getClass());
+//		if (Objects.isNull(onFailure)) {
+//			return;
+//		}
+//		try {
+//			onFailure.invoke(executor, context);
+//		} catch (Throwable t) {
+//			LogUtils.CONSISTENCY_LOGGER.error(
+//				"executeOnFailureMethod failed onFailureMethod = {}"
+//					+ PrintUtils.printCommonMethodInfo(context)
+//					+ " please check",
+//				methodName,
+//				t);
+//		}
+	}
 }

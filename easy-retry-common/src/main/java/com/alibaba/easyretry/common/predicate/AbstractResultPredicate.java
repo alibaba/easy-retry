@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.common;
+package com.alibaba.easyretry.common.predicate;
 
 /**
  * @author Created by wuhao on 2021/3/26.

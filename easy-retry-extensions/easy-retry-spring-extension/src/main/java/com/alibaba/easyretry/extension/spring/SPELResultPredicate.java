@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.extension.spring;
 
-import com.alibaba.easyretry.common.AbstractResultPredicate;
+import com.alibaba.easyretry.common.predicate.AbstractResultPredicate;
 
 import lombok.Data;
 import org.springframework.expression.ExpressionParser;

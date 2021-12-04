@@ -1,8 +1,8 @@
 package com.alibaba.easyretry.core.process.async.before;
 
-import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
-import com.alibaba.easyretry.common.AbstractResultPredicate;
+import com.alibaba.easyretry.common.predicate.AbstractResultPredicate;
 import com.alibaba.easyretry.common.retryer.RetryerInfo;
 
 /**
@@ -20,9 +20,10 @@ public class ResultAsynPersistenceBeforeRetryProcessor<R> extends
 
 	@Override
 	public boolean needRetry() {
-		AbstractResultPredicate<R> easyRetryPredicate = retryerInfo.getResultPredicate();
-		if (Objects.nonNull(easyRetryPredicate)) {
-			return easyRetryPredicate.apply(result);
+		String resultCondition = retryerInfo.getResultCondition();
+		if (StringUtils.isNotBlank(resultCondition)) {
+			AbstractResultPredicate<R> abstractResultPredicate = retryerInfo.getRetryConfiguration().getResultPredicateProduce().produce();
+			return abstractResultPredicate.apply(result);
 		} else {
 			return false;
 		}

@@ -18,7 +18,15 @@ public @interface EasyRetryable {
 
 	/**
 	 * 通过结果判断是否重试
+	 *
+	 * @return SpEL表达式 参考:https://docs.spring.io/spring-framework/docs/3.0.x/reference/expressions.html
 	 */
 	String resultCondition() default "";
+
+	/**
+	 * 当重试失败的时候
+	 * @return
+	 */
+	String recoverMethod() default "";
 
 }

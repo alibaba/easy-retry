@@ -7,6 +7,7 @@ import com.alibaba.easyretry.core.PersistenceRetryerBuilder;
 import com.alibaba.easyretry.extension.spring.SPELResultPredicate;
 
 import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,19 +29,19 @@ public class RetryInterceptor {
 		if (RetryIdentify.isOnRetry()) {
 			return invocation.proceed();
 		}
-		MethodSignature signature = (MethodSignature)invocation.getSignature();
+		MethodSignature signature = (MethodSignature) invocation.getSignature();
 		PersistenceRetryerBuilder<Object> builder = PersistenceRetryerBuilder.of(retryConfiguration)
 			.withExecutorName(getBeanId(signature.getDeclaringType()))
 			.withExecutorMethodName(signature.getMethod().getName())
 			.withArgs(invocation.getArgs())
 			.withConfiguration(retryConfiguration)
-			//			.withOnFailureMethod(retryable.onFailureMethod())
-			//			.withNamespace(namespace)
 			.withReThrowException(retryable.reThrowException());
 		if (StringUtils.isNotBlank(retryable.resultCondition())) {
-			builder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
+			builder.withResultCondition(retryable.resultCondition());
 		}
-
+		if (StringUtils.isNotBlank(retryable.recoverMethod())) {
+			builder.withRecoverMethod(retryable.recoverMethod());
+		}
 		//		if (StringUtils.isNotBlank(retryable.bizId())) {
 		//			SPELParamPredicate param = new SPELParamPredicate(retryable.bizId(),
 		//				signature.getMethod());
@@ -53,6 +54,6 @@ public class RetryInterceptor {
 
 	private String getBeanId(Class<?> type) {
 		String[] names = applicationContext.getBeanNamesForType(type);
-		return null != names && names.length > 0 ? names[0] : null;
+		return names.length > 0 ? names[0] : null;
 	}
 }

@@ -2,7 +2,7 @@ package com.alibaba.easyretry.extension.spring;
 
 import java.lang.reflect.Method;
 
-import com.alibaba.easyretry.common.EasyRetryPredicate;
+import com.alibaba.easyretry.common.predicate.EasyRetryPredicate;
 
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;

@@ -7,7 +7,4 @@ public interface RetryEvent {
 
 	String getName();
 
-	boolean isOnRetry();
-
-	void setAttribute(String key, String vule);
 }

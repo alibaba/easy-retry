@@ -1,4 +1,4 @@
-package com.alibaba.easyretry.common;
+package com.alibaba.easyretry.common.predicate;
 
 import java.io.Serializable;
 

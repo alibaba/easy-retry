@@ -1,6 +1,6 @@
 package com.alibaba.easyretry.core.process.async.on;
 
-import com.alibaba.easyretry.common.AbstractResultPredicate;
+import com.alibaba.easyretry.common.predicate.AbstractResultPredicate;
 import com.alibaba.easyretry.core.context.MaxAttemptsPersistenceRetryContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,13 +21,22 @@ public class ResultAsynPersistenceOnRetryProcessor<R> extends
 
 	@Override
 	public boolean needRetry() {
-		String resultPredicateSerializerStr = context.getAttribute("resultPredicateSerializer");
-		if (StringUtils.isBlank(resultPredicateSerializerStr)) {
+		//TODO
+//		String resultPredicateSerializerStr = context.getAttribute("resultPredicateSerializer");
+//		if (StringUtils.isBlank(resultPredicateSerializerStr)) {
+//			return false;
+//		}
+//		AbstractResultPredicate resultPredicate = context.getResultPredicateSerializer()
+//			.deSerialize(resultPredicateSerializerStr);
+//		return resultPredicate.apply(result);
+//
+//		String resultCondition = retryerInfo.getResultCondition();
+//		if (StringUtils.isNotBlank(resultCondition)) {
+//			AbstractResultPredicate<R> abstractResultPredicate = retryerInfo.getRetryConfiguration().getResultPredicateProduce().produce();
+//			return abstractResultPredicate.apply(result);
+//		} else {
 			return false;
-		}
-		AbstractResultPredicate resultPredicate = context.getResultPredicateSerializer()
-			.deSerialize(resultPredicateSerializerStr);
-		return resultPredicate.apply(result);
+//		}
 	}
 
 	@Override

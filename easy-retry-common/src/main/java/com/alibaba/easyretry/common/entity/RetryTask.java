@@ -38,7 +38,13 @@ public class RetryTask {
 	/**
 	 * 当重试失败时候执行的方法
 	 */
-	private String onFailureMethod;
+	private String recoverMethod;
+
+
+	/**
+	 * 重试的结果判断
+	 */
+	private String resultCondition;
 
 	/**
 	 * 重试任务状态

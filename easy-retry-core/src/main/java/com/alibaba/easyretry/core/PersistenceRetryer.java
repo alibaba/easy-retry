@@ -19,8 +19,6 @@ public class PersistenceRetryer<V> implements Retryer<V> {
 
 	private RetryerInfo<V> retryerInfo;
 
-//	private RetryConfiguration retryConfiguration;
-
 	public PersistenceRetryer(RetryerInfo<V> retryerInfo) {
 		this.retryerInfo = retryerInfo;
 	}
