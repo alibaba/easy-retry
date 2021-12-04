@@ -100,7 +100,7 @@ public class MybatisRetryTaskAccess implements RetryTaskAccess {
 		if (Objects.isNull(extAttrs)) {
 			extAttrs = Maps.newHashMap();
 		}
-		extAttrs.put("onFailureMethod", retryTask.getOnFailureMethod());
+		extAttrs.put("onFailureMethod", retryTask.getRecoverMethod());
 		retryTaskPO.setExtAttrs(JSON.toJSONString(extAttrs));
 		retryTaskPO.setRetryStatus(retryTask.getStatus().getCode());
 		retryTaskPO.setArgsStr(retryTask.getArgsStr());

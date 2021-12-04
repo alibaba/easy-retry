@@ -179,7 +179,8 @@ public class SimpleRetryContainer implements RetryContainer {
 							.buildMaxRetryTimes()
 							.buildOnFailureMethod()
 							.buildPriority(0L)
-							.buildResultPredicateSerializer()
+							//TODO
+//							.buildResultPredicateSerializer()
 							.build();
 					retryContext.start();
 

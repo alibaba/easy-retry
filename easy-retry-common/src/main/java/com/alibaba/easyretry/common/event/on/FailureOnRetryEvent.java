@@ -7,8 +7,4 @@ import com.alibaba.easyretry.common.RetryContext;
  */
 public class FailureOnRetryEvent extends OnRetryEvent {
 
-	public FailureOnRetryEvent(RetryContext retryContext) {
-		super(retryContext);
-	}
-
 }

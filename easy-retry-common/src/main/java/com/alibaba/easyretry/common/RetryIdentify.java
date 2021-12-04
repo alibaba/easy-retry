@@ -16,7 +16,7 @@ public class RetryIdentify {
 	}
 
 	public static void stop() {
-		RETRY_CONTEXT_THREAD_LOCAL.set(null);
+		RETRY_CONTEXT_THREAD_LOCAL.remove();
 	}
 
 	public static boolean isOnRetry() {

@@ -12,7 +12,6 @@ import com.alibaba.easyretry.common.RetryContext;
 import com.alibaba.easyretry.common.RetryLifecycle;
 import com.alibaba.easyretry.common.SimpleMethodInvocation;
 import com.alibaba.easyretry.common.entity.RetryTask;
-import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.serializer.RetryArgSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
@@ -30,8 +29,6 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 	private RetryTask retryTask;
 
 	private RetryArgSerializer retryArgSerializer;
-
-	private ResultPredicateSerializer resultPredicateSerializer;
 
 	private Long priority;
 
@@ -60,6 +57,7 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		waitStrategy.clear(this);
 	}
 
+	@Override
 	public void setAttribute(String key, String value) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {
@@ -68,6 +66,7 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		extAttrs.put(key, value);
 	}
 
+	@Override
 	public String getAttribute(String key) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {
@@ -148,15 +147,16 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		}
 
 		public RetryContextBuilder buildOnFailureMethod() {
-			retryContext.setOnFailureMethod(retryTask.getOnFailureMethod());
+			retryContext.setOnFailureMethod(retryTask.getRecoverMethod());
 			return this;
 		}
 
-		public RetryContextBuilder buildResultPredicateSerializer() {
-			retryContext
-				.setResultPredicateSerializer(retryConfiguration.getResultPredicateSerializer());
-			return this;
-		}
+		//TODO
+//		public RetryContextBuilder buildResultPredicateSerializer() {
+//			retryContext
+//				.setResultPredicateSerializer(retryConfiguration.getResultPredicateSerializer());
+//			return this;
+//		}
 
 		public RetryContextBuilder buildPriority(Long priority) {
 			retryContext.setPriority(priority);

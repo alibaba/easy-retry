@@ -8,24 +8,7 @@ import com.alibaba.easyretry.common.event.RetryEvent;
  */
 public abstract class OnRetryEvent implements RetryEvent {
 
-	private RetryContext retryContext;
-
-	public OnRetryEvent(RetryContext retryContext) {
-		this.retryContext = retryContext;
-	}
-
-	public void setAttribute(String key, String value) {
-		retryContext.setAttribute(key, value);
-	}
-
-	public String getAttribute(String key) {
-		return retryContext.getAttribute(key);
-	}
-
-	public boolean isOnRetry() {
-		return true;
-	}
-
+	@Override
 	public String getName() {
 		return this.getClass().getSimpleName();
 	}

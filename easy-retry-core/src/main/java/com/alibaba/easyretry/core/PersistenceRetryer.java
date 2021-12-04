@@ -19,12 +19,11 @@ public class PersistenceRetryer<V> implements Retryer<V> {
 
 	private RetryerInfo<V> retryerInfo;
 
-//	private RetryConfiguration retryConfiguration;
-
 	public PersistenceRetryer(RetryerInfo<V> retryerInfo) {
 		this.retryerInfo = retryerInfo;
 	}
 
+	@Override
 	public V call(SCallable<V> callable) throws Throwable {
 		AsyncPersistenceProcessor<V> asynPersistenceProcessor;
 		try {

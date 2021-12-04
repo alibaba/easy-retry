@@ -22,8 +22,13 @@ public class SimpleMethodInvocation implements Invocation {
 	private Object[] args;
 
 	@Override
-	public Object invoke() throws Throwable {
+	public Object invokeRetryMethod() throws Throwable {
 		return method.invoke(executor, args);
+	}
+
+	@Override
+	public Object invokeMethod(Method method, Object[] args) throws Throwable {
+		return null;
 	}
 
 	@Override

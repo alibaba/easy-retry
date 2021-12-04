@@ -19,10 +19,6 @@ public abstract class BeforeRetryEvent implements RetryEvent {
 		this.retryTask = retryTask;
 	}
 
-	public boolean isOnRetry() {
-		return false;
-	}
-
 	public void setAttribute(String key, String value) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {
@@ -31,6 +27,7 @@ public abstract class BeforeRetryEvent implements RetryEvent {
 		extAttrs.put(key, value);
 	}
 
+	@Override
 	public String getName() {
 		return this.getClass().getSimpleName();
 	}
