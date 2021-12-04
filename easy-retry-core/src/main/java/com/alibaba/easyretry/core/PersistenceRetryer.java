@@ -25,6 +25,7 @@ public class PersistenceRetryer<V> implements Retryer<V> {
 		this.retryerInfo = retryerInfo;
 	}
 
+	@Override
 	public V call(SCallable<V> callable) throws Throwable {
 		AsyncPersistenceProcessor<V> asynPersistenceProcessor;
 		try {

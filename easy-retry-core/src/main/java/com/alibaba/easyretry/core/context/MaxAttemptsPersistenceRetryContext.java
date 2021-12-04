@@ -60,6 +60,7 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		waitStrategy.clear(this);
 	}
 
+	@Override
 	public void setAttribute(String key, String value) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {
@@ -68,6 +69,7 @@ public class MaxAttemptsPersistenceRetryContext implements RetryContext, RetryLi
 		extAttrs.put(key, value);
 	}
 
+	@Override
 	public String getAttribute(String key) {
 		Map<String, String> extAttrs = retryTask.getExtAttrs();
 		if (Objects.isNull(extAttrs)) {

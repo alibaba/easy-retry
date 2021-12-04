@@ -5,6 +5,7 @@ package com.alibaba.easyretry.common;
  */
 public abstract class AbstractResultPredicate<T> implements EasyRetryPredicate<T, Boolean> {
 
+	@Override
 	public abstract Boolean apply(T result);
 
 }
