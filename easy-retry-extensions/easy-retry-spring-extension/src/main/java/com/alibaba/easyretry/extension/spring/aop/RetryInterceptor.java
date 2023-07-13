@@ -1,9 +1,14 @@
 package com.alibaba.easyretry.extension.spring.aop;
 
+import java.lang.reflect.Method;
+import java.util.Objects;
+
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryIdentify;
+import com.alibaba.easyretry.common.retryer.Retryer;
 import com.alibaba.easyretry.core.PersistenceRetryer;
 import com.alibaba.easyretry.core.PersistenceRetryerBuilder;
+import com.alibaba.easyretry.core.RetryerBuilder;
 import com.alibaba.easyretry.extension.spring.SPELResultPredicate;
 
 import lombok.Setter;
@@ -28,31 +33,34 @@ public class RetryInterceptor {
 		if (RetryIdentify.isOnRetry()) {
 			return invocation.proceed();
 		}
-		MethodSignature signature = (MethodSignature)invocation.getSignature();
-		PersistenceRetryerBuilder<Object> builder = PersistenceRetryerBuilder.of(retryConfiguration)
-			.withExecutorName(getBeanId(signature.getDeclaringType()))
-			.withExecutorMethodName(signature.getMethod().getName())
-			.withArgs(invocation.getArgs())
-			.withConfiguration(retryConfiguration)
-			//			.withOnFailureMethod(retryable.onFailureMethod())
-			//			.withNamespace(namespace)
-			.withReThrowException(retryable.reThrowException());
-		if (StringUtils.isNotBlank(retryable.resultCondition())) {
-			builder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
-		}
 
-		//		if (StringUtils.isNotBlank(retryable.bizId())) {
-		//			SPELParamPredicate param = new SPELParamPredicate(retryable.bizId(),
-		//				signature.getMethod());
-		//			String bizId = param.apply(invocation.getArgs());
-		//			builder.withBizId(bizId);
-		//		}
-		PersistenceRetryer<Object> persistenceRetryer = builder.build();
-		return persistenceRetryer.call(invocation::proceed);
+		Retryer<Object> retryer = determineTargetRetryer(invocation, retryable);
+		return retryer.call(invocation::proceed);
 	}
 
 	private String getBeanId(Class<?> type) {
 		String[] names = applicationContext.getBeanNamesForType(type);
 		return null != names && names.length > 0 ? names[0] : null;
+	}
+
+	private Retryer<Object> determineTargetRetryer(ProceedingJoinPoint invocation, EasyRetryable retryable) {
+		MethodSignature signature = (MethodSignature)invocation.getSignature();
+		RetryerBuilder<Object> retryerBuilder = new RetryerBuilder<Object>()
+			.withExecutorName(getBeanId(signature.getDeclaringType()))
+			.withExecutorMethodName(signature.getMethod().getName())
+			.withArgs(invocation.getArgs())
+			.withConfiguration(retryConfiguration)
+			.withReThrowException(retryable.reThrowException());
+		if (StringUtils.isNotBlank(retryable.resultCondition())) {
+			retryerBuilder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
+		}
+
+		Method method = signature.getMethod();
+		SyncEasyRetryRouting easyRetryRouting = method.getAnnotation(SyncEasyRetryRouting.class);
+		if (Objects.nonNull(easyRetryRouting)) {
+			retryerBuilder.withRetryTimes(easyRetryRouting.retryTimes())
+				.withRetryIntervalTime(easyRetryRouting.retryIntervalTime());
+		}
+		return retryerBuilder.build(retryable.retryType());
 	}
 }
