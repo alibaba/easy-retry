@@ -42,12 +42,12 @@ public class RetryerBuilder<T> {
 	/**
 	 * 重试次数
 	 */
-	private int retryTimesContext = 5;
+	private Integer retryTimesContext;
 
 	/**
 	 * 重试间隔时间
 	 */
-	private long retryIntervalTimeContext = 0L;
+	private Long retryIntervalTimeContext;
 
 
 	public RetryerBuilder<T> withExecutorName(String executorName) {
