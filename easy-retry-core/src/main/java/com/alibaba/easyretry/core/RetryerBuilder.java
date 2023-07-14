@@ -1,7 +1,5 @@
 package com.alibaba.easyretry.core;
 
-import java.util.Objects;
-
 import com.alibaba.easyretry.common.AbstractResultPredicate;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.constant.enums.RetryTypeEnum;
@@ -58,7 +56,7 @@ public class RetryerBuilder<T> {
 	}
 
 	public RetryerBuilder<T> withExecutorMethodName(String executorMethodName) {
-		executorMethodNameContext = executorNameContext;
+		executorMethodNameContext = executorMethodName;
 		return this;
 	}
 
