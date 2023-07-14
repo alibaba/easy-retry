@@ -103,20 +103,12 @@ public class RetryerBuilder<T> {
 	}
 
 	public RetryerBuilder<T> withRetryTimes(Integer retryTimes) {
-		int maxRetryTimes = 5;
-		if (Objects.nonNull(retryTimes)) {
-			maxRetryTimes = retryTimes;
-		}
-		retryTimesContext = maxRetryTimes;
+		retryTimesContext = retryTimes;
 		return this;
 	}
 
 	public RetryerBuilder<T> withRetryIntervalTime(Long retryIntervalTime) {
-		long intervalTime = 0;
-		if (Objects.nonNull(retryIntervalTime)) {
-			intervalTime = retryIntervalTime;
-		}
-		retryIntervalTimeContext = intervalTime;
+		retryIntervalTimeContext = retryIntervalTime;
 		return this;
 	}
 
