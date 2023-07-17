@@ -33,24 +33,30 @@ public class DefaultSyncRetryWay<V> implements SyncRetryWay<V> {
 			maxRetryTimes = retryerInfo.getRetryConfiguration().getMaxRetryTimes();
 		}
 
-		SyncProcessor<V> syncProcessor;
 		int retryCount = 0;
 		while (retryCount++ < maxRetryTimes) {
-			try {
-				V result =  callable.call();
-				syncProcessor = new ResultSyncRetryProcessor<>(result, retryerInfo);
+			SyncProcessor<V> syncProcessor = syncRetry(callable, retryerInfo, retryCount, maxRetryTimes);
+			if (Objects.nonNull(syncProcessor)) {
 				return syncProcessor.getResult();
-			} catch (Throwable throwable) {
-				log.error("[sync retry] call method error retryCount is {}", retryCount, throwable);
+			}
+		}
+		return null;
+	}
 
-				if (retryCount > 0) {
-					Uninterruptibles.sleepUninterruptibly(INTERNAL_TIME, MILLISECONDS);
-				}
+	private SyncProcessor<V> syncRetry(SCallable<V> callable, RetryerInfo<V> retryerInfo,
+		int retryCount, Integer maxRetryTimes) throws Throwable {
+		try {
+			V result =  callable.call();
+			return new ResultSyncRetryProcessor<>(result, retryerInfo);
+		} catch (Throwable throwable) {
+			log.error("[sync retry] call method error retryCount is {}", retryCount, throwable);
 
-				if (retryCount == maxRetryTimes) {
-					syncProcessor = new ExceptionSyncRetryProcessorr<>(throwable, retryerInfo);
-					return syncProcessor.getResult();
-				}
+			if (retryCount > 0) {
+				Uninterruptibles.sleepUninterruptibly(INTERNAL_TIME, MILLISECONDS);
+			}
+
+			if (retryCount == maxRetryTimes) {
+				return new ExceptionSyncRetryProcessorr<>(throwable, retryerInfo);
 			}
 		}
 		return null;
