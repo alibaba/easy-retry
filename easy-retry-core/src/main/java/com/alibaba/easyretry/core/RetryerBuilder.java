@@ -39,16 +39,6 @@ public class RetryerBuilder<T> {
 
 	private AbstractResultPredicate<T> resultPredicateContext;
 
-	/**
-	 * 重试次数
-	 */
-	private Integer retryTimesContext;
-
-	/**
-	 * 重试间隔时间
-	 */
-	private Long retryIntervalTimeContext;
-
 
 	public RetryerBuilder<T> withExecutorName(String executorName) {
 		executorNameContext = executorName;
@@ -100,16 +90,6 @@ public class RetryerBuilder<T> {
 		return this;
 	}
 
-	public RetryerBuilder<T> withRetryTimes(Integer retryTimes) {
-		retryTimesContext = retryTimes;
-		return this;
-	}
-
-	public RetryerBuilder<T> withRetryIntervalTime(Long retryIntervalTime) {
-		retryIntervalTimeContext = retryIntervalTime;
-		return this;
-	}
-
 	public Retryer<T> build(RetryTypeEnum retryTypeEnum) {
 		if (RetryTypeEnum.SYNC == retryTypeEnum) {
 			return buildSyncRetryer();
@@ -119,16 +99,13 @@ public class RetryerBuilder<T> {
 	}
 
 	private SyncRetryer<T> buildSyncRetryer() {
-		SyncRetryerBuilder<T> builder =
-			(SyncRetryerBuilder<T>) SyncRetryerBuilder.of(retryConfigurationContext)
-			.withRetryTimes(retryTimesContext)
-			.withRetryIntervalTime(retryIntervalTimeContext);
+		SyncRetryerBuilder<T> builder = SyncRetryerBuilder.<T>of(retryConfigurationContext)
+				.withConfiguration(retryConfigurationContext);
 		return builder.build();
 	}
 
 	private PersistenceRetryer<T> buildAsyncRetryer() {
-		PersistenceRetryerBuilder<T> builder =
-			(PersistenceRetryerBuilder<T>) PersistenceRetryerBuilder.of(retryConfigurationContext)
+		PersistenceRetryerBuilder<T> builder = PersistenceRetryerBuilder.<T>of(retryConfigurationContext)
 			.withExecutorName(executorNameContext)
 			.withExecutorMethodName(executorMethodNameContext)
 			.withArgs(argsContext)
@@ -136,7 +113,7 @@ public class RetryerBuilder<T> {
 			//			.withOnFailureMethod(retryable.onFailureMethod())
 			//			.withNamespace(namespace)
 			.withReThrowException(reThrowExceptionContext)
-			.withResultPredicate((AbstractResultPredicate<Object>) resultPredicateContext);
+			.withResultPredicate(resultPredicateContext);
 		return builder.build();
 	}
 

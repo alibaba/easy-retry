@@ -42,14 +42,4 @@ public class RetryerInfo<T> {
 
 	private AbstractResultPredicate<T> resultPredicate;
 
-	/**
-	 * 重试次数
-	 */
-	private Integer retryTimes;
-
-	/**
-	 * 重试间隔时间
-	 */
-	private Long retryIntervalTime;
-
 }

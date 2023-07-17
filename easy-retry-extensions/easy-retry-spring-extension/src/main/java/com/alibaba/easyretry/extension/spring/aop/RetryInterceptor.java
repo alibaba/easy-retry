@@ -6,8 +6,6 @@ import java.util.Objects;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryIdentify;
 import com.alibaba.easyretry.common.retryer.Retryer;
-import com.alibaba.easyretry.core.PersistenceRetryer;
-import com.alibaba.easyretry.core.PersistenceRetryerBuilder;
 import com.alibaba.easyretry.core.RetryerBuilder;
 import com.alibaba.easyretry.extension.spring.SPELResultPredicate;
 
@@ -40,7 +38,7 @@ public class RetryInterceptor {
 
 	private String getBeanId(Class<?> type) {
 		String[] names = applicationContext.getBeanNamesForType(type);
-		return null != names && names.length > 0 ? names[0] : null;
+		return names.length > 0 ? names[0] : null;
 	}
 
 	private Retryer<Object> determineTargetRetryer(ProceedingJoinPoint invocation, EasyRetryable retryable) {
@@ -55,12 +53,6 @@ public class RetryInterceptor {
 			retryerBuilder.withResultPredicate(new SPELResultPredicate<>(retryable.resultCondition()));
 		}
 
-		Method method = signature.getMethod();
-		SyncEasyRetryRouting easyRetryRouting = method.getAnnotation(SyncEasyRetryRouting.class);
-		if (Objects.nonNull(easyRetryRouting)) {
-			retryerBuilder.withRetryTimes(easyRetryRouting.retryTimes())
-				.withRetryIntervalTime(easyRetryRouting.retryIntervalTime());
-		}
 		return retryerBuilder.build(retryable.retryType());
 	}
 }

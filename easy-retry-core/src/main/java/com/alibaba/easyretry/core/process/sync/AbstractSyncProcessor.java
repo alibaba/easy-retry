@@ -10,13 +10,11 @@ public abstract class AbstractSyncProcessor<R> implements SyncProcessor<R> {
 
 	protected RetryerInfo<R> retryerInfo;
 
-	public AbstractSyncProcessor(
-		RetryerInfo<R> retryerInfo) {
+	public AbstractSyncProcessor(RetryerInfo<R> retryerInfo) {
 		this.retryerInfo = retryerInfo;
 	}
 
 	@Override
 	public void process() {
-		return;
 	}
 }

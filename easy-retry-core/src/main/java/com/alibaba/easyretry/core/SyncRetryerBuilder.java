@@ -21,24 +21,11 @@ public class SyncRetryerBuilder<T> {
 		return new SyncRetryerBuilder<>(retryConfiguration);
 	}
 
-
-	public SyncRetryerBuilder<T> withRetryTimes(Integer retryTimes) {
-		int maxRetryTimes = 5;
-		if (Objects.nonNull(retryTimes)) {
-			maxRetryTimes = retryTimes;
-		}
-		syncRetryer.getRetryerInfo().setRetryTimes(maxRetryTimes);
+	public SyncRetryerBuilder<T> withConfiguration(RetryConfiguration retryConfiguration) {
+		syncRetryer.getRetryerInfo().setRetryConfiguration(retryConfiguration);
 		return this;
 	}
 
-	public SyncRetryerBuilder<T> withRetryIntervalTime(Long retryIntervalTime) {
-		long intervalTime = 0;
-		if (Objects.nonNull(retryIntervalTime)) {
-			intervalTime = retryIntervalTime;
-		}
-		syncRetryer.getRetryerInfo().setRetryIntervalTime(intervalTime);
-		return this;
-	}
 
 	public SyncRetryer<T> build() {
 		return syncRetryer;

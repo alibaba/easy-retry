@@ -1,10 +1,18 @@
 package com.alibaba.easyretry.starter.common;
 
+import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
+import com.alibaba.easyretry.common.access.SyncRetryWayAccess;
 import com.alibaba.easyretry.common.event.RetryEventMulticaster;
 import com.alibaba.easyretry.common.filter.RetryFilterDiscover;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
@@ -15,29 +23,22 @@ import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
-import com.alibaba.easyretry.core.DegradeAbleRetryExecutor;
+import com.alibaba.easyretry.common.way.SyncRetryWay;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
-import com.alibaba.easyretry.core.degrade.EasyRetryDegradeHelper;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
 import com.alibaba.easyretry.core.filter.SimpleRetryFilterRegister;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
+import com.alibaba.easyretry.core.way.DefaultSyncRetryWay;
 import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
 import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
 import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author Created by wuhao on 2021/2/19.
@@ -52,6 +53,7 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 	public RetryConfiguration configuration(RetryTaskAccess retryTaskAccess,
 											RetryEventMulticaster retryEventMulticaster) {
 		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
+		DefaultSyncRetryWay<Object> defaultSyncRetryWay = new DefaultSyncRetryWay<>();
 		return new RetryConfiguration() {
 			@Override
 			public RetryTaskAccess getRetryTaskAccess() {
@@ -97,6 +99,16 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 			@Override
 			public RetryEventMulticaster getRetryEventMulticaster() {
 				return retryEventMulticaster;
+			}
+
+			@Override
+			public SyncRetryWayAccess getSyncRetryWayAccess() {
+				return new SyncRetryWayAccess<Object>() {
+					@Override
+					public SyncRetryWay<Object> getCurrentGlobalSyncRetryWay() {
+						return defaultSyncRetryWay;
+					}
+				};
 			}
 		};
 	}
