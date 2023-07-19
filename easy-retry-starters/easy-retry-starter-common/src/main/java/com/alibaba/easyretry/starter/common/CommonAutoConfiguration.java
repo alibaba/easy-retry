@@ -12,7 +12,6 @@ import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
 import com.alibaba.easyretry.common.access.RetryStrategyAccess;
 import com.alibaba.easyretry.common.access.RetryTaskAccess;
-import com.alibaba.easyretry.common.access.SyncRetryWayAccess;
 import com.alibaba.easyretry.common.event.RetryEventMulticaster;
 import com.alibaba.easyretry.common.filter.RetryFilterDiscover;
 import com.alibaba.easyretry.common.filter.RetryFilterInvocation;
@@ -23,7 +22,7 @@ import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
-import com.alibaba.easyretry.common.way.SyncRetryWay;
+import com.alibaba.easyretry.common.RetrySyncExecutor;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
@@ -32,7 +31,7 @@ import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
 import com.alibaba.easyretry.core.filter.SimpleRetryFilterRegister;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
-import com.alibaba.easyretry.core.way.DefaultSyncRetryWay;
+import com.alibaba.easyretry.core.DefaultRetrySyncExecutor;
 import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
 import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
 import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
@@ -53,7 +52,7 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 	public RetryConfiguration configuration(RetryTaskAccess retryTaskAccess,
 											RetryEventMulticaster retryEventMulticaster) {
 		DefaultRetryStrategy defaultRetryStrategy = new DefaultRetryStrategy();
-		DefaultSyncRetryWay<Object> defaultSyncRetryWay = new DefaultSyncRetryWay<>();
+		DefaultRetrySyncExecutor<Object> defaultSyncRetryWay = new DefaultRetrySyncExecutor<>();
 		return new RetryConfiguration() {
 			@Override
 			public RetryTaskAccess getRetryTaskAccess() {
@@ -99,16 +98,6 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 			@Override
 			public RetryEventMulticaster getRetryEventMulticaster() {
 				return retryEventMulticaster;
-			}
-
-			@Override
-			public SyncRetryWayAccess getSyncRetryWayAccess() {
-				return new SyncRetryWayAccess<Object>() {
-					@Override
-					public SyncRetryWay<Object> getCurrentGlobalSyncRetryWay() {
-						return defaultSyncRetryWay;
-					}
-				};
 			}
 		};
 	}

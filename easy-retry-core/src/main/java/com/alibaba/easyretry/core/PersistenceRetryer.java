@@ -1,6 +1,5 @@
 package com.alibaba.easyretry.core;
 
-import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.SCallable;
 import com.alibaba.easyretry.common.processor.AsyncPersistenceProcessor;
 import com.alibaba.easyretry.common.retryer.Retryer;
@@ -18,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PersistenceRetryer<V> implements Retryer<V> {
 
 	private RetryerInfo<V> retryerInfo;
-
-//	private RetryConfiguration retryConfiguration;
 
 	public PersistenceRetryer(RetryerInfo<V> retryerInfo) {
 		this.retryerInfo = retryerInfo;
