@@ -25,4 +25,9 @@ public interface RetryConfiguration {
 	Integer getMaxRetryTimes();
 
 	RetryEventMulticaster getRetryEventMulticaster();
+
+	default AbstractRetrySyncExecutor getRetrySyncExecutor() {
+		return null;
+	}
+
 }
