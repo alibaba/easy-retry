@@ -24,6 +24,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easy-retry-guava-extension</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>easy-retry-core</artifactId>
 		</dependency>
