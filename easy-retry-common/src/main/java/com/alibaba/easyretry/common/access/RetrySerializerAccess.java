@@ -11,6 +11,7 @@ public interface RetrySerializerAccess {
 
 	/**
 	 * 获取全局序列化器
+	 * @return 序列化器实体
 	 */
 	RetryArgSerializer getCurrentGlobalRetrySerializer();
 

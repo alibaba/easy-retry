@@ -6,9 +6,6 @@ public interface RetryContext extends RetryLifecycle {
 
 	String getAttribute(String key);
 
-	/**
-	 * 获取唯一标识
-	 */
 	String getId();
 
 	Invocation getInvocation();

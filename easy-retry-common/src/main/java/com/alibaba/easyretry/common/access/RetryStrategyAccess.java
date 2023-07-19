@@ -12,11 +12,13 @@ public interface RetryStrategyAccess {
 
 	/**
 	 * 获取全局重试任务停止策略
+	 * @return 停止策略
 	 */
 	StopStrategy getCurrentGlobalStopStrategy();
 
 	/**
 	 * 获取全局等待策略
+	 * @return 等待策略
 	 */
 	WaitStrategy getCurrentGlobalWaitStrategy();
 
