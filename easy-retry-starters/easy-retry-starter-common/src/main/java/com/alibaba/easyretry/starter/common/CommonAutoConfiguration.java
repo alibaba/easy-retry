@@ -7,7 +7,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 
-import com.alibaba.easyretry.common.AbstractRetrySyncExecutor;
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
@@ -31,7 +30,6 @@ import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
 import com.alibaba.easyretry.core.filter.SimpleRetryFilterRegister;
 import com.alibaba.easyretry.core.serializer.HessianResultPredicateSerializer;
 import com.alibaba.easyretry.core.strategy.DefaultRetryStrategy;
-import com.alibaba.easyretry.extension.guava.GuavaRetrySyncExecutor;
 import com.alibaba.easyretry.extension.spring.RetryListenerInitialize;
 import com.alibaba.easyretry.extension.spring.SpringEventApplicationListener;
 import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
