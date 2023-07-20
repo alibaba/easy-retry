@@ -18,8 +18,10 @@
 	<modules>
 		<module>easy-retry-spring-extension</module>
 		<module>easy-retry-mybatis-extension</module>
+		<module>easy-retry-guava-extension</module>
 	</modules>
 
 	<dependencies>
 	</dependencies>
 </project>
+

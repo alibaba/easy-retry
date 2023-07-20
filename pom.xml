@@ -136,6 +136,11 @@
 				<artifactId>easy-retry-spring-extension</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>easy-retry-guava-extension</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>${project.groupId}</groupId>

@@ -1,5 +1,12 @@
 package com.alibaba.easyretry.starter.common;
 
+import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+
 import com.alibaba.easyretry.common.RetryConfiguration;
 import com.alibaba.easyretry.common.RetryExecutor;
 import com.alibaba.easyretry.common.access.RetrySerializerAccess;
@@ -15,10 +22,8 @@ import com.alibaba.easyretry.common.resolve.ExecutorSolver;
 import com.alibaba.easyretry.common.serializer.ResultPredicateSerializer;
 import com.alibaba.easyretry.common.strategy.StopStrategy;
 import com.alibaba.easyretry.common.strategy.WaitStrategy;
-import com.alibaba.easyretry.core.DegradeAbleRetryExecutor;
 import com.alibaba.easyretry.core.PersistenceRetryExecutor;
 import com.alibaba.easyretry.core.access.DefaultRetrySerializerAccess;
-import com.alibaba.easyretry.core.degrade.EasyRetryDegradeHelper;
 import com.alibaba.easyretry.core.event.SimpleRetryEventMulticaster;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterInvocationHandler;
 import com.alibaba.easyretry.core.filter.DefaultRetryFilterRegisterHandler;
@@ -31,13 +36,6 @@ import com.alibaba.easyretry.extension.spring.SpringRetryFilterDiscover;
 import com.alibaba.easyretry.extension.spring.aop.RetryInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author Created by wuhao on 2021/2/19.

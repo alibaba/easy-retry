@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.alibaba.easyretry.common.constant.enums.RetryTypeEnum;
+
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EasyRetryable {
@@ -20,5 +22,10 @@ public @interface EasyRetryable {
 	 * 通过结果判断是否重试
 	 */
 	String resultCondition() default "";
+
+	/**
+	 * 重试种类
+	 */
+	RetryTypeEnum retryType() default RetryTypeEnum.ASYNC;
 
 }
