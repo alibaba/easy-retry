@@ -37,11 +37,21 @@ class RetryTaskDAOImplTest {
 	@Test
 	@Order(2)
 	void listRetryTask() {
+		final RetryTaskPO retryTaskPO = new RetryTaskPO()
+			.setId(1L)
+			.setGmtCreate(new Date())
+			.setBizId("1")
+			.setRetryStatus(RetryTaskStatusEnum.HANDLING.getCode())
+			.setGmtModified(new Date());
+
+		retryTaskDAO.saveRetryTask(retryTaskPO);
 		final RetryTaskQuery retryTaskQuery = new RetryTaskQuery()
 			.setRetryStatus(Collections.singletonList(RetryTaskStatusEnum.HANDLING.getCode()));
 		List<RetryTaskPO> retryTaskPOS = retryTaskDAO.listRetryTask(retryTaskQuery);
 		System.out.println(retryTaskPOS);
-		Assertions.assertTrue(Objects.nonNull(retryTaskPOS) && !retryTaskPOS.isEmpty());
+		Assertions.assertTrue(!retryTaskPOS.isEmpty());
+		Assertions.assertTrue(Objects.nonNull(retryTaskPOS));
+		// Assertions.assertTrue(Objects.nonNull(retryTaskPOS) && !retryTaskPOS.isEmpty());
 	}
 
 	@Test
@@ -67,7 +77,13 @@ class RetryTaskDAOImplTest {
 	@Order(4)
 	void deleteRetryTask() {
 		final RetryTaskPO retryTaskPO = new RetryTaskPO()
-			.setId(1L);
+			.setId(1L)
+			.setGmtCreate(new Date())
+			.setBizId("1")
+			.setRetryStatus(RetryTaskStatusEnum.HANDLING.getCode())
+			.setGmtModified(new Date());
+
+		retryTaskDAO.saveRetryTask(retryTaskPO);
 		boolean b = retryTaskDAO.deleteRetryTask(retryTaskPO);
 		Assertions.assertTrue(b);
 
