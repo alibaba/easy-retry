@@ -39,6 +39,7 @@ class MybatisRetryTaskAccessTest {
 	@Test
 	@Order(2)
 	void handle() {
+		ACCESS.saveRetryTask(task);
 		Assertions.assertTrue(ACCESS.handlingRetryTask(task));
 		List<RetryTask> retryTasks = ACCESS.listAvailableTasks(1L);
 		Assertions.assertTrue(Objects.nonNull(retryTasks) && !retryTasks.isEmpty());
@@ -48,6 +49,7 @@ class MybatisRetryTaskAccessTest {
 	@Test
 	@Order(3)
 	void stop() {
+		ACCESS.saveRetryTask(task);
 		boolean b = ACCESS.stopRetryTask(task);
 		Assertions.assertTrue(b);
 		List<RetryTask> retryTasks = ACCESS.listAvailableTasks(1L);
@@ -57,6 +59,7 @@ class MybatisRetryTaskAccessTest {
 	@Test
 	@Order(4)
 	void finish(){
+		ACCESS.saveRetryTask(task);
 		Assertions.assertTrue(ACCESS.finishRetryTask(task));
 		List<RetryTask> retryTasks = ACCESS.listAvailableTasks(1L);
 		Assertions.assertTrue(Objects.isNull(retryTasks) || retryTasks.isEmpty());
