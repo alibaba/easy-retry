@@ -1,17 +1,16 @@
 package com.alibaba.easyretry.extension.spring;
 
+import org.springframework.beans.factory.SmartInitializingSingleton;
+
 import com.alibaba.easyretry.common.filter.RetryFilterInvocationHandler;
 import com.alibaba.easyretry.common.filter.RetryFilterRegisterHandler;
 
 import lombok.Setter;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * @author Created by wuhao on 2021/4/9.
  */
-public class SpringEventApplicationListener implements ApplicationListener<ContextRefreshedEvent> {
+public class SpringEventApplicationListener implements SmartInitializingSingleton {
 
 	@Setter
 	private RetryFilterInvocationHandler retryFilterInvocationHandler;
@@ -19,13 +18,9 @@ public class SpringEventApplicationListener implements ApplicationListener<Conte
 	@Setter
 	private RetryFilterRegisterHandler retryFilterRegisterHandler;
 
+
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		ApplicationContext applicationContext = event.getApplicationContext();
-		//防止父子容器场景
-		if (applicationContext.getParent() != null) {
-			return;
-		}
+	public void afterSingletonsInstantiated() {
 		retryFilterRegisterHandler.handle();
 		retryFilterInvocationHandler.handle();
 	}

@@ -4,7 +4,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 
 import com.alibaba.easyretry.common.RetryConfiguration;
@@ -164,7 +163,7 @@ public abstract class CommonAutoConfiguration implements ApplicationContextAware
 	}
 
 	@Bean
-	public ApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,
+	public SpringEventApplicationListener easyRetryApplicationListener(RetryFilterInvocationHandler retryFilterInvocationHandler,
 															RetryFilterRegisterHandler retryFilterRegisterHandler) {
 		SpringEventApplicationListener springEventApplicationListener = new SpringEventApplicationListener();
 		springEventApplicationListener.setRetryFilterRegisterHandler(retryFilterRegisterHandler);
