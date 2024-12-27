@@ -1,15 +1,19 @@
 package com.alibaba.easyretry.extension.mybatis.dao;
 
-import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
-import com.alibaba.easyretry.extension.mybatis.MyBatisConfig;
-import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
-import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
-import org.junit.jupiter.api.*;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+
+import com.alibaba.easyretry.common.constant.enums.RetryTaskStatusEnum;
+import com.alibaba.easyretry.extension.mybatis.MyBatisConfig;
+import com.alibaba.easyretry.extension.mybatis.po.RetryTaskPO;
+import com.alibaba.easyretry.extension.mybatis.query.RetryTaskQuery;
 
 class RetryTaskDAOImplTest {
 
@@ -38,9 +42,9 @@ class RetryTaskDAOImplTest {
 	@Order(2)
 	void listRetryTask() {
 		final RetryTaskPO retryTaskPO = new RetryTaskPO()
-			.setId(1L)
+			.setId(2L)
 			.setGmtCreate(new Date())
-			.setBizId("1")
+			.setBizId("2")
 			.setRetryStatus(RetryTaskStatusEnum.HANDLING.getCode())
 			.setGmtModified(new Date());
 
@@ -77,9 +81,9 @@ class RetryTaskDAOImplTest {
 	@Order(4)
 	void deleteRetryTask() {
 		final RetryTaskPO retryTaskPO = new RetryTaskPO()
-			.setId(1L)
+			.setId(3L)
 			.setGmtCreate(new Date())
-			.setBizId("1")
+			.setBizId("3")
 			.setRetryStatus(RetryTaskStatusEnum.HANDLING.getCode())
 			.setGmtModified(new Date());
 
