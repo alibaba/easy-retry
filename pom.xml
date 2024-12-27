@@ -14,7 +14,7 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<revision>1.0.2</revision>
+		<revision>1.0.3</revision>
 		<slf4j.version>1.7.30</slf4j.version>
 		<lombok.version>1.18.18</lombok.version>
 		<guava.version>16.0</guava.version>
